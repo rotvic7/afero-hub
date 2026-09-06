@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Funil operacional do Afero Hub: da oferta caçada ao projeto pronto para revisão no seu computador.">
+  <title>Funil do Afero Hub</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F7F6F1' stroke-width='1.5'%3E%3Cpath d='M20.114 9.826A8.4 8.4 0 003.886 9.826M3.886 14.174A8.4 8.4 0 0020.114 14.174M12 3.1V0M12 21.4v1M2.6 12H1M21.4 12H23'/%3E%3Cpath d='M10.9 14.898V13.2h2.2v1.698a3.1 3.1 0 11-2.2 0z' fill='%238A9C7B' stroke='none'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Unbounded:wght@500;700;800&display=swap">
+
+  <style>
+    :root {
+      --paper: #F7F6F1;
+      --canvas: #EFEEE6;
+      --ink: #21342C;
+      --palmeira: #8A9C7B;
+      --alcaparra: #56603F;
+      --mamao: #2F654D;
+      --floresta: #24696A;
+      --muted: #66736D;
+      --soft: #8B968F;
+
+      --sf-1: #FFFEFA;
+      --sf-2: #FFFFFF;
+      --hair: rgba(33, 52, 44, .11);
+      --hair-strong: rgba(33, 52, 44, .22);
+      --hair-dark: rgba(247, 246, 241, .16);
+
+      --r-xs: 4px;
+      --r-sm: 6px;
+      --r-md: 8px;
+      --r-lg: 12px;
+      --r-xl: 16px;
+
+      --font-display: 'Unbounded', system-ui, sans-serif;
+      --font-body: 'Manrope', system-ui, sans-serif;
+      --font-label: 'Hanken Grotesk', system-ui, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+
+      --maxw: 1080px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--ink); }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--palmeira); color: var(--ink); }
+    :focus-visible { outline: 2px solid var(--floresta); outline-offset: 3px; }
+    a { color: inherit; }
+    code { font-family: var(--font-mono); font-size: .9em; }
+
+    /* ── Topo ─────────────────────────────────────────────────────────── */
+    .top {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(33, 52, 44, .97);
+      border-bottom: 1px solid var(--hair-dark);
+    }
+    .top-in {
+      max-width: var(--maxw); margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 14px 24px;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; color: var(--paper); }
+    .brand svg { width: 22px; height: 22px; flex: none; }
+    .brand-txt { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: -.035em; }
+    .brand-txt span { color: var(--palmeira); }
+    .back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: var(--r-md);
+      border: 1px solid var(--hair-dark); color: #D3D7CD;
+      font-family: var(--font-label); font-size: 11px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase; text-decoration: none;
+      transition: color .18s, border-color .18s, background .18s;
+    }
+    .back:hover { color: var(--paper); border-color: rgba(247, 246, 241, .34); background: rgba(247, 246, 241, .06); }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+    /* ── Hero ─────────────────────────────────────────────────────────── */
+    .hero { padding: 76px 0 60px; }
+    .hero-slug {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+      padding-bottom: 11px; border-bottom: 1px solid var(--hair);
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--soft);
+    }
+    .hero-slug b { color: var(--mamao); font-weight: 700; }
+    .hero h1 {
+      margin: 26px 0 0;
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(30px, 5vw, 54px); line-height: 1.06; letter-spacing: -.045em;
+      max-width: 17ch;
+    }
+    .hero h1 em { font-style: normal; color: var(--mamao); }
+    .hero-lead { margin: 22px 0 0; max-width: 62ch; font-size: 16.5px; line-height: 1.62; color: var(--muted); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+    .chip {
+      padding: 6px 12px; border-radius: 999px;
+      border: 1px solid var(--hair-strong); background: var(--sf-1);
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .04em; color: var(--muted);
+    }
+    .chip.hot { border-color: var(--mamao); background: var(--mamao); color: var(--paper); }
+
+    /* ── Seções ───────────────────────────────────────────────────────── */
+    .section { padding: 46px 0; border-top: 1px solid var(--hair); }
+    .section-index {
+      display: inline-flex; align-items: center; gap: 9px;
+      font-family: var(--font-label); font-size: 10.5px; font-weight: 700;
+      letter-spacing: .16em; text-transform: uppercase; color: var(--floresta);
+    }
+    .section-index::before { content: ''; width: 20px; height: 1px; background: currentColor; }
+    .section h2 {
+      margin: 14px 0 0;
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(21px, 2.8vw, 30px); line-height: 1.16; letter-spacing: -.04em;
+      max-width: 20ch;
+    }
+    .section-intro { margin: 12px 0 0; max-width: 68ch; color: var(--muted); font-size: 14.5px; line-height: 1.65; }
+
+    /* ── Card base: superfície + hairline, sem sombra ─────────────────── */
+    .card {
+      position: relative; overflow: hidden;
+      border: 1px solid var(--hair); border-radius: var(--r-lg);
+      background: var(--sf-1);
+      transition: border-color .2s var(--ease), background .2s var(--ease), transform .2s var(--ease);
+    }
+    .card::before {
+      content: ''; position: absolute; inset: 0 0 auto; height: 2px;
+      background: var(--accent, var(--mamao)); opacity: .3;
+      transition: opacity .22s var(--ease);
+    }
+    .card:hover { border-color: var(--hair-strong); background: var(--sf-2); transform: translateY(-2px); }
+    .card:hover::before { opacity: 1; }
+
+    .grid { display: grid; gap: 16px; margin-top: 28px; }
+    /* min-width: 0 em todo filho de grade: sem isso o bloco de árvore de
+       arquivos empurra a largura da página inteira no celular. */
+    .grid > *, .export-grid > * { min-width: 0; }
+    .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card-lbl {
+      display: block; padding: 16px 18px 0;
+      font-family: var(--font-label); font-size: 9.5px; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--soft);
+    }
+    .card h3 {
+      margin: 0; padding: 14px 18px 0;
+      font-family: var(--font-display); font-size: 14.5px; font-weight: 700; letter-spacing: -.03em;
+    }
+    .card-lbl + h3 { padding-top: 9px; }
+    .card p { margin: 8px 0 0; padding: 0 18px 18px; font-size: 13px; line-height: 1.6; color: var(--muted); }
+    .card .value {
+      display: block; margin: 9px 0 0; padding: 0 18px 18px;
+      font-family: var(--font-mono); font-size: 13px; color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .card.out { --accent: var(--soft); background: var(--canvas); }
+    .card.user { --accent: var(--floresta); }
+
+    /* ── Pipeline: 5 movimentos ligados por um trilho ─────────────────── */
+    .pipeline { position: relative; margin-top: 30px; padding-left: 46px; }
+    .pipeline-rail {
+      position: absolute; left: 17px; top: 12px; bottom: 12px; width: 2px;
+      background: var(--hair); border-radius: 2px; overflow: hidden;
+    }
+    .pipeline-rail i {
+      position: absolute; inset: 0; display: block;
+      background: linear-gradient(180deg, var(--floresta), var(--mamao), var(--palmeira));
+      transform-origin: top center;
+    }
+    /* A bolinha vive fora da caixa do card, então esta variação abre o
+       overflow e arredonda a barra de acento na mão pra ela não vazar. */
+    .stage { position: relative; margin-bottom: 14px; overflow: visible; }
+    .stage::before { border-radius: var(--r-lg) var(--r-lg) 0 0; }
+    .stage:last-child { margin-bottom: 0; }
+    .stage-num {
+      position: absolute; left: -46px; top: 16px;
+      width: 36px; height: 36px; border-radius: 50%;
+      display: grid; place-items: center;
+      border: 1px solid var(--hair-strong); background: var(--canvas); color: var(--mamao);
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+    }
+    .stage.lit .stage-num { background: var(--mamao); border-color: var(--mamao); color: var(--paper); }
+    .stage-head {
+      display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px;
+      padding: 17px 20px 0;
+    }
+    .stage-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: -.03em; }
+    .stage-role {
+      font-family: var(--font-label); font-size: 9.5px; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--floresta);
+    }
+    .stage p { margin: 9px 0 0; padding: 0 20px; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+    .handoff {
+      display: block; margin: 14px 20px 18px 20px; padding-top: 12px;
+      border-top: 1px solid var(--hair);
+      font-family: var(--font-mono); font-size: 11px; color: var(--alcaparra);
+    }
+    .handoff::before { content: 'entrega '; color: var(--soft); letter-spacing: .1em; text-transform: uppercase; font-size: 9.5px; }
+
+    /* ── Blocos técnicos ──────────────────────────────────────────────── */
+    .callout {
+      margin-top: 20px; padding: 16px 18px;
+      border: 1px solid rgba(47, 101, 77, .26); border-left: 3px solid var(--mamao);
+      border-radius: var(--r-md); background: rgba(138, 156, 123, .1);
+      font-size: 13.5px; line-height: 1.62; color: var(--muted);
+    }
+    .callout strong { color: var(--ink); }
+    .callout p { margin: 0; }
+
+    .export-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 28px; }
+    .tree, .terminal {
+      border: 1px solid var(--hair); border-radius: var(--r-lg);
+      background: var(--ink); overflow: hidden;
+    }
+    .terminal + .terminal { margin-top: 16px; }
+    .tree-head, .terminal-head {
+      padding: 11px 16px; border-bottom: 1px solid var(--hair-dark);
+      font-family: var(--font-label); font-size: 9.5px; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--palmeira);
+    }
+    .tree pre, .terminal pre {
+      margin: 0; padding: 16px; overflow-x: auto;
+      font-family: var(--font-mono); font-size: 11.5px; line-height: 1.75; color: #D3D7CD;
+    }
+    .tree .folder { color: var(--palmeira); }
+    .tree .file { color: #EFEEE6; }
+    .command {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 11px 16px; border-top: 1px solid var(--hair-dark);
+    }
+    .command code { font-size: 11px; color: #9BA99D; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .copy-btn {
+      flex: none; padding: 6px 12px; border-radius: var(--r-xs);
+      border: 1px solid var(--hair-dark); background: transparent; color: var(--palmeira);
+      font-family: var(--font-label); font-size: 9.5px; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase; cursor: pointer;
+      transition: color .18s, border-color .18s, background .18s, transform .18s var(--ease);
+    }
+    .copy-btn:hover { color: var(--ink); background: var(--palmeira); border-color: var(--palmeira); }
+    .copy-btn:active { transform: scale(.96); }
+
+    .states { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+    .state {
+      padding: 7px 13px; border-radius: 999px;
+      border: 1px solid var(--hair-strong); background: var(--sf-1);
+      font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+    }
+    .state.active { border-color: var(--palmeira); background: rgba(138, 156, 123, .2); color: var(--ink); }
+    .state.gate { border-color: var(--mamao); background: var(--mamao); color: var(--paper); }
+
+    .checklist { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 0; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 13px;
+      padding: 14px 0; border-bottom: 1px solid var(--hair);
+      font-size: 14px; line-height: 1.55; color: var(--muted);
+    }
+    .checklist li:first-child { border-top: 1px solid var(--hair); }
+    .checklist li::before {
+      content: ''; flex: none; margin-top: 3px;
+      width: 16px; height: 16px; border-radius: var(--r-xs);
+      border: 1px solid rgba(47, 101, 77, .34); background: rgba(47, 101, 77, .1);
+      background-image: linear-gradient(45deg, transparent 45%, var(--mamao) 45%, var(--mamao) 55%, transparent 55%),
+                        linear-gradient(-45deg, transparent 45%, var(--mamao) 45%, var(--mamao) 55%, transparent 55%);
+      background-size: 8px 2px, 5px 2px;
+      background-position: 5px 8px, 3.5px 7px;
+      background-repeat: no-repeat;
+    }
+    .project-note {
+      margin-top: 18px; padding: 15px 18px;
+      border: 1px dashed var(--hair-strong); border-radius: var(--r-md);
+      font-size: 13px; line-height: 1.6; color: var(--muted);
+    }
+
+    footer {
+      max-width: var(--maxw); margin: 0 auto; padding: 34px 24px 46px;
+      border-top: 1px solid var(--hair);
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: .05em; color: var(--soft);
+    }
+    footer span { color: var(--palmeira); margin: 0 6px; }
+
+    /* O estado inicial escondido é aplicado pelo próprio GSAP, nunca por CSS:
+       se o script falhar ou o vendor não carregar, a página abre legível. */
+    .word { display: inline-block; }
+
+    @media (max-width: 860px) {
+      .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .export-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .top-in { padding: 12px 16px; }
+      .wrap { padding: 0 16px; }
+      .hero { padding: 46px 0 38px; }
+      .g2, .g4 { grid-template-columns: 1fr; }
+      .pipeline { padding-left: 0; }
+      .pipeline-rail { display: none; }
+      .stage-num { position: static; margin: 16px 0 0 20px; }
+      .stage-head { padding-top: 12px; }
+      footer { padding: 28px 16px 38px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+      .anim { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#F7F6F1" stroke-width="1.5" aria-hidden="true"><path d="M20.114 9.826A8.4 8.4 0 003.886 9.826M3.886 14.174A8.4 8.4 0 0020.114 14.174M12 3.1V0M12 21.4v1M2.6 12H1M21.4 12H23"/><path d="M10.9 14.898V13.2h2.2v1.698a3.1 3.1 0 11-2.2 0z" fill="#8A9C7B" stroke="none"/></svg>
+      <span class="brand-txt">afero <span>hub</span></span>
+    </a>
+    <a class="back" href="index.html">voltar ao hub</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section class="hero">
+      <div class="hero-slug anim"><span>Guia operacional</span><b>v1 · funil local</b></div>
+      <h1 data-split>Da oferta caçada ao <em>funil pronto</em> no computador.</h1>
+      <p class="hero-lead anim">Este documento define como o Afero Hub organiza uma oferta de alto potencial, transforma suas decisões em arquivos de projeto e entrega o contexto certo para o Codex ou o Claude Code executarem a Copy e a Página.</p>
+      <div class="hero-meta anim" aria-label="Características do processo">
+        <span class="chip hot">local-first</span>
+        <span class="chip">3 agentes</span>
+        <span class="chip">aprovação por etapa</span>
+        <span class="chip">checkout em aberto</span>
+      </div>
+    </section>
+
+    <section class="section" id="escopo">
+      <span class="section-index anim">01 · escopo</span>
+      <h2 data-split>O que vive no Afero Hub</h2>
+      <p class="section-intro anim">O Hub funciona como cockpit do projeto. Ele registra a oferta, coleta a direção e organiza os arquivos. A execução criativa acontece no computador do usuário.</p>
+      <div class="grid g4">
+        <article class="card anim-card" style="--accent:#24696A"><h3>Caçador de Ofertas</h3><p>Pesquisa, classifica e registra a oferta escolhida, com evidências da página e dos sinais capturados.</p></article>
+        <article class="card anim-card" style="--accent:#2F654D"><h3>Agente de Copy</h3><p>Recebe o briefing exportado e escreve a mensagem de venda para revisão antes da Página.</p></article>
+        <article class="card anim-card" style="--accent:#56603F"><h3>Agente de Páginas</h3><p>Transforma a copy aprovada em HTML, preserva o vídeo autorizado e mantém os links de checkout vazios.</p></article>
+        <article class="card out anim-card"><h3>Fora da primeira versão</h3><p>Entregáveis, Quiz, backend remoto, cobrança, publicação automática e execução direta de comandos pelo navegador.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="funil">
+      <span class="section-index anim">02 · sequência</span>
+      <h2 data-split>O funil em cinco movimentos</h2>
+      <p class="section-intro anim">Cada passagem gera um arquivo e uma decisão clara. O próximo agente só recebe o material depois da revisão da etapa anterior.</p>
+      <div class="pipeline" id="pipeline">
+        <div class="pipeline-rail" aria-hidden="true"><i id="railFill"></i></div>
+        <article class="card stage anim-card" style="--accent:#24696A">
+          <span class="stage-num">01</span>
+          <div class="stage-head"><span class="stage-title">Caçador de Ofertas</span><span class="stage-role">entrada</span></div>
+          <p>O usuário escolhe uma oferta do catálogo ou informa uma URL. O Hub congela o diagnóstico e as evidências para o projeto.</p>
+          <span class="handoff">oferta-original.md · diagnostico.json</span>
+        </article>
+        <article class="card stage anim-card" style="--accent:#24696A">
+          <span class="stage-num">02</span>
+          <div class="stage-head"><span class="stage-title">Direcionamento no Hub</span><span class="stage-role">decisão</span></div>
+          <p>O formulário reúne produto, público, promessa, ângulo, tom, vídeo, referências e regras de checkout.</p>
+          <span class="handoff">briefing.md · projeto.json</span>
+        </article>
+        <article class="card stage anim-card" style="--accent:#2F654D">
+          <span class="stage-num">03</span>
+          <div class="stage-head"><span class="stage-title">Agente de Copy</span><span class="stage-role">Codex ou Claude Code</span></div>
+          <p>O agente lê o briefing e as instruções versionadas, cria a copy e salva uma versão para aprovação humana.</p>
+          <span class="handoff">resultados/copy/copy-v1.md</span>
+        </article>
+        <article class="card stage anim-card" style="--accent:#2F654D">
+          <span class="stage-num">04</span>
+          <div class="stage-head"><span class="stage-title">Revisão da Copy</span><span class="stage-role">gate humano</span></div>
+          <p>O usuário aprova, pede ajustes ou gera uma nova versão. A Página só começa com uma copy aprovada.</p>
+          <span class="handoff">copy-aprovada.json</span>
+        </article>
+        <article class="card stage anim-card" style="--accent:#56603F">
+          <span class="stage-num">05</span>
+          <div class="stage-head"><span class="stage-title">Agente de Páginas</span><span class="stage-role">saída</span></div>
+          <p>O agente monta o HTML, valida a navegação e salva o preview local para conferência no navegador.</p>
+          <span class="handoff">resultados/pagina/index.html</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="formulario">
+      <span class="section-index anim">03 · formulário</span>
+      <h2 data-split>Como o projeto é preenchido no Hub</h2>
+      <p class="section-intro anim">A tela separa fatos detectados pelo Caçador das decisões que só o dono do projeto pode tomar.</p>
+      <div class="grid g2">
+        <article class="card anim-card" style="--accent:#8A9C7B"><span class="card-lbl">preenchido automaticamente</span><h3>Contexto da oferta</h3><p>URL, título, score, gateway, rastreador, screenshots, copy capturada, vídeo e data da captura.</p></article>
+        <article class="card user anim-card"><span class="card-lbl">preenchido pelo usuário</span><h3>Direção estratégica</h3><p>Produto, público, problema, promessa, ângulo original ou adaptado, faixa de preço e objetivo da página.</p></article>
+        <article class="card user anim-card"><span class="card-lbl">preenchido pelo usuário</span><h3>Direção da mensagem</h3><p>Tom, mecanismo, benefícios, objeções, garantia, CTA e seções obrigatórias.</p></article>
+        <article class="card anim-card" style="--accent:#56603F"><span class="card-lbl">regra de ativos</span><h3>Vídeo e checkout</h3><p>Vídeo preservado quando autorizado. Checkout principal e secundário ficam vazios até serem criados.</p></article>
+      </div>
+      <div class="callout anim"><p><strong>Antes de exportar:</strong> o Hub mostra um resumo do projeto. O usuário confirma a direção e só então a pasta local é criada.</p></div>
+    </section>
+
+    <section class="section" id="exportacao">
+      <span class="section-index anim">04 · exportação</span>
+      <h2 data-split>O que sai do Hub para o computador</h2>
+      <p class="section-intro anim">O launcher local abre o painel em <code>localhost</code>, grava os arquivos em <code>hunter-hub/projetos/</code> e prepara os dois adaptadores de ferramenta.</p>
+      <div class="export-grid">
+        <div class="tree anim-card" aria-label="Estrutura da pasta exportada">
+          <div class="tree-head">projeto exportado</div>
+          <pre><span class="folder">projetos/</span>
+└── <span class="folder">corpo-conectado/</span>
+    ├── <span class="file">AGENTS.md</span>
+    ├── <span class="file">CLAUDE.md</span>
+    ├── <span class="file">INICIAR.md</span>
+    ├── <span class="file">projeto.json</span>
+    ├── <span class="folder">contexto/</span>
+    │   ├── <span class="file">briefing.md</span>
+    │   ├── <span class="file">oferta-original.md</span>
+    │   ├── <span class="file">diagnostico.json</span>
+    │   └── <span class="file">video.json</span>
+    ├── <span class="folder">workflow/</span>
+    │   ├── <span class="file">PROCESSO.md</span>
+    │   ├── <span class="file">AGENTE-COPY.md</span>
+    │   └── <span class="file">AGENTE-PAGINA.md</span>
+    └── <span class="folder">resultados/</span>
+        ├── <span class="folder">copy/</span>
+        └── <span class="folder">pagina/</span></pre>
+        </div>
+        <div class="anim-card">
+          <div class="terminal">
+            <div class="terminal-head">Codex · abrir projeto</div>
+            <pre>Leia AGENTS.md e execute apenas a próxima etapa autorizada.</pre>
+            <div class="command"><code>cd "...\projetos\corpo-conectado"</code><button class="copy-btn" type="button" data-copy="cd &quot;...\projetos\corpo-conectado&quot;">copiar</button></div>
+          </div>
+          <div class="terminal">
+            <div class="terminal-head">Claude Code · abrir projeto</div>
+            <pre>Leia CLAUDE.md e execute apenas a próxima etapa autorizada.</pre>
+            <div class="command"><code>cd "...\projetos\corpo-conectado"</code><button class="copy-btn" type="button" data-copy="cd &quot;...\projetos\corpo-conectado&quot;">copiar</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout anim"><p><strong>O mesmo processo, duas ferramentas:</strong> <code>AGENTS.md</code> e <code>CLAUDE.md</code> apontam para as mesmas regras centrais. O Hub não coloca chave de API no navegador e não publica o resultado.</p></div>
+    </section>
+
+    <section class="section" id="arquivos">
+      <span class="section-index anim">05 · contratos</span>
+      <h2 data-split>Arquivos que mantêm o trabalho alinhado</h2>
+      <p class="section-intro anim">Cada arquivo tem uma função curta. Isso mantém o contexto verificável quando o projeto troca de agente ou de ferramenta.</p>
+      <div class="grid g4">
+        <article class="card anim-card" style="--accent:#24696A"><h3><code>projeto.json</code></h3><p>Estado, slug, etapa atual, aprovações, referências e caminhos dos artefatos.</p></article>
+        <article class="card anim-card" style="--accent:#2F654D"><h3><code>briefing.md</code></h3><p>Decisões humanas preenchidas no Hub, em linguagem legível para revisão.</p></article>
+        <article class="card anim-card" style="--accent:#56603F"><h3><code>AGENTS.md</code></h3><p>Adaptador de instruções para o Codex seguir o processo local.</p></article>
+        <article class="card anim-card" style="--accent:#8A9C7B"><h3><code>CLAUDE.md</code></h3><p>Adaptador equivalente para o Claude Code, sem mudar o conteúdo do fluxo.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="projeto-atual">
+      <span class="section-index anim">06 · primeiro projeto</span>
+      <h2 data-split>Configuração de Corpo Conectado</h2>
+      <p class="section-intro anim">A oferta escolhida pelo Caçador já define os primeiros valores de referência para a remodelação.</p>
+      <div class="grid g4">
+        <article class="card anim-card" style="--accent:#8A9C7B"><span class="card-lbl">prioridade</span><span class="value">A Top · score 7</span></article>
+        <article class="card anim-card" style="--accent:#24696A"><span class="card-lbl">gateway e rastreador</span><span class="value">Hotmart · UTMify</span></article>
+        <article class="card anim-card" style="--accent:#2F654D"><span class="card-lbl">vídeo</span><span class="value">Referência autorizada</span></article>
+        <article class="card anim-card" style="--accent:#56603F"><span class="card-lbl">checkout</span><span class="value">Principal e secundário vazios</span></article>
+      </div>
+      <div class="project-note anim">O vídeo desta oferta foi informado como criado por IA. O projeto registra sua referência para continuidade visual e mantém a decisão de uso dentro do contexto autorizado.</div>
+    </section>
+
+    <section class="section" id="estados">
+      <span class="section-index anim">07 · controle</span>
+      <h2 data-split>Estados e travas do projeto</h2>
+      <p class="section-intro anim">O arquivo de estado impede que o agente pule uma aprovação ou sobrescreva uma versão sem histórico.</p>
+      <div class="states anim" aria-label="Estados do projeto">
+        <span class="state active">oferta-selecionada</span>
+        <span class="state active">aguardando-direcao</span>
+        <span class="state gate">copy-em-revisao</span>
+        <span class="state gate">copy-aprovada</span>
+        <span class="state">pagina-em-execucao</span>
+        <span class="state">pagina-em-revisao</span>
+        <span class="state">pronto-para-exportar</span>
+      </div>
+      <div class="callout anim"><p><strong>Regra de aprovação:</strong> Copy aprovada libera Página. Página validada libera a exportação final. O deploy continua sendo uma decisão posterior do usuário.</p></div>
+    </section>
+
+    <section class="section" id="checklist">
+      <span class="section-index anim">08 · antes de rodar</span>
+      <h2 data-split>Checklist rápido</h2>
+      <p class="section-intro anim">Use esta conferência sempre que iniciar uma nova remodelação.</p>
+      <ul class="checklist">
+        <li class="anim-card">Oferta escolhida e evidências salvas no projeto.</li>
+        <li class="anim-card">Promessa, público e ângulo definidos no formulário.</li>
+        <li class="anim-card">Direito de uso do vídeo e das referências confirmado.</li>
+        <li class="anim-card">Links de checkout mantidos vazios até a criação.</li>
+        <li class="anim-card">Copy revisada antes de chamar o Agente de Páginas.</li>
+        <li class="anim-card">Preview aberto em navegador real antes de qualquer publicação.</li>
+      </ul>
+    </section>
+
+  </div>
+
+  <footer>afero hub <span>·</span> guia do funil local <span>·</span> 2026</footer>
+</main>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* Botão copiar do bloco de terminal. */
+  document.querySelectorAll('.copy-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var texto = btn.getAttribute('data-copy') || '';
+      var feito = function () {
+        var antes = btn.textContent;
+        btn.textContent = 'copiado';
+        setTimeout(function () { btn.textContent = antes; }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(feito, function () {});
+        return;
+      }
+      var campo = document.createElement('textarea');
+      campo.value = texto;
+      document.body.appendChild(campo);
+      campo.select();
+      try { document.execCommand('copy'); feito(); } catch (e) {}
+      document.body.removeChild(campo);
+    });
+  });
+
+  var reduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!window.gsap || reduzido) return;
+
+  /* Divide o título em palavras. Palavra, não caractere: em português a
+     palavra acentuada quebra mal quando dividida letra a letra, e o texto
+     precisa continuar legível por leitor de tela, então o original vira
+     aria-label e os pedaços ficam escondidos da acessibilidade. */
+  function dividirEmPalavras(el) {
+    var original = el.textContent.trim();
+    el.setAttribute('aria-label', original);
+    var pedacos = [];
+    Array.prototype.slice.call(el.childNodes).forEach(function (no) {
+      if (no.nodeType === 3) {
+        var frag = document.createDocumentFragment();
+        no.textContent.split(/(\s+)/).forEach(function (parte) {
+          if (!parte) return;
+          if (/^\s+$/.test(parte)) { frag.appendChild(document.createTextNode(parte)); return; }
+          var span = document.createElement('span');
+          span.className = 'word';
+          span.textContent = parte;
+          frag.appendChild(span);
+          pedacos.push(span);
+        });
+        el.replaceChild(frag, no);
+      } else if (no.nodeType === 1) {
+        no.classList.add('word');
+        pedacos.push(no);
+      }
+    });
+    el.setAttribute('aria-hidden', 'false');
+    Array.prototype.forEach.call(el.querySelectorAll('.word'), function (w) { w.setAttribute('aria-hidden', 'true'); });
+    return pedacos;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.set('.anim, .anim-card, [data-split]', { opacity: 0 });
+  gsap.set('[data-split]', { opacity: 1 });
+
+  /* Hero: a frase cai de cima, palavra por palavra. */
+  var titulos = document.querySelectorAll('[data-split]');
+  var heroTitulo = titulos[0];
+  var heroPalavras = dividirEmPalavras(heroTitulo);
+
+  var abertura = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  abertura.fromTo('.hero-slug', { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: .5 });
+  abertura.fromTo(heroPalavras, { y: -34, opacity: 0, rotateX: -55 }, {
+    y: 0, opacity: 1, rotateX: 0, duration: .72, stagger: .045, clearProps: 'transform'
+  }, .1);
+  abertura.fromTo('.hero-lead', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .58 }, .38);
+  abertura.fromTo('.hero-meta .chip', { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .45, stagger: .05 }, .48);
+  abertura.set('.hero-meta', { opacity: 1 }, 0);
+
+  /* Cada seção: rótulo desliza, título cai palavra a palavra, intro sobe. */
+  document.querySelectorAll('.section').forEach(function (secao) {
+    var titulo = secao.querySelector('[data-split]');
+    var palavras = titulo ? dividirEmPalavras(titulo) : [];
+    var linha = gsap.timeline({
+      defaults: { ease: 'power3.out' },
+      scrollTrigger: { trigger: secao, start: 'top 82%', once: true }
+    });
+    linha.fromTo(secao.querySelector('.section-index'), { x: -14, opacity: 0 }, { x: 0, opacity: 1, duration: .45 });
+    if (palavras.length) {
+      linha.fromTo(palavras, { y: -26, opacity: 0 }, {
+        y: 0, opacity: 1, duration: .6, stagger: .04, clearProps: 'transform'
+      }, .08);
+    }
+    var intro = secao.querySelector('.section-intro');
+    if (intro) linha.fromTo(intro, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: .52 }, .24);
+  });
+
+  /* Blocos de apoio que não fazem parte da cascata do cabeçalho. */
+  document.querySelectorAll('.callout, .states, .project-note').forEach(function (el) {
+    gsap.fromTo(el, { y: 18, opacity: 0 }, {
+      y: 0, opacity: 1, duration: .55, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+    });
+  });
+
+  /* Cards entram em lote, na ordem de leitura da linha. */
+  ScrollTrigger.batch('.anim-card', {
+    start: 'top 90%',
+    once: true,
+    onEnter: function (lote) {
+      gsap.fromTo(lote, { y: 26, opacity: 0 }, {
+        y: 0, opacity: 1, duration: .58, stagger: .07, ease: 'power3.out', overwrite: true
+      });
+    }
+  });
+
+  /* Trilho do pipeline: preenche conforme a rolagem passa pelas 5 etapas,
+     e cada bolinha acende quando o trilho chega nela. */
+  var trilho = document.getElementById('railFill');
+  var pipeline = document.getElementById('pipeline');
+  if (trilho && pipeline) {
+    gsap.fromTo(trilho, { scaleY: 0 }, {
+      scaleY: 1, ease: 'none',
+      scrollTrigger: { trigger: pipeline, start: 'top 68%', end: 'bottom 82%', scrub: .6 }
+    });
+    pipeline.querySelectorAll('.stage').forEach(function (etapa) {
+      ScrollTrigger.create({
+        trigger: etapa,
+        start: 'top 72%',
+        onEnter: function () { etapa.classList.add('lit'); },
+        onLeaveBack: function () { etapa.classList.remove('lit'); }
+      });
+    });
+  }
+}());
+</script>
+
+<script>
+/* Deterrente cosmético contra cópia casual do front-end, convenção do site. */
+document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+document.addEventListener('keydown', function (e) {
+  var k = (e.key || '').toLowerCase();
+  if (k === 'f12') { e.preventDefault(); return; }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) { e.preventDefault(); return; }
+  if ((e.ctrlKey || e.metaKey) && (k === 'u' || k === 's' || k === 'a')) { e.preventDefault(); }
+});
+</script>
+</body>
+</html>

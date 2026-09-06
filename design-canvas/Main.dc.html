@@ -1,0 +1,490 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Unbounded:wght@600;700&display=swap">
+  <style>
+    body { margin: 0; background: #080605; }
+    a { color: #ff8a4a; text-decoration: none; }
+    a:hover { color: #ffa46e; }
+    ::selection { background: rgba(224, 112, 60, 0.34); color: #fff; }
+    .hh-num { font-variant-numeric: tabular-nums; }
+    .hh-card { transition: transform 0.32s cubic-bezier(0.22,1,0.36,1), border-color 0.28s, box-shadow 0.32s; }
+    .hh-card:hover { transform: translateY(-5px); border-color: rgba(255,138,74,0.34); box-shadow: 0 24px 64px rgba(0,0,0,0.5); }
+    .hh-row { transition: background 0.18s, border-color 0.18s; }
+    .hh-row:hover { background: rgba(224,112,60,0.11); border-color: rgba(255,138,74,0.34); }
+    .hh-seg { transition: color 0.22s, background 0.22s, box-shadow 0.22s; }
+    .hh-ghost { transition: color 0.22s, border-color 0.22s, background 0.22s; }
+    .hh-ghost:hover { color: #ff8a4a; border-color: rgba(255,138,74,0.34); background: rgba(224,112,60,0.12); }
+    @keyframes hh-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+    .hh-live { animation: hh-pulse 2.2s cubic-bezier(0.4,0,0.2,1) infinite; }
+  </style>
+</helmet>
+
+<div style="width: 1440px; height: 1000px; background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(224,112,60,0.10), transparent 60%), #080605; font-family: 'Hanken Grotesk', system-ui, sans-serif; color: #f2ebe5; display: flex; flex-direction: column; position: relative; overflow: hidden;">
+
+  <!-- ══ BARRA SUPERIOR ══════════════════════════════════════════ -->
+  <header style="height: 62px; flex: none; padding: 0 26px; display: flex; align-items: center; gap: 22px; border-bottom: 1px solid rgba(255,236,224,0.09); background: rgba(8,6,5,0.86); backdrop-filter: blur(20px); position: relative; z-index: 20;">
+
+    <div style="display: flex; align-items: center; gap: 11px;">
+      <div style="width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; background: linear-gradient(150deg, rgba(255,138,74,0.22), rgba(163,74,34,0.14)); border: 1px solid rgba(255,138,74,0.34); box-shadow: 0 0 20px rgba(224,112,60,0.22);">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="7.2"></circle>
+          <circle cx="12" cy="12" r="2.1" fill="{{accent}}" stroke="none"></circle>
+          <path d="M12 1.6v3.2M12 19.2v3.2M1.6 12h3.2M19.2 12h3.2"></path>
+        </svg>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px;">
+        <div style="font-family: 'Unbounded', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.02em;">HUNTER HUB</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.24em; color: #7d6c62;">CAÇADOR DE OFERTAS</div>
+      </div>
+    </div>
+
+    <!-- Controle segmentado: o menu vira um objeto só, não abas soltas -->
+    <nav style="display: flex; gap: 3px; padding: 4px; border-radius: 9999px; background: rgba(255,236,224,0.045); border: 1px solid rgba(255,236,224,0.09);">
+
+      <button class="hh-seg" style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 9999px; border: none; cursor: pointer; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: -0.004em; color: {{ seg.comece.fg }}; background: {{ seg.comece.bg }}; box-shadow: {{ seg.comece.ring }};">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 21V4.2"></path><path d="M6 4.6h11.4l-2.7 3.9 2.7 3.9H6"></path>
+        </svg>
+        <span>Comece Aqui</span>
+      </button>
+
+      <button class="hh-seg" onClick="{{ goPainel }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 9999px; border: none; cursor: pointer; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: -0.004em; color: {{ seg.painel.fg }}; background: {{ seg.painel.bg }}; box-shadow: {{ seg.painel.ring }};">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+          <circle cx="12" cy="12" r="3.1"></circle>
+          <ellipse cx="12" cy="12" rx="9.6" ry="4.4" transform="rotate(-24 12 12)"></ellipse>
+        </svg>
+        <span>Painel</span>
+      </button>
+
+      <button class="hh-seg" onClick="{{ goCatalogo }}" style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 9999px; border: none; cursor: pointer; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: -0.004em; color: {{ seg.catalogo.fg }}; background: {{ seg.catalogo.bg }}; box-shadow: {{ seg.catalogo.ring }};">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+          <rect x="3.4" y="3.4" width="7" height="7" rx="2"></rect><rect x="13.6" y="3.4" width="7" height="7" rx="2"></rect>
+          <rect x="3.4" y="13.6" width="7" height="7" rx="2"></rect><rect x="13.6" y="13.6" width="7" height="7" rx="2"></rect>
+        </svg>
+        <span>Catálogo</span>
+        <span class="hh-num" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 7px; border-radius: 9999px; background: rgba(255,236,224,0.07); color: #b5a69b;">41</span>
+      </button>
+
+      <button class="hh-seg" style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 9999px; border: none; cursor: pointer; font-family: 'Hanken Grotesk', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: -0.004em; color: {{ seg.agentes.fg }}; background: {{ seg.agentes.bg }}; box-shadow: {{ seg.agentes.ring }};">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+          <circle cx="12" cy="5.2" r="2.6"></circle><circle cx="5.4" cy="17.4" r="2.6"></circle><circle cx="18.6" cy="17.4" r="2.6"></circle>
+          <path d="M10.7 7.5L6.7 15.1M13.3 7.5l4 7.6M8 17.4h8"></path>
+        </svg>
+        <span>Agentes</span>
+        <span class="hh-num" style="font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 7px; border-radius: 9999px; background: rgba(255,236,224,0.07); color: #b5a69b;">3</span>
+      </button>
+    </nav>
+
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 9999px; background: rgba(24,17,16,0.75); border: 1px solid rgba(255,236,224,0.09); font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #b5a69b;">
+        <span class="hh-live" style="width: 7px; height: 7px; border-radius: 50%; background: {{accent}}; box-shadow: 0 0 10px {{accent}};"></span>
+        <span>Base local</span>
+      </div>
+      <button class="hh-ghost" style="width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; background: rgba(24,17,16,0.75); border: 1px solid rgba(255,236,224,0.09); color: #b5a69b; cursor: pointer;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 15.2V3.4M12 3.4L8.2 7.2M12 3.4l3.8 3.8"></path>
+          <path d="M3.6 15v4.2a1.9 1.9 0 001.9 1.9h13a1.9 1.9 0 001.9-1.9V15"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══ PAINEL · ÓRBITA ═════════════════════════════════════════ -->
+  <sc-if value="{{ isPainel }}" hint-placeholder-val="{{ true }}">
+  <main style="flex: 1; padding: 30px 34px; display: flex; flex-direction: column; gap: 20px; min-height: 0;">
+
+    <div style="display: flex; flex-direction: column; gap: 9px;">
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: {{accent}};">Órbita operacional</span>
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 34px; font-weight: 800; letter-spacing: -0.032em; line-height: 1.1;">A tríade em órbita, as ofertas em constelação.</h1>
+      <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #b5a69b; max-width: 68ch; text-wrap: pretty;">O Caçador ocupa o núcleo e sustenta a varredura. Cada ponto ao redor é um lead confirmado da sua última caçada, com a cor marcando o tier.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 316px; gap: 16px; flex: 1; min-height: 0;">
+
+      <!-- Palco da órbita -->
+      <section style="position: relative; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,236,224,0.09); background: radial-gradient(circle at 50% 48%, rgba(224,112,60,0.13), transparent 62%), linear-gradient(180deg, #0b0807, #060403); box-shadow: 0 24px 64px rgba(0,0,0,0.5);">
+
+        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, transparent 50%, rgba(6,4,3,0.74) 100%); pointer-events: none; z-index: 3;"></div>
+
+        <!-- Anéis de telemetria -->
+        <div style="position: absolute; left: 50%; top: 50%; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%; border: 1px solid rgba(224,112,60,0.16); transform: rotateX(74deg);"></div>
+        <div style="position: absolute; left: 50%; top: 50%; width: 424px; height: 424px; margin: -212px 0 0 -212px; border-radius: 50%; border: 1px solid rgba(185,139,106,0.11); transform: rotateX(74deg) rotate(18deg);"></div>
+        <div style="position: absolute; left: 50%; top: 50%; width: 560px; height: 560px; margin: -280px 0 0 -280px; border-radius: 50%; border: 1px dashed rgba(185,139,106,0.07); transform: rotateX(76deg);"></div>
+
+        <!-- Núcleo -->
+        <div style="position: absolute; left: 50%; top: 50%; width: 108px; height: 108px; margin: -54px 0 0 -54px; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #ffb184, {{accent}} 46%, #7d3316 100%); box-shadow: 0 0 90px 26px {{ accentGlow }}, inset -8px -12px 26px rgba(60,18,4,0.6); z-index: 2;"></div>
+        <div style="position: absolute; left: 50%; top: 50%; width: 168px; height: 168px; margin: -84px 0 0 -84px; border-radius: 50%; border: 1px solid rgba(255,138,74,0.16); z-index: 1;"></div>
+
+        <!-- Constelação de ofertas -->
+        <sc-for list="{{ dots }}" as="d" hint-placeholder-count="12">
+          <div style="position: absolute; left: {{d.x}}%; top: {{d.y}}%; width: {{d.size}}px; height: {{d.size}}px; margin: -{{d.half}}px 0 0 -{{d.half}}px; border-radius: 50%; background: {{d.color}}; box-shadow: 0 0 {{d.blur}}px {{d.color}}; opacity: {{d.op}}; z-index: 2;"></div>
+        </sc-for>
+
+        <!-- Chrome do palco -->
+        <div style="position: absolute; inset: 0; padding: 17px; display: flex; flex-direction: column; justify-content: space-between; z-index: 4; pointer-events: none;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 9px; padding: 7px 13px; border-radius: 9999px; background: rgba(8,6,5,0.7); border: 1px solid rgba(255,236,224,0.09); backdrop-filter: blur(10px); font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: #b5a69b;">
+              <span class="hh-live" style="width: 7px; height: 7px; border-radius: 50%; background: {{accent}}; box-shadow: 0 0 9px {{accent}};"></span>
+              <span>Órbita ativa · <span class="hh-num" style="color: #f2ebe5;">44</span> nós</span>
+            </div>
+
+            <div style="display: grid; gap: 7px; padding: 12px 14px; border-radius: 13px; background: rgba(8,6,5,0.66); border: 1px solid rgba(255,236,224,0.09); backdrop-filter: blur(12px);">
+              <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4">
+                <div style="display: flex; align-items: center; gap: 9px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #b5a69b; white-space: nowrap;">
+                  <span style="width: {{l.dot}}px; height: {{l.dot}}px; border-radius: 50%; background: {{l.color}}; box-shadow: 0 0 8px {{l.color}}; flex: none;"></span>
+                  <span>{{ l.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 14px;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.06em; color: #7d6c62;">Arraste para girar · clique em um nó para inspecionar</span>
+            <div style="display: flex; gap: 7px; pointer-events: auto;">
+              <button class="hh-ghost" style="padding: 8px 14px; border-radius: 9999px; background: rgba(8,6,5,0.72); border: 1px solid rgba(255,236,224,0.09); color: #b5a69b; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; cursor: pointer;">Recentralizar</button>
+              <button class="hh-ghost" style="padding: 8px 14px; border-radius: 9999px; background: rgba(8,6,5,0.72); border: 1px solid rgba(255,236,224,0.09); color: #b5a69b; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.11em; text-transform: uppercase; cursor: pointer;">Pausar rotação</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feed de operação -->
+      <aside style="display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,236,224,0.09); background: linear-gradient(180deg, rgba(26,18,15,0.6), rgba(6,4,3,0.75)); box-shadow: 0 24px 64px rgba(0,0,0,0.5);">
+        <div style="padding: 15px 16px; border-bottom: 1px solid rgba(255,236,224,0.09); display: flex; flex-direction: column; gap: 5px;">
+          <div style="display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.13em; text-transform: uppercase; color: #f2ebe5;">
+            <span class="hh-live" style="width: 7px; height: 7px; border-radius: 50%; background: {{accent}}; box-shadow: 0 0 9px {{accent}};"></span>
+            <span>Feed de operação</span>
+          </div>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #7d6c62; line-height: 1.5;">Top da base atual · clique para abrir o raio-x</span>
+        </div>
+
+        <div style="flex: 1; padding: 8px; display: grid; gap: 6px; align-content: start;">
+          <sc-for list="{{ feed }}" as="f" hint-placeholder-count="6">
+            <div class="hh-row" onClick="{{ f.open }}" style="display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 9px; border: 1px solid transparent; cursor: pointer;">
+              <span style="width: 23px; height: 23px; border-radius: 50%; display: grid; place-items: center; border: 1px solid {{f.color}}; color: {{f.color}}; font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600; box-shadow: {{ f.ring }};">{{ f.tier }}</span>
+              <span style="min-width: 0; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 11.5px; font-weight: 600; color: #f2ebe5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ f.title }}</span>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: #7d6c62; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ f.meta }}</span>
+              </span>
+              <span class="hh-num" style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; color: #b5a69b;">{{ f.score }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Métricas -->
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; flex: none;">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="padding: 18px 20px; border-radius: 20px; border: 1px solid rgba(255,236,224,0.09); background: rgba(24,17,16,0.75); display: flex; flex-direction: column; gap: 5px;">
+          <span class="hh-num" style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; color: {{s.color}};">{{ s.n }}</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.13em; text-transform: uppercase; color: #7d6c62;">{{ s.l }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </main>
+  </sc-if>
+
+  <!-- ══ CATÁLOGO · OFERTAS CAÇADAS ══════════════════════════════ -->
+  <sc-if value="{{ isCatalogo }}" hint-placeholder-val="{{ true }}">
+  <main style="flex: 1; padding: 30px 34px; display: flex; flex-direction: column; gap: 18px; min-height: 0;">
+
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: {{accent}};">Catálogo tático</span>
+        <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 34px; font-weight: 800; letter-spacing: -0.032em; line-height: 1.1;">Todas as ofertas mineradas, com a evidência junto.</h1>
+      </div>
+      <div style="display: flex; gap: 3px; padding: 4px; border-radius: 9999px; background: rgba(255,236,224,0.045); border: 1px solid rgba(255,236,224,0.09); flex: none;">
+        <button class="hh-seg" style="padding: 8px 17px; border-radius: 9999px; border: none; cursor: pointer; font-size: 12.5px; font-weight: 600; color: #f2ebe5; background: {{ accentSoft }};">Grade</button>
+        <button class="hh-seg" style="padding: 8px 17px; border-radius: 9999px; border: none; cursor: pointer; font-size: 12.5px; font-weight: 600; color: #7d6c62; background: transparent;">Tabela tática</button>
+      </div>
+    </div>
+
+    <!-- Barra de ferramentas unificada -->
+    <div style="display: flex; align-items: center; gap: 12px; padding: 9px 10px 9px 16px; border-radius: 9999px; background: rgba(24,17,16,0.75); border: 1px solid rgba(255,236,224,0.09);">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7d6c62" stroke-width="1.8" stroke-linecap="round" style="flex: none;">
+        <circle cx="11" cy="11" r="6.6"></circle><path d="M20 20l-4.2-4.2"></path>
+      </svg>
+      <span style="flex: 1; font-size: 14px; color: #7d6c62;">Buscar por título, domínio, nicho ou gateway</span>
+
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="5">
+          <button class="hh-seg" onClick="{{ t.pick }}" style="display: flex; align-items: center; gap: 7px; padding: 7px 13px; border-radius: 9999px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; color: {{t.fg}}; background: {{t.bg}}; border: 1px solid {{t.bd}};">
+            <sc-if value="{{ t.dotOn }}" hint-placeholder-val="{{ true }}">
+              <span style="width: 7px; height: 7px; border-radius: 50%; background: {{t.dot}}; box-shadow: 0 0 7px {{t.dot}};"></span>
+            </sc-if>
+            <span>{{ t.label }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Grade de ofertas -->
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-content: start;">
+      <sc-for list="{{ cards }}" as="c" hint-placeholder-count="8">
+        <article class="hh-card" onClick="{{ c.open }}" style="border-radius: 20px; overflow: hidden; cursor: pointer; background: rgba(24,17,16,0.75); border: 1px solid rgba(255,236,224,0.09); display: flex; flex-direction: column;">
+
+          <div style="position: relative; height: 156px; background: {{ c.shot }}; overflow: hidden;">
+            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(8,6,5,0.9));"></div>
+
+            <span style="position: absolute; top: 11px; left: 11px; z-index: 2; padding: 4px 10px; border-radius: 9999px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: {{c.tierFg}}; background: {{c.tierBg}}; box-shadow: {{ c.tierGlow }}; backdrop-filter: blur(8px);">{{ c.tier }}</span>
+
+            <div style="position: absolute; top: 11px; right: 11px; z-index: 2; display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
+              <sc-for list="{{ c.badges }}" as="b" hint-placeholder-count="1">
+                <span style="padding: 3px 8px; border-radius: 9999px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.09em; text-transform: uppercase; background: rgba(8,6,5,0.76); border: 1px solid {{b.bd}}; color: {{b.fg}}; backdrop-filter: blur(8px);">{{ b.t }}</span>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="padding: 15px 16px 17px; display: flex; flex-direction: column; flex: 1; gap: 6px;">
+            <h3 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 15px; font-weight: 700; line-height: 1.34; letter-spacing: -0.012em;">{{ c.title }}</h3>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #7d6c62; word-break: break-all;">{{ c.dom }}</span>
+
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: auto; padding-top: 13px; border-top: 1px solid rgba(255,236,224,0.09);">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #b5a69b;">{{ c.nicho }}</span>
+              <span class="hh-num" style="margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: {{accent}}; background: {{ accentSoft }}; border: 1px solid {{ accentLine }}; padding: 3px 10px; border-radius: 9999px;">{{ c.score }}</span>
+            </div>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+  </main>
+  </sc-if>
+
+  <!-- ══ RAIO-X ══════════════════════════════════════════════════ -->
+  <sc-if value="{{ xrayOn }}" hint-placeholder-val="{{ true }}">
+  <div onClick="{{ closeXray }}" style="position: absolute; inset: 0; z-index: 40; background: rgba(4,3,2,0.68); backdrop-filter: blur(4px);"></div>
+  <aside style="position: absolute; top: 0; right: 0; bottom: 0; z-index: 50; width: 520px; display: flex; flex-direction: column; background: linear-gradient(180deg, #140e0c, #0a0706); border-left: 1px solid rgba(255,236,224,0.18); box-shadow: -40px 0 80px rgba(0,0,0,0.6);">
+
+    <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,236,224,0.09); display: flex; align-items: flex-start; gap: 16px;">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 7px;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: {{accent}};">Raio-x da oferta</span>
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -0.022em; line-height: 1.24;">{{ xray.title }}</h2>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #7d6c62; word-break: break-all;">{{ xray.dom }}</span>
+      </div>
+      <button class="hh-ghost" onClick="{{ closeXray }}" style="width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 10px; background: rgba(24,17,16,0.75); border: 1px solid rgba(255,236,224,0.09); color: #b5a69b; cursor: pointer;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+    </div>
+
+    <div style="flex: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 18px;">
+      <div style="height: 188px; border-radius: 13px; border: 1px solid rgba(255,236,224,0.09); background: {{ xray.shot }}; position: relative; overflow: hidden;">
+        <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 46%, rgba(8,6,5,0.86));"></div>
+        <span style="position: absolute; left: 13px; bottom: 12px; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #b5a69b;">Captura real · urlscan.io</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+        <sc-for list="{{ xray.cells }}" as="cell" hint-placeholder-count="4">
+          <div style="padding: 13px 14px; border-radius: 9px; background: rgba(38,27,24,0.72); border: 1px solid rgba(255,236,224,0.09); display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d6c62;">{{ cell.k }}</span>
+            <span class="hh-num" style="font-size: 14.5px; font-weight: 700; color: {{cell.color}};">{{ cell.v }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 9px;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d6c62;">Sinais de validação</span>
+        <div style="display: flex; gap: 7px; flex-wrap: wrap;">
+          <sc-for list="{{ xray.signals }}" as="sg" hint-placeholder-count="3">
+            <span style="display: flex; align-items: center; gap: 7px; padding: 7px 13px; border-radius: 9999px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: {{sg.fg}}; background: {{sg.bg}}; border: 1px solid {{sg.bd}};">
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: {{sg.fg}};"></span>{{ sg.t }}
+            </span>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding: 18px 24px 22px; border-top: 1px solid rgba(255,236,224,0.09); display: flex; gap: 10px;">
+      <button style="flex: 1; padding: 13px; border-radius: 9999px; border: none; cursor: pointer; font-family: 'Hanken Grotesk', sans-serif; font-size: 13.5px; font-weight: 700; color: #fff; background: linear-gradient(135deg, #a34a22, {{accent}} 55%, #ff8a4a); box-shadow: 0 0 24px rgba(224,112,60,0.28);">Abrir a página de venda</button>
+      <button class="hh-ghost" style="padding: 13px 20px; border-radius: 9999px; background: rgba(24,17,16,0.75); border: 1px solid rgba(255,236,224,0.09); color: #b5a69b; font-size: 13px; font-weight: 600; cursor: pointer;">Ad Library</button>
+    </div>
+  </aside>
+  </sc-if>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#e0703c","options":["#e0703c","#f59e0b","#c8402a","#b98b6a"]},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'painel', xray: null, tier: '' };
+  }
+
+  renderVals() {
+    var self = this;
+    var accent = this.props.accent || '#e0703c';
+    var TIER = { S: '#ff8a4a', A: '#f59e0b', B: '#e0703c', C: '#b98b6a' };
+
+    function segStyle(id) {
+      var on = self.state.tab === id;
+      return {
+        fg: on ? '#f2ebe5' : '#7d6c62',
+        bg: on ? accent + '2b' : 'transparent',
+        ring: on ? 'inset 0 0 0 1px ' + accent + '59' : 'none'
+      };
+    }
+
+    // Ofertas reais da base do Caçador, uma faixa de tier por par
+    var base = [
+      { tier: 'S', title: 'Desafio Jejum 5 em 7 - Dr. Renan Botelho', dom: 'desafiojejum57.com.br', nicho: 'Emagrecimento', score: 11, gw: 'Hotmart', badges: ['sinal duplo', '4x'] },
+      { tier: 'S', title: 'Ansiedade Sob Controle | Método com 95% de eficácia', dom: 'ansiedadesobcontrole.com', nicho: 'Saúde e bem-estar', score: 9, gw: 'Kiwify', badges: ['ads'] },
+      { tier: 'A', title: 'Lucre com a Shopee — Do zero à primeira venda', dom: 'lucrecomashopee.com.br', nicho: 'Renda extra', score: 8, gw: 'Kirvano', badges: ['3x'] },
+      { tier: 'A', title: 'Protocolo Manchas Sob Controle', dom: 'protocolomanchas.com.br', nicho: 'Beleza e estética', score: 7, gw: 'Eduzz', badges: ['sinal duplo'] },
+      { tier: 'B', title: 'Fórmula Mentalidade Vencedora', dom: 'formulamentalidade.com.br', nicho: 'Desenvolvimento pessoal', score: 5, gw: 'Monetizze', badges: [] },
+      { tier: 'B', title: 'Programa VAI — Vou Aprender Italiano', dom: 'programavai.com.br', nicho: 'Outros', score: 4, gw: 'Hotmart', badges: ['2x'] },
+      { tier: 'C', title: 'E-Book Grátis | Desenvolvedor(a) Full-Stack', dom: 'ebookfullstack.com.br', nicho: 'Outros', score: 2, gw: 'Cakto', badges: [] },
+      { tier: 'C', title: 'Sermão do Monte na Prática', dom: 'monte.portaldosguias.online', nicho: 'Outros', score: 1, gw: 'Kirvano', badges: [] }
+    ];
+
+    var shots = [
+      'linear-gradient(160deg, #2a1a12, #120b08 70%)',
+      'linear-gradient(160deg, #241a20, #0f0a0c 70%)',
+      'linear-gradient(160deg, #1d2018, #0b0d09 70%)',
+      'linear-gradient(160deg, #2b1d16, #110c09 70%)'
+    ];
+    var tierChip = {
+      S: { bg: 'rgba(255,138,74,0.9)', fg: '#fff', glow: '0 0 18px rgba(255,138,74,0.5)' },
+      A: { bg: 'rgba(245,158,11,0.9)', fg: '#1a0f08', glow: 'none' },
+      B: { bg: 'rgba(224,112,60,0.4)', fg: '#f2ebe5', glow: 'none' },
+      C: { bg: 'rgba(24,17,16,0.8)', fg: '#b5a69b', glow: 'none' }
+    };
+    var badgeStyle = {
+      'sinal duplo': { fg: '#d9cbbd', bd: 'rgba(217,203,189,0.42)' },
+      'ads': { fg: '#ff8a4a', bd: 'rgba(255,138,74,0.34)' }
+    };
+
+    var cards = base
+      .filter(function (o) { return !self.state.tier || o.tier === self.state.tier; })
+      .map(function (o, i) {
+        var tc = tierChip[o.tier];
+        return {
+          tier: o.tier, title: o.title, dom: o.dom, nicho: o.nicho, score: o.score,
+          shot: shots[i % shots.length],
+          tierBg: tc.bg, tierFg: tc.fg, tierGlow: tc.glow,
+          badges: o.badges.map(function (b) {
+            var s = badgeStyle[b] || { fg: '#f59e0b', bd: 'rgba(245,158,11,0.4)' };
+            return { t: b, fg: s.fg, bd: s.bd };
+          }),
+          open: function () { self.setState({ xray: o }); }
+        };
+      });
+
+    var feed = base.slice(0, 8).map(function (o) {
+      return {
+        tier: o.tier, title: o.title, score: o.score,
+        meta: o.nicho,
+        color: TIER[o.tier],
+        ring: o.tier === 'S' ? '0 0 12px rgba(255,138,74,0.45)' : 'none',
+        open: function () { self.setState({ tab: 'catalogo', xray: o }); }
+      };
+    });
+
+    // Constelação: distribuição determinística por tier
+    var dots = [];
+    var plan = [
+      { t: 'S', n: 5, r: 20, size: 13 },
+      { t: 'A', n: 9, r: 29, size: 10 },
+      { t: 'B', n: 12, r: 36, size: 7 },
+      { t: 'C', n: 12, r: 43, size: 5 }
+    ];
+    var k = 0;
+    for (var p = 0; p < plan.length; p++) {
+      var g = plan[p];
+      for (var i2 = 0; i2 < g.n; i2++) {
+        var ang = (i2 / g.n) * Math.PI * 2 + p * 0.7;
+        var rr = g.r + Math.sin(k * 12.9898) * 3.4;
+        dots.push({
+          x: (50 + Math.cos(ang) * rr * 1.32).toFixed(2),
+          y: (50 + Math.sin(ang) * rr * 0.62).toFixed(2),
+          size: g.size, half: g.size / 2,
+          blur: Math.round(g.size * 1.5),
+          color: TIER[g.t],
+          op: g.t === 'C' ? 0.62 : g.t === 'B' ? 0.82 : 1
+        });
+        k++;
+      }
+    }
+
+    var tierDef = [
+      { id: '', label: 'Todas' },
+      { id: 'S', label: 'S Elite' },
+      { id: 'A', label: 'A Top' },
+      { id: 'B', label: 'B Alta' },
+      { id: 'C', label: 'C Média' }
+    ];
+    var tiers = tierDef.map(function (t) {
+      var on = self.state.tier === t.id;
+      return {
+        label: t.label, dot: TIER[t.id] || accent, dotOn: !!t.id,
+        fg: on ? '#f2ebe5' : '#7d6c62',
+        bg: on ? accent + '2b' : 'transparent',
+        bd: on ? accent + '59' : 'rgba(255,236,224,0.09)',
+        pick: function () { self.setState({ tier: t.id }); }
+      };
+    });
+
+    var x = this.state.xray;
+    var xray = x ? {
+      title: x.title, dom: x.dom,
+      shot: 'linear-gradient(160deg, #2a1a12, #120b08 70%)',
+      cells: [
+        { k: 'score', v: String(x.score), color: accent },
+        { k: 'tier', v: x.tier, color: TIER[x.tier] },
+        { k: 'gateway', v: x.gw, color: '#f2ebe5' },
+        { k: 'nicho', v: x.nicho, color: '#f2ebe5' }
+      ],
+      signals: [
+        { t: 'gateway detectado', fg: '#ff8a4a', bg: 'rgba(224,112,60,0.12)', bd: 'rgba(255,138,74,0.34)' },
+        { t: 'rastreador ativo', fg: '#ff8a4a', bg: 'rgba(224,112,60,0.12)', bd: 'rgba(255,138,74,0.34)' },
+        { t: 'link no ar', fg: '#b5a69b', bg: 'rgba(255,236,224,0.05)', bd: 'rgba(255,236,224,0.09)' }
+      ]
+    } : null;
+
+    return {
+      accent: accent,
+      accentSoft: accent + '2b',
+      accentLine: accent + '59',
+      accentGlow: accent + '3d',
+      seg: {
+        comece: segStyle('comece'),
+        painel: segStyle('painel'),
+        catalogo: segStyle('catalogo'),
+        agentes: segStyle('agentes')
+      },
+      goPainel: function () { self.setState({ tab: 'painel', xray: null }); },
+      goCatalogo: function () { self.setState({ tab: 'catalogo', xray: null }); },
+      isPainel: this.state.tab === 'painel',
+      isCatalogo: this.state.tab === 'catalogo',
+      dots: dots,
+      feed: feed,
+      cards: cards,
+      tiers: tiers,
+      xray: xray,
+      xrayOn: !!xray,
+      closeXray: function () { self.setState({ xray: null }); },
+      legend: [
+        { label: 'S Elite · 9+', color: TIER.S, dot: 9 },
+        { label: 'A Top · 6 a 8', color: TIER.A, dot: 8 },
+        { label: 'B Alta · 3 a 5', color: TIER.B, dot: 7 },
+        { label: 'C Média · 0 a 2', color: TIER.C, dot: 6 }
+      ],
+      stats: [
+        { n: '8', l: 'S Elite · 9+', color: '#ff8a4a' },
+        { n: '28', l: 'A Top · 6 a 8', color: '#b98b6a' },
+        { n: '25', l: 'Com anúncio ativo', color: '#b98b6a' },
+        { n: '11', l: 'Nichos mapeados', color: '#f2ebe5' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

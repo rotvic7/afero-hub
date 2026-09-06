@@ -1,0 +1,6 @@
+[
+  {"input":"https://WWW.Example.com/produto/?utm_campaign=x&b=2&a=1#cta","expected":"https://example.com/produto?a=1&b=2"},
+  {"input":"https://example.com/checkout?ref=abc&product_id=42&mcr=ATZ20801259","expected":"https://example.com/checkout?mcr=ATZ20801259&product_id=42"},
+  {"input":"https://example.com/oferta?fbclid=1&coupon=VIP10","expected":"https://example.com/oferta?coupon=VIP10"},
+  {"input":"https://example.com/path/?gclid=1#pagamento","expected":"https://example.com/path"}
+]

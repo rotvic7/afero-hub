@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>afero hub · inteligência de ofertas BR e LATAM</title>
+  <meta name="description"
+    content="Caçador filtra o registro público do urlscan em 18 queries cruzadas, confirma sinal duplo e entrega ofertas validadas antes de saturarem.">
+  <meta name="theme-color" content="#21342C">
+  <meta property="og:title" content="afero hub · inteligência de ofertas BR e LATAM">
+  <meta property="og:description"
+    content="Caçador filtra urlscan em 18 queries, confirma sinal duplo e entrega ofertas antes de saturarem.">
+  <meta property="og:type" content="website">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F7F6F1' stroke-width='1.5'%3E%3Cpath d='M20.114 9.826A8.4 8.4 0 003.886 9.826M3.886 14.174A8.4 8.4 0 0020.114 14.174M12 3.1V0M12 21.4v1M2.6 12H1M21.4 12H23'/%3E%3Cpath d='M10.9 14.898V13.2h2.2v1.698a3.1 3.1 0 11-2.2 0z' fill='%238A9C7B' stroke='none'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Unbounded:wght@500;600;700;800&display=swap">
+
+  <!--
+    NOTA TECNICA (nao remover): gsap e ScrollTrigger vem de ./vendor/, nunca de CDN.
+    A CSP deste site e script-src 'self' 'unsafe-inline' e qualquer script externo e bloqueado.
+    TODO(Victor): trocar os href="#" dos botoes [data-checkout] pela URL real do checkout.
+  -->
+
+  <style data-part="a">
+    /* ════════════════════════════════════════════════════════════════
+       AFERO HUB · LANDING DE VENDAS · repaginação de marca
+       Tema único, claro, com dois bookends escuros (hero + footer).
+       ════════════════════════════════════════════════════════════════ */
+    :root {
+      /* ── paleta (fechada, brandbook §3) ── */
+      --bg-0: #F7F6F1;
+      /* off-white, fundo base            */
+      --bg-1: #EFEEE6;
+      /* off-white 2, seção alternada     */
+      --ink: #21342C;
+      /* verde-tinta, texto E bookend dark */
+      --palmeira: #8A9C7B;
+      /* acento sobre fundo escuro         */
+      --alcaparra: #56603F;
+      /* texto secundário, labels, eyebrow */
+      --mamao: #2F654D;
+      /* acento de apoio, estado positivo  */
+      --floresta: #24696A;
+      /* acento sobre fundo claro, links, dado */
+      --hairline: rgba(33, 52, 44, 0.14);
+      --hairline-d: rgba(247, 246, 241, 0.16);
+      /* Instrumento de precisao: hairline carrega a hierarquia, sombra nenhuma.
+         O token fica em none para nao quebrar referencia antiga que sobre. */
+      --shadow: none;
+      --rule: 1px solid var(--hairline);
+      --meta-size: 10.5px;
+      --meta-track: 0.12em;
+      --img-bg: #21342C;
+      /* fundo neutro da moldura de screenshot, funciona em qualquer seção */
+
+      /* ── tipografia (4 famílias, papéis fixos, brandbook §4) ── */
+      --font-display: 'Unbounded', system-ui, sans-serif;
+      /* wordmark, títulos, números grandes */
+      --font-body: 'Manrope', system-ui, sans-serif;
+      /* corpo, subtítulos, descrições */
+      --font-label: 'Hanken Grotesk', system-ui, sans-serif;
+      /* nav, badges, eyebrows, labels estruturais */
+      --font-mono: 'Space Mono', 'Courier New', monospace;
+      /* IDs, dados técnicos, recorrência, hex */
+
+      /* ── raio: 3 degraus, sem desvio (brandbook §6) ── */
+      --radius-doc: 4px;
+      /* superfície de documento: linhas de dado, moldura de screenshot */
+      --radius-card: 6px;
+      /* card de aplicação: bento, arsenal, acesso, faq */
+      --radius-pill: 999px;
+      /* pílulas e badges */
+
+      /* ── espaçamento e chrome ── */
+      --sec-pad: clamp(96px, 12vw, 160px);
+      /* respiro vertical de seção */
+      --container-max: 1400px;
+      --header-h: 64px;
+
+  /* Curva de mola unica da pagina. Nada de linear nem ease-in-out. */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+      --header-h-shrink: 52px;
+    }
+
+    /* ════════════════ RESET E BASE GLOBAL ════════════════ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-0);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    ::selection { background: var(--floresta); color: var(--bg-0); }
+
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg-0); }
+    ::-webkit-scrollbar-thumb { background: var(--alcaparra); border-radius: var(--radius-pill); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--floresta); }
+
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; border: none; background: none; color: inherit; cursor: pointer; }
+
+    :focus-visible { outline: 2px solid var(--floresta); outline-offset: 2px; }
+
+    section { padding: var(--sec-pad) 0; position: relative; scroll-margin-top: var(--header-h); }
+
+    /* ════════════════ BASE · container e botões ════════════════ */
+    .container { max-width: var(--container-max); margin: 0 auto; padding: 0 24px; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      font-family: var(--font-label); font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; border-radius: var(--radius-pill);
+      transition: transform 0.55s var(--ease), background 0.55s var(--ease),
+                  border-color 0.55s var(--ease), color 0.55s var(--ease),
+                  box-shadow 0.55s var(--ease);
+      white-space: nowrap; cursor: pointer;
+    }
+    .btn:active { transform: scale(0.975) translateY(1px); }
+
+    /* Seta dentro da propria bolha, encostada no padding interno do botao.
+       Ela desliza na diagonal no hover, criando tensao dentro do proprio botao. */
+    .btn-ico {
+      width: 26px; height: 26px; border-radius: var(--radius-pill);
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(247, 246, 241, 0.16);
+      margin-left: 2px; margin-right: -12px; flex: 0 0 auto;
+      transition: transform 0.55s var(--ease), background 0.55s var(--ease);
+    }
+    .btn-ico svg { width: 11px; height: 11px; display: block; }
+    .btn:hover .btn-ico { transform: translate(3px, -2px); background: rgba(247, 246, 241, 0.3); }
+    .btn-ghost .btn-ico { background: rgba(33, 52, 44, 0.09); }
+    .btn-ghost:hover .btn-ico { background: rgba(33, 52, 44, 0.16); }
+
+    .btn-primary {
+      background: var(--floresta); color: var(--bg-0); border: 1px solid var(--floresta);
+    }
+    .btn-primary:hover {
+      background: var(--mamao); border-color: var(--mamao);
+    }
+
+    .btn-ghost {
+      background: transparent; border: 1px solid var(--hairline); color: currentColor;
+    }
+    .btn-ghost:hover { border-color: currentColor; }
+
+    .btn-sm { font-size: 11px; padding: 10px 18px; }
+    .btn-lg { font-size: 13px; padding: 17px 30px; }
+
+    /* ════════════════ BASE · primitivas de instrumento ════════════════
+       Cinco primitivas cobrem o que antes eram dez familias de card. As
+       familias continuam existindo como variante fina por cima destas. */
+
+    /* Rotulo tecnico: mono, caixa alta, pequeno. Marca o que e dado. */
+    .meta {
+      font-family: var(--font-mono);
+      font-size: var(--meta-size);
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: var(--meta-track);
+      color: var(--alcaparra);
+      display: inline-block;
+    }
+
+    /* Numero: tabular sempre, para alinhar em coluna. E isso que faz a
+       pagina ler como instrumento em vez de cartaz. */
+    .figure {
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+    }
+
+    /* Regua: separa zona dentro do painel sem abrir mais uma caixa. */
+    .rule {
+      height: 1px;
+      background: var(--hairline);
+      border: 0;
+      margin: 0;
+      width: 100%;
+    }
+
+    /* Par rotulo/valor, ancorado na regua de cima. */
+    .stat-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: baseline;
+      padding: 9px 0;
+      border-top: var(--rule);
+    }
+
+    .stat-row .figure {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Superficie canonica: hairline, raio 6px, zero sombra. O hover muda
+       so a cor da borda. Nada de translateY, nada de escala. */
+    .panel {
+      background: var(--bg-0);
+      border: var(--rule);
+      border-radius: var(--radius-card);
+      transition: border-color 0.22s var(--ease);
+    }
+
+    .panel:hover {
+      border-color: var(--floresta);
+    }
+
+    /* ════════════════ BASE · cabeçalho de seção ════════════════ */
+    .sec-head { max-width: 780px; margin-bottom: 56px; }
+    .sec-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+
+    .eyebrow {
+      font-family: var(--font-label); font-weight: 600; font-size: 13px;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--alcaparra);
+      display: block; margin-bottom: 16px;
+    }
+
+    .sec-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(28px, 3.6vw, 46px); line-height: 1.1; letter-spacing: -0.025em;
+      margin-bottom: 18px;
+    }
+    .sec-title .accent { color: var(--floresta); }
+
+    .sec-sub {
+      font-family: var(--font-body); font-weight: 400; font-size: 16px; line-height: 1.7;
+      color: var(--ink); opacity: 0.75;
+    }
+    .sec-sub strong { opacity: 1; font-weight: 600; color: var(--ink); }
+
+    /* ════════════════ BASE · marca (brand, wordmark, trace, mark) ════════════════ */
+    .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; color: inherit; }
+    .brand-mark { width: 24px; height: 24px; flex-shrink: 0; color: currentColor; }
+    .brand-mark svg { width: 100%; height: 100%; display: block; }
+    .brand-mark .core { fill: var(--floresta); }
+
+    .wordmark {
+      font-family: var(--font-display); font-weight: 800; font-size: 16px;
+      letter-spacing: -0.02em; color: currentColor; white-space: nowrap;
+    }
+    .wordmark em { font-style: normal; font-weight: 500; color: var(--floresta); }
+
+    .trace { display: inline-flex; align-items: center; gap: 6px; color: var(--alcaparra); margin-top: 18px; }
+    .trace i { display: block; background: currentColor; }
+    .trace i:first-child { width: 34px; height: 1px; transform-origin: left; }
+    .trace i:last-child { width: 5px; height: 5px; border-radius: 50%; }
+
+    .mark { display: block; color: currentColor; }
+    .mark svg { width: 100%; height: 100%; display: block; }
+
+    /* ════════════════ BASE · bookend escuro (hero + footer) ════════════════ */
+    .bookend-dark {
+      --hairline: var(--hairline-d);
+      background-color: var(--ink);
+      background-image: radial-gradient(rgba(247, 246, 241, 0.025) 1px, transparent 1px);
+      background-size: 3px 3px;
+      color: var(--bg-0);
+    }
+    .bookend-dark .brand-mark .core,
+    .bookend-dark .wordmark em { fill: var(--palmeira); color: var(--palmeira); }
+
+    /* ════════════════ BASE · header (chrome, mesma família do footer) ════════════════ */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--header-h);
+      display: flex; align-items: center;
+      background: transparent;
+      color: var(--bg-0);
+      border-bottom: 1px solid transparent;
+      transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s ease,
+        border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+    }
+    .site-header:not(.is-scrolled) .wordmark em { color: var(--palmeira); }
+    .site-header:not(.is-scrolled) .brand-mark .core { fill: var(--palmeira); }
+
+    .site-header.is-scrolled {
+      height: var(--header-h-shrink);
+      background: var(--bg-0);
+      color: var(--ink);
+      border-bottom-color: var(--hairline);
+    }
+
+    .header-inner {
+      width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+
+    .header-nav { display: flex; align-items: center; gap: 26px; }
+    .header-nav a {
+      font-family: var(--font-label); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.06em; color: currentColor; text-transform: uppercase;
+      transition: opacity 0.2s ease; position: relative; padding: 4px 0; opacity: 0.82;
+    }
+    .header-nav a::after {
+      content: ''; position: absolute; left: 0; right: 100%; bottom: 0;
+      height: 1px; background: currentColor; transition: right 0.25s ease;
+    }
+    .header-nav a:hover { opacity: 1; }
+    .header-nav a:hover::after { right: 0; }
+
+    .header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .cta-short { display: none; }
+
+    /* ════════════════ SEÇÃO: HERO ════════════════ */
+    .hero {
+      min-height: 92dvh; display: flex; align-items: center;
+      padding: calc(var(--header-h) + 72px) 0 80px;
+    }
+
+    .hero-grid {
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center;
+      width: 100%;
+    }
+
+    .hero-copy { max-width: 640px; }
+
+    .hero-copy h1 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(34px, 4.6vw, 58px); line-height: 1.1; letter-spacing: -0.03em;
+      margin-bottom: 24px;
+    }
+
+    .hero-sub {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: clamp(16px, 1.6vw, 19px); line-height: 1.6;
+      color: var(--bg-0); opacity: 0.78; max-width: 500px; margin-bottom: 40px;
+    }
+
+    .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; }
+
+    .play-ico {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1px solid currentColor; opacity: 0.9;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .play-ico svg { width: 9px; height: 9px; margin-left: 1px; }
+
+    .hero-mark-wrap { display: flex; align-items: center; justify-content: center; }
+    .hero-mark-wrap .mark {
+      width: clamp(320px, 26vw, 420px); height: clamp(320px, 26vw, 420px);
+      color: var(--hairline-d); opacity: 0.5;
+    }
+    .hero-mark-wrap .mark .core { fill: var(--palmeira); }
+
+    @media (max-width: 767px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-mark-wrap { display: none; }
+    }
+
+    /* ════════════════ SEÇÃO: FAIXA DE PROVA ════════════════ */
+    .section-proof { background: var(--bg-1); padding: 96px 0; }
+
+    /* Mostrador unico. O fundo do painel e a propria cor da regua; cada
+       celula pinta o seu fundo claro por cima e o gap de 1px vira a linha.
+       Assim a regua fica matematicamente perfeita sem borda em cada filho. */
+    .proof-panel {
+      border: var(--rule);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      background: var(--hairline);
+    }
+
+    .proof-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+      background: var(--bg-1);
+      padding: 11px 18px;
+    }
+
+    .proof-src { color: var(--floresta); }
+
+    .proof-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+    }
+
+    /* O double-bezel foi achatado: a casca externa vira transparente e o
+       nucleo assume o hairline. O HTML continua igual, so a pintura mudou. */
+    .proof-cell {
+      background: var(--bg-0);
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      transition: background 0.22s var(--ease);
+    }
+
+    .proof-cell:hover { background: var(--bg-1); }
+
+    .proof-core {
+      height: 100%;
+      padding: 22px 20px 20px;
+      display: flex; flex-direction: column; gap: 9px;
+    }
+
+    /* Indice tecnico da celula. E o que faz a faixa ler como mostrador
+       numerado em vez de quatro cartoes decorativos. */
+    .proof-idx {
+      color: var(--palmeira);
+      padding-bottom: 4px;
+    }
+
+    .proof-value {
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+      font-weight: 700;
+      font-size: clamp(38px, 4.2vw, 58px);
+      line-height: 0.9;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+    }
+
+    .proof-value em { font-style: normal; color: var(--floresta); }
+
+    .proof-label {
+      font-family: var(--font-label); font-weight: 600; font-size: 11.5px;
+      letter-spacing: 0.09em; text-transform: uppercase; color: var(--alcaparra);
+    }
+
+    .proof-note {
+      font-family: var(--font-body); font-size: 13px; line-height: 1.55;
+      color: var(--ink); opacity: 0.62;
+      padding-top: 12px; border-top: 1px solid var(--hairline);
+      margin-top: auto;
+    }
+
+    @media (max-width: 767px) {
+      .proof-grid { grid-template-columns: repeat(2, 1fr); gap: 1px; }
+      .proof-core { padding: 18px 15px 16px; }
+      .proof-value { font-size: clamp(32px, 9vw, 42px); }
+      .proof-note { font-size: 12px; }
+    }
+
+    /* ════════════════ SEÇÃO: A CENTRAL (carrossel) ════════════════ */
+    .section-showcase { overflow: hidden; }
+
+    .carousel { position: relative; z-index: 1; }
+    .central-viewport { overflow: hidden; border-radius: var(--radius-card); touch-action: pan-y; }
+
+    .central-track {
+      display: flex; transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+      will-change: transform;
+    }
+    .central-track.is-dragging { transition: none; }
+
+    .central-slide { min-width: 100%; padding: 8px; }
+    .central-slide-grid { display: grid; grid-template-columns: 1fr 300px; gap: 26px; align-items: end; }
+
+    .central-device {
+      background: var(--img-bg); border: 1px solid var(--hairline);
+      border-radius: var(--radius-card); overflow: hidden;
+    }
+    .central-device-chrome {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px; background: rgba(247, 246, 241, 0.06);
+      border-bottom: 1px solid var(--hairline-d);
+    }
+    .central-device-chrome i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+    .central-device-chrome i:nth-child(1) { background: var(--mamao); }
+    .central-device-chrome i:nth-child(2) { background: var(--palmeira); }
+    .central-device-chrome i:nth-child(3) { background: var(--floresta); }
+    .central-device-url {
+      margin-left: 12px; flex: 1; text-align: center;
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
+      color: var(--bg-0); opacity: 0.7;
+      background: rgba(247, 246, 241, 0.06); border: 1px solid var(--hairline-d);
+      border-radius: var(--radius-doc); padding: 4px 12px; max-width: 280px;
+    }
+    /* 16:10 é a proporção nativa dos prints, então não há corte. */
+    .central-device img {
+      width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top;
+      background: var(--img-bg);
+    }
+
+    .central-phone {
+      border-radius: 30px; border: 1px solid var(--hairline);
+      background: var(--img-bg); padding: 9px; overflow: hidden;
+      transform: translateY(26px);
+    }
+    .central-phone img {
+      border-radius: 22px; width: 100%; aspect-ratio: 860 / 1800;
+      object-fit: cover; object-position: top; background: var(--img-bg);
+    }
+
+    .central-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 44px; gap: 20px; flex-wrap: wrap;
+    }
+
+    .central-meta h3 {
+      font-family: var(--font-display); font-weight: 700; font-size: 22px;
+      letter-spacing: -0.02em; margin-bottom: 4px; color: var(--ink);
+    }
+    .central-meta p { color: var(--ink); opacity: 0.7; font-size: 14px; max-width: 560px; }
+
+    .central-controls { display: flex; align-items: center; gap: 18px; }
+
+    .central-btn {
+      width: 46px; height: 46px; border-radius: var(--radius-card);
+      border: 1px solid var(--hairline); background: var(--bg-0);
+      color: var(--ink); font-size: 18px; display: grid; place-items: center;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .central-btn:hover { border-color: var(--floresta); }
+
+    .central-page {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+      letter-spacing: 0.1em; color: var(--ink); opacity: 0.7; min-width: 72px; text-align: center;
+    }
+    .central-page b { color: var(--floresta); font-weight: 600; opacity: 1; }
+
+    @media (max-width: 767px) {
+      .central-slide-grid { grid-template-columns: 1fr; }
+      .central-phone { max-width: 260px; margin: 0 auto; transform: none; }
+    }
+
+    /* ════════════════ SEÇÃO: MÓDULOS (bento) ════════════════ */
+    .mod-grid {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px;
+    }
+
+    .mod-cell {
+      background: var(--bg-0); padding: 28px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 16px;
+      border: var(--rule);
+      border-radius: var(--radius-card);
+      transition: border-color 0.22s var(--ease);
+    }
+
+    .mod-cell:hover {
+      border-color: var(--floresta);
+    }
+
+    .mod-cell.is-media:hover { border-color: var(--palmeira); }
+
+    .mod-cell.is-media {
+      position: relative; color: var(--bg-0);
+      background-color: var(--img-bg); background-size: cover; background-position: center;
+      border-radius: var(--radius-card); overflow: hidden;
+    }
+    .mod-cell.is-media::before {
+      content: ''; position: absolute; inset: 0;
+      /* Piso alto de proposito. O veu antigo comecava em 0.10 e so chegava a
+         0.88 aos 76% da altura, mas o titulo cai entre 33% e 48%, onde ele
+         valia ~0.51. Sobre screenshot claro isso reprovava em contraste. */
+      background: linear-gradient(180deg, rgba(33, 52, 44, 0.62) 0%, rgba(33, 52, 44, 0.90) 70%);
+      z-index: 0;
+    }
+    .mod-cell.is-media > * { position: relative; z-index: 1; }
+
+    .mod-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .mod-cat {
+      font-family: var(--font-label); font-weight: 600; font-size: 12px;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--alcaparra);
+    }
+    .mod-num {
+      font-family: var(--font-mono); font-weight: 500; font-size: 12px;
+      letter-spacing: 0.06em; text-transform: uppercase; color: var(--alcaparra);
+    }
+    .mod-cell.is-media .mod-cat, .mod-cell.is-media .mod-num { color: var(--palmeira); }
+
+    .mod-title {
+      font-family: var(--font-display); font-weight: 700; font-size: 19px;
+      line-height: 1.2; letter-spacing: -0.01em; color: var(--ink);
+    }
+    .mod-cell.is-media .mod-title { color: var(--bg-0); }
+
+    .mod-desc {
+      font-family: var(--font-body); font-weight: 400; font-size: 14px; line-height: 1.6;
+      color: var(--ink); opacity: 0.75; flex: 1;
+    }
+    .mod-desc b { font-weight: 700; opacity: 1; }
+    .mod-cell.is-media .mod-desc { color: var(--bg-0); opacity: 0.85; }
+
+    .mod-pill {
+      align-self: flex-start; font-family: var(--font-label); font-weight: 600;
+      font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 6px 12px; border-radius: var(--radius-pill);
+      background: rgba(36, 105, 106, 0.1); color: var(--floresta);
+    }
+    .mod-cell.is-media .mod-pill { background: rgba(247, 246, 241, 0.16); color: var(--bg-0); }
+
+    .mod-cell.cell-1 { grid-column: 1 / span 4; }
+    .mod-cell.cell-2 { grid-column: 5 / span 2; }
+    .mod-cell.cell-3 { grid-column: 1 / span 3; }
+    .mod-cell.cell-4 { grid-column: 4 / span 3; }
+    .mod-cell.cell-5 { grid-column: 1 / span 2; }
+    .mod-cell.cell-6 { grid-column: 3 / span 4; }
+
+    @media (max-width: 767px) {
+      .mod-grid { grid-template-columns: 1fr; }
+      .mod-cell.cell-1, .mod-cell.cell-2, .mod-cell.cell-3,
+      .mod-cell.cell-4, .mod-cell.cell-5, .mod-cell.cell-6 { grid-column: 1 / -1; }
+    }
+
+    /* ════════════════ HEADER: breakpoints de chrome ════════════════ */
+    @media (max-width: 1023px) {
+      .header-nav { display: none; }
+    }
+    @media (max-width: 767px) {
+      .header-right .btn span.cta-full { display: none; }
+      .header-right .btn span.cta-short { display: inline; }
+    }
+
+    /* ════════════════ ACESSIBILIDADE: movimento reduzido ════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="#topo" class="brand" aria-label="afero hub">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 20.114 9.826 A 8.4 8.4 0 0 0 3.886 9.826" />
+            <path d="M 3.886 14.174 A 8.4 8.4 0 0 0 20.114 14.174" />
+            <path d="M 12 3.1 L 12 0" stroke-width="1.14" />
+            <path d="M 12 21.4 L 12 22.4" stroke-width="1.14" />
+            <path d="M 2.6 12 L 1 12" stroke-width="1.14" />
+            <path d="M 21.4 12 L 23 12" stroke-width="1.14" />
+            <path d="M 15.524 9.042 A 4.6 4.6 0 0 0 8.476 9.042" stroke-width="1" opacity="0.55" />
+            <path d="M 15.329 7.25 A 5.8 5.8 0 0 0 8.671 7.25" stroke-width="1" opacity="0.34" />
+            <path class="core"
+              d="M 10.9 14.898 L 10.9 13.2 L 13.1 13.2 L 13.1 14.898 A 3.1 3.1 0 1 0 10.9 14.898 Z"
+              fill="var(--floresta)" stroke="none" />
+          </svg>
+        </span>
+        <span class="wordmark">afero <em>hub</em></span>
+      </a>
+
+      <nav class="header-nav" aria-label="Navegação principal">
+        <a href="#central">A Central</a>
+        <a href="#modulos">6 Módulos</a>
+        <a href="#mecanismo">O Mecanismo</a>
+        <a href="#arsenal">Acervo</a>
+        <a href="#acesso">Acesso</a>
+      </nav>
+
+      <div class="header-right">
+        <!-- Este CTA é âncora de propósito: leva à seção de acesso, onde a
+             oferta é apresentada antes do checkout. Não trocar por URL de compra. -->
+        <a class="btn btn-primary btn-sm" href="#acesso">
+          <span class="cta-full">Ativar o Caçador</span>
+          <span class="cta-short">Ativar</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="topo">
+
+    <!-- ════════════════ SEÇÃO 1: HERO ════════════════ -->
+    <section class="hero bookend-dark">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <h1 data-anim="hero">Enquanto você abre abas,<br>o Caçador já fechou a lista.</h1>
+          <p class="hero-sub" data-anim="hero">Caçador filtra urlscan em 18 queries, confirma sinal duplo e entrega
+            ofertas antes de saturarem.</p>
+          <div class="hero-ctas" data-anim="hero">
+            <!-- TODO(Victor): trocar href="#" pela URL real do checkout -->
+            <a class="btn btn-primary btn-lg" href="#" data-checkout>Ativar o Caçador<span class="btn-ico" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9L9 3M9 3H4M9 3v5"/></svg></span></a>
+            <a class="btn btn-ghost btn-lg" href="#central">
+              <span class="play-ico" aria-hidden="true">
+                <svg viewBox="0 0 10 12" fill="currentColor">
+                  <path d="M0 0 L10 6 L0 12 Z" />
+                </svg>
+              </span>
+              Ver Central ao vivo
+            </a>
+          </div>
+        </div>
+        <div class="hero-mark-wrap" aria-hidden="true">
+          <span class="mark">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 20.114 9.826 A 8.4 8.4 0 0 0 3.886 9.826" />
+              <path d="M 3.886 14.174 A 8.4 8.4 0 0 0 20.114 14.174" />
+              <path d="M 12 3.1 L 12 0" stroke-width="1.14" />
+              <path d="M 12 21.4 L 12 22.4" stroke-width="1.14" />
+              <path d="M 2.6 12 L 1 12" stroke-width="1.14" />
+              <path d="M 21.4 12 L 23 12" stroke-width="1.14" />
+              <path d="M 15.524 9.042 A 4.6 4.6 0 0 0 8.476 9.042" stroke-width="1" opacity="0.55" />
+              <path d="M 15.329 7.25 A 5.8 5.8 0 0 0 8.671 7.25" stroke-width="1" opacity="0.34" />
+              <path class="core"
+                d="M 10.9 14.898 L 10.9 13.2 L 13.1 13.2 L 13.1 14.898 A 3.1 3.1 0 1 0 10.9 14.898 Z"
+                fill="var(--palmeira)" stroke="none" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO 2: FAIXA DE PROVA ════════════════ -->
+    <section class="section-proof">
+      <div class="container">
+        <div class="proof-panel">
+          <div class="proof-head">
+            <span class="meta">Leitura por rodada</span>
+            <span class="meta proof-src">afero://cacador</span>
+          </div>
+          <div class="proof-grid">
+          <div class="proof-cell">
+            <div class="proof-core">
+              <span class="proof-idx meta">01 · alcance</span>
+              <span class="proof-value figure">18</span>
+              <span class="proof-label">queries cruzadas</span>
+              <span class="proof-note">Frentes de busca simultâneas em cada rodada.</span>
+            </div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-core">
+              <span class="proof-idx meta">02 · confirmação</span>
+              <span class="proof-value figure">2&#215;</span>
+              <span class="proof-label">sinal duplo</span>
+              <span class="proof-note">Duas evidências independentes antes de entrar no acervo.</span>
+            </div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-core">
+              <span class="proof-idx meta">03 · verificação</span>
+              <span class="proof-value figure">100%</span>
+              <span class="proof-label">links vivos</span>
+              <span class="proof-note">Toda página conferida antes de chegar até você.</span>
+            </div>
+          </div>
+          <div class="proof-cell">
+            <div class="proof-core">
+              <span class="proof-idx meta">04 · classificação</span>
+              <span class="proof-value figure">S/A/B</span>
+              <span class="proof-label">score preditivo</span>
+              <span class="proof-note">Cada oferta chega classificada por prioridade de leitura.</span>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO 3: A CENTRAL · CARROSSEL ════════════════ -->
+    <section class="section-showcase" id="central">
+      <div class="container">
+        <div class="sec-head center">
+          <span class="eyebrow">a central</span>
+          <h2 class="sec-title">Todo seu acervo. <span class="accent">Uma tela de comando.</span></h2>
+          <p class="sec-sub">O CSV entra e o catálogo monta sozinho. Arraste ou navegue pelos três módulos da Central.
+          </p>
+          <span class="trace" aria-hidden="true"><i></i><i></i></span>
+        </div>
+
+        <div class="carousel" id="carousel" tabindex="0" role="region" aria-roledescription="carrossel"
+          aria-label="Telas da Central afero hub. Use as setas do teclado para navegar.">
+          <div class="central-viewport" id="carViewport">
+            <div class="central-track" id="carTrack">
+
+              <!-- Slide 1: Catálogo Visual & Grade -->
+              <div class="central-slide" role="group" aria-label="1 de 3: Catálogo Visual de Ofertas">
+                <div class="central-slide-grid">
+                  <div class="central-device">
+                    <div class="central-device-chrome"><i></i><i></i><i></i><span
+                        class="central-device-url">afero hub · acervo</span>
+                    </div>
+                    <img src="prints/hub-grade.webp"
+                      alt="Catálogo do afero hub com 116 ofertas, cada uma com captura real da página, faixa de prioridade e checkout detectado"
+                      loading="lazy">
+                  </div>
+                  <div class="central-phone">
+                    <img src="prints/hub-mobile-grade.webp" alt="Catálogo de ofertas do afero hub no celular"
+                      loading="lazy">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 2: Terminal & Console de Caçada -->
+              <div class="central-slide" role="group" aria-label="2 de 3: Console de Comando e Filtros Rápidos">
+                <div class="central-slide-grid">
+                  <div class="central-device">
+                    <div class="central-device-chrome"><i></i><i></i><i></i><span
+                        class="central-device-url">afero hub · acervo</span>
+                    </div>
+                    <img src="prints/hub-terminal.webp"
+                      alt="Console de comando do afero hub com filtros por digitação e resumo da rodada"
+                      loading="lazy">
+                  </div>
+                  <div class="central-phone">
+                    <img src="prints/hub-mobile.webp" alt="Central afero hub no celular" loading="lazy">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 3: Raio-X de Pontuação -->
+              <div class="central-slide" role="group" aria-label="3 de 3: Auditoria de Nota e Sinal Duplo">
+                <div class="central-slide-grid">
+                  <div class="central-device">
+                    <div class="central-device-chrome"><i></i><i></i><i></i><span
+                        class="central-device-url">afero hub · acervo</span>
+                    </div>
+                    <img src="prints/hub-raiox.webp"
+                      alt="Raio-X da nota de uma oferta, com a decomposição do score e a captura da página ao lado"
+                      loading="lazy">
+                  </div>
+                  <div class="central-phone">
+                    <img src="prints/hub-mobile.webp" alt="Raio-X da nota no celular" loading="lazy">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="central-footer">
+            <div class="central-meta" aria-live="polite">
+              <h3 id="slideTitle">Catálogo Visual de Ofertas</h3>
+              <p id="slideDesc">Cada oferta organizada com print real da página, faixa de prioridade e checkout
+                detectado.</p>
+            </div>
+            <div class="central-controls">
+              <button class="central-btn" id="carPrev" aria-label="Slide anterior">&#8592;</button>
+              <span class="central-page"><b id="carCur">01</b> / 03</span>
+              <button class="central-btn" id="carNext" aria-label="Próximo slide">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO 4: 6 MÓDULOS ════════════════ -->
+    <section class="section-advanced" id="modulos">
+      <div class="container">
+        <div class="sec-head center">
+          <h2 class="sec-title" id="advTitle">Inteligência de mercado para cada
+            <span class="accent">dimensão da oferta</span>
+          </h2>
+          <p class="sec-sub">Seis módulos de leitura cirúrgica. Cada tela responde uma pergunta que o registro manual
+            não consegue.</p>
+          <span class="trace" aria-hidden="true"><i></i><i></i></span>
+        </div>
+
+        <div class="mod-grid">
+
+          <article class="mod-cell is-media cell-1" style="background-image:url('prints/mod-filtros.webp')">
+            <div class="mod-top"><span class="mod-cat">Triagem</span><span class="mod-num">módulo 01</span></div>
+            <div>
+              <h3 class="mod-title">Filtros Cruzados por Origem</h3>
+              <p class="mod-desc">Separe o acervo pela origem de cada oferta e veja de imediato onde o mercado está se concentrando. O recorte muda a leitura da rodada inteira.</p>
+            </div>
+            <span class="mod-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="mod-cell cell-2">
+            <div class="mod-top"><span class="mod-cat">Auditoria</span><span class="mod-num">módulo 02</span></div>
+            <div>
+              <h3 class="mod-title">Raio-X da Nota</h3>
+              <p class="mod-desc">Toda oferta chega com nota, e a nota abre. Você enxerga o porquê de cada posição antes de decidir o que merece o seu tempo.</p>
+            </div>
+            <span class="mod-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="mod-cell cell-3">
+            <div class="mod-top"><span class="mod-cat">Operação</span><span class="mod-num">módulo 03</span></div>
+            <div>
+              <h3 class="mod-title">Console de Comando</h3>
+              <p class="mod-desc">Filtre o acervo escrevendo, sem procurar botão. A tela responde no ritmo de quem já sabe o que está procurando.</p>
+            </div>
+            <span class="mod-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="mod-cell cell-4">
+            <div class="mod-top"><span class="mod-cat">Validação</span><span class="mod-num">módulo 04</span></div>
+            <div>
+              <h3 class="mod-title">Filtro de Links Vivos</h3>
+              <p class="mod-desc">O que saiu do ar não chega até você. O acervo vem limpo, com o tempo morto já descontado da sua leitura.</p>
+            </div>
+            <span class="mod-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="mod-cell cell-5">
+            <div class="mod-top"><span class="mod-cat">Consistência</span><span class="mod-num">módulo 05</span>
+            </div>
+            <div>
+              <h3 class="mod-title">Histórico &amp; Reincidência</h3>
+              <p class="mod-desc">O acervo lembra o que já viu. Oferta que reaparece rodada após rodada conta uma história que uma captura isolada nunca contaria.</p>
+            </div>
+            <span class="mod-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="mod-cell is-media cell-6" style="background-image:url('prints/hub-terminal.webp')">
+            <div class="mod-top"><span class="mod-cat">Integração</span><span class="mod-num">módulo 06</span></div>
+            <div>
+              <h3 class="mod-title">Leitor Local Zero-Config</h3>
+              <p class="mod-desc">Abra tudo no seu próprio navegador, sem conta e sem envio. O acervo fica com você e não sai da sua máquina.</p>
+            </div>
+            <span class="mod-pill">Roda local</span>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+<!-- SEÇÃO: O MECANISMO -->
+    <section class="section-mechanism" id="mecanismo">
+      <div class="container">
+        <span class="mech-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M 20.114 9.826 A 8.4 8.4 0 0 0 3.886 9.826" />
+            <path d="M 3.886 14.174 A 8.4 8.4 0 0 0 20.114 14.174" />
+            <path d="M 12 3.1 L 12 0" stroke-width="1.14" />
+            <path d="M 12 21.4 L 12 22.4" stroke-width="1.14" />
+            <path d="M 2.6 12 L 1 12" stroke-width="1.14" />
+            <path d="M 21.4 12 L 23 12" stroke-width="1.14" />
+            <path d="M 15.524 9.042 A 4.6 4.6 0 0 0 8.476 9.042" stroke-width="1" opacity="0.55" />
+            <path d="M 15.329 7.25 A 5.8 5.8 0 0 0 8.671 7.25" stroke-width="1" opacity="0.34" />
+            <path d="M 10.9 14.898 L 10.9 13.2 L 13.1 13.2 L 13.1 14.898 A 3.1 3.1 0 1 0 10.9 14.898 Z"
+              fill="var(--floresta)" stroke="none" />
+          </svg>
+        </span>
+
+        <div class="sec-head">
+          <span class="trace" aria-hidden="true">
+            <i style="width:34px;height:1px;background:currentColor;display:block"></i>
+            <i style="width:5px;height:5px;border-radius:50%;background:currentColor;display:block"></i>
+          </span>
+          <h2 class="sec-title">A consciência do <span class="accent">Caçador.</span></h2>
+          <p class="sec-sub">O Caçador não devolve uma lista crua. Ele confirma o que está vendendo agora, descarta o
+            que morreu no caminho e te entrega só o que merece virar fila de modelagem.</p>
+        </div>
+
+        <div class="mech-list">
+          <div class="mech-row">
+            <span class="mech-num"><i>regra</i><b>1</b></span>
+            <div class="mech-content">
+              <h3>Sinal duplo é fato, não suposição</h3>
+              <p>Gateway <b>mais</b> rastreador na mesma página significa operação rodando com dinheiro em cima. Não é
+                leitura de tendência, é evidência carregada no HTML.</p>
+            </div>
+          </div>
+          <div class="mech-row">
+            <span class="mech-num"><i>regra</i><b>2</b></span>
+            <div class="mech-content">
+              <h3>Reincidência comprova escala</h3>
+              <p>Quem aparece em <b>3 caçadas ou mais</b> está bancando tráfego há semanas. Ninguém paga mídia por
+                tanto tempo em oferta que não devolve.</p>
+            </div>
+          </div>
+          <div class="mech-row">
+            <span class="mech-num"><i>regra</i><b>3</b></span>
+            <div class="mech-content">
+              <h3>Modelagem ágil</h3>
+              <p>Minere em <b>4 minutos</b> e estruture no mesmo dia. A vantagem não está em achar antes, está em
+                colocar no ar enquanto a oferta ainda não saturou.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO: ACERVO ════════════════ -->
+    <section class="section-arsenal" id="arsenal">
+      <div class="container">
+        <div class="sec-head center">
+          <span class="eyebrow">acervo</span>
+          <span class="trace" aria-hidden="true">
+            <i style="width:34px;height:1px;background:currentColor;display:block"></i>
+            <i style="width:5px;height:5px;border-radius:50%;background:currentColor;display:block"></i>
+          </span>
+          <h2 class="sec-title">Seis especialistas <span class="accent">para cobrir tudo.</span></h2>
+          <p class="sec-sub">Dois entram no seu acesso hoje: o Caçador, que é o produto, e o Copywriter, que é o
+            bônus do lote. Os outros quatro ficam à vista dentro do Hub e você libera quando a sua operação pedir.
+          </p>
+        </div>
+
+        <div class="arsenal-track">
+
+          <article class="arsenal-card">
+            <div class="arsenal-art">
+              <span class="arsenal-num">Agente 00 · Core</span>
+              <img src="fotos-agentes/agente-cacadordeofertas.webp" alt="Arte do agente Caçador de Ofertas"
+                loading="lazy">
+            </div>
+            <div class="arsenal-body">
+              <span class="arsenal-role">Pesquisa</span>
+              <h3>Caçador de Ofertas</h3>
+              <p>Varre o urlscan e devolve as ofertas concorrentes que já estão rodando tráfego agora.</p>
+              <span class="arsenal-tag">Produto principal</span>
+            </div>
+          </article>
+
+          <article class="arsenal-card">
+            <div class="arsenal-art">
+              <span class="arsenal-num">Agente 03 · Bônus</span>
+              <img src="fotos-agentes/agente-copy.webp" alt="Arte do agente Copywriter de resposta direta"
+                loading="lazy">
+            </div>
+            <div class="arsenal-body">
+              <span class="arsenal-role">Conexões</span>
+              <h3>Copywriter</h3>
+              <p>Pega a oferta que você achou e escreve a sua versão: headline, bullets e argumento de venda.</p>
+              <span class="arsenal-tag">Bônus · incluso hoje</span>
+            </div>
+          </article>
+
+          <article class="arsenal-card">
+            <div class="arsenal-art">
+              <span class="arsenal-num">Agente 02</span>
+              <img src="fotos-agentes/agente-pagina.webp" alt="Arte do agente Landing Page Builder" loading="lazy">
+            </div>
+            <div class="arsenal-body">
+              <span class="arsenal-role">Design</span>
+              <h3>Landing Page Builder</h3>
+              <p>Monta a página de vendas e o checkout, responsivos, bloco a bloco.</p>
+              <span class="arsenal-tag locked">Na Suíte</span>
+            </div>
+          </article>
+
+          <article class="arsenal-card">
+            <div class="arsenal-art">
+              <span class="arsenal-num">Agente 01</span>
+              <img src="fotos-agentes/agente-briefing.webp" alt="Arte do agente Briefing de Funil" loading="lazy">
+            </div>
+            <div class="arsenal-body">
+              <span class="arsenal-role">Estrutura</span>
+              <h3>Briefing de Funil</h3>
+              <p>Modela público, dores, faixa de preço e a escada de upsell da sua oferta.</p>
+              <span class="arsenal-tag locked">Na Suíte</span>
+            </div>
+          </article>
+
+          <article class="arsenal-card">
+            <div class="arsenal-art">
+              <span class="arsenal-num">Agente 04</span>
+              <img src="fotos-agentes/agente-entregas.webp" alt="Arte do agente de Conteúdo Completo e Entregáveis"
+                loading="lazy">
+            </div>
+            <div class="arsenal-body">
+              <span class="arsenal-role">Inteligência</span>
+              <h3>Conteúdo Completo</h3>
+              <p>Cria o que vai dentro do produto: e-book, roteiro de aula e os entregáveis.</p>
+              <span class="arsenal-tag locked">Na Suíte</span>
+            </div>
+          </article>
+
+          <article class="arsenal-card">
+            <div class="arsenal-art">
+              <span class="arsenal-num">Bônus 05</span>
+              <img src="fotos-agentes/agente-quiz.webp" alt="Arte do agente de Quiz e Qualificação de Leads"
+                loading="lazy">
+            </div>
+            <div class="arsenal-body">
+              <span class="arsenal-role">Automações</span>
+              <h3>Quiz &amp; Qualificação</h3>
+              <p>Filtra o lead antes do checkout e derruba a objeção de preço no caminho.</p>
+              <span class="arsenal-tag locked">Na Suíte</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO: VOZES ════════════════ -->
+    <!-- TODO(Victor): DEPOIMENTOS DE TESTE. Nomes, iniciais, cidades e falas são
+         fictícios, escritos apenas para validar o layout desta seção.
+         Substituir por depoimento real, com nome e função verificados, ANTES de
+         qualquer deploy. Não subir esta seção como está. -->
+    <section class="section-voices" id="vozes">
+      <div class="container">
+        <div class="sec-head center">
+          <span class="trace" aria-hidden="true">
+            <i style="width:34px;height:1px;background:currentColor;display:block"></i>
+            <i style="width:5px;height:5px;border-radius:50%;background:currentColor;display:block"></i>
+          </span>
+          <h2 class="sec-title">Quem já roda <span class="accent">a lista da semana.</span></h2>
+          <p class="sec-sub">Quatro pessoas que trocaram a garimpagem manual de sábado pela Central. Cada uma
+            entrou por um motivo diferente e ficou pelo mesmo: a lista chega pronta.</p>
+        </div>
+
+        <div class="voices-grid">
+
+          <figure class="voice-cell voice-feature">
+            <div class="voice-core">
+              <span class="voice-quote" aria-hidden="true">&#8220;</span>
+              <blockquote>Eu perdia o sábado inteiro abrindo aba de biblioteca de anúncio e terminava o dia com
+                três links salvos que não davam em nada. Agora abro a Central no domingo de manhã e a lista já
+                chega filtrada. O tempo que sobrou virou criativo.</blockquote>
+              <figcaption class="voice-who">
+                <span class="voice-mono" aria-hidden="true">ER</span>
+                <span class="voice-id">
+                  <b>Enzo Ribeiro</b>
+                  <i>23 anos · afiliado · Curitiba</i>
+                </span>
+              </figcaption>
+            </div>
+          </figure>
+
+          <div class="voice-stack">
+
+            <figure class="voice-cell">
+              <div class="voice-core">
+                <blockquote>O sinal duplo mudou meu critério. Parei de escalar oferta que estava bonita no
+                  criativo e não tinha tráfego nenhum sustentando por trás.</blockquote>
+                <figcaption class="voice-who">
+                  <span class="voice-mono" aria-hidden="true">YO</span>
+                  <span class="voice-id">
+                    <b>Yasmin Okamoto</b>
+                    <i>26 anos · gestora de tráfego · Recife</i>
+                  </span>
+                </figcaption>
+              </div>
+            </figure>
+
+            <figure class="voice-cell">
+              <div class="voice-core">
+                <blockquote>Score B pra cima virou minha regra de teste. Cortou uns 70% do que eu testava à toa
+                  no mês passado.</blockquote>
+                <figcaption class="voice-who">
+                  <span class="voice-mono" aria-hidden="true">KN</span>
+                  <span class="voice-id">
+                    <b>Kauã Nogueira</b>
+                    <i>21 anos · dropshipper · Goiânia</i>
+                  </span>
+                </figcaption>
+              </div>
+            </figure>
+
+            <figure class="voice-cell">
+              <div class="voice-core">
+                <blockquote>Achei que ia ser mais uma ferramenta pra deixar parada numa aba. Uso três vezes por
+                  semana faz dois meses.</blockquote>
+                <figcaption class="voice-who">
+                  <span class="voice-mono" aria-hidden="true">LS</span>
+                  <span class="voice-id">
+                    <b>Lívia Sartori</b>
+                    <i>24 anos · criadora de conteúdo · Florianópolis</i>
+                  </span>
+                </figcaption>
+              </div>
+            </figure>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO: ACESSO ════════════════ -->
+    <section class="section-access" id="acesso">
+      <div class="container">
+        <div class="sec-head center">
+          <span class="trace" aria-hidden="true">
+            <i style="width:34px;height:1px;background:currentColor;display:block"></i>
+            <i style="width:5px;height:5px;border-radius:50%;background:currentColor;display:block"></i>
+          </span>
+          <h2 class="sec-title">Uma única compra, <span class="accent">acesso para sempre.</span></h2>
+          <p class="sec-sub">Pagamento único. Sem mensalidade, sem limite de varreduras.</p>
+        </div>
+
+        <div class="acc-grid">
+
+          <!-- 1 · Garimpo manual (âncora de contraste, não é um plano à venda) -->
+          <div class="acc-card">
+            <div class="acc-header">
+              <div class="acc-plan">
+                <span class="acc-planname">
+                  <span class="acc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="7" />
+                      <path d="m20 20-3.5-3.5" />
+                    </svg></span>
+                  Hoje
+                </span>
+              </div>
+              <div class="acc-name">Setup Essencial</div>
+              <div class="acc-anchor">O garimpo <em>manual</em>.</div>
+            </div>
+            <div class="acc-body">
+              <p class="acc-desc">O método que você já usa: abrir aba, rolar feed, salvar print e torcer para a
+                oferta ainda estar no ar amanhã.</p>
+              <ul class="acc-list negative">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Horas por semana rolando feed e biblioteca de anúncios</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Nenhuma confirmação de que existe tráfego pago rodando</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Página que já caiu continua na sua lista</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Sem histórico: você não sabe quem já estava lá semana passada</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Decisão no achismo, com a oferta já saturada quando você entra</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 2 · A oferta (único card comprável) -->
+          <div class="acc-card featured">
+            <div class="acc-header">
+              <div class="acc-plan">
+                <span class="acc-planname">
+                  <span class="acc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <circle cx="12" cy="12" r="3.4" />
+                      <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+                    </svg></span>
+                  Lote 01
+                </span>
+                <span class="acc-badge">Acesso vitalício &amp; bônus</span>
+              </div>
+              <div class="acc-name">afero hub + Caçador</div>
+              <div class="acc-anchor">Custa menos que a <em>pizza do fim de semana</em>.</div>
+              <!-- TODO(Victor): trocar href="#" pela URL real do checkout -->
+              <a class="btn btn-primary btn-lg" href="#" data-checkout>Ativar o Caçador<span class="btn-ico" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9L9 3M9 3H4M9 3v5"/></svg></span></a>
+            </div>
+            <div class="acc-body">
+              <p class="acc-desc">Com uma diferença: a pizza acaba no domingo. <b>A primeira oferta certa que você
+                  modelar paga esse acesso muitas vezes</b>, e o Caçador continua caçando toda semana.</p>
+              <ul class="acc-list">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Caçador Python com <b>18 queries</b> no urlscan.io, janela de 7 dias, BR e LATAM</span>
+                </li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span><b>Central afero hub completa</b>: catálogo, filtros, raio-X e console</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Leitor de CSV <b>local</b>, sem upload e sem conta em servidor</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span><b>Agente Copywriter incluso de bônus</b>, vendido à parte depois do lote</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Setup guiado em 4 passos e <b>atualizações contínuas</b> do Caçador</span></li>
+              </ul>
+              <p class="acc-micro">
+                <span><b>&#10003;</b> pagamento único</span>
+                <span><b>&#10003;</b> entrega imediata por e-mail</span>
+                <span><b>&#10003;</b> sem mensalidade</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- 3 · Garantia (reversão de risco) -->
+          <div class="acc-card">
+            <div class="acc-header">
+              <div class="acc-plan">
+                <span class="acc-planname">
+                  <span class="acc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3l7 3v5c0 4.4-3 8.2-7 9.5C8 19.2 5 15.4 5 11V6l7-3z" />
+                    </svg></span>
+                  Risco zero
+                </span>
+              </div>
+              <div class="acc-name">Garantia Blindada</div>
+              <div class="acc-anchor">7 dias, <em>incondicional</em>.</div>
+            </div>
+            <div class="acc-body">
+              <div class="acc-seal" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M12 3l7 3v5c0 4.4-3 8.2-7 9.5C8 19.2 5 15.4 5 11V6l7-3z" />
+                  <path d="M9 12l2 2 4-4" />
+                </svg>
+              </div>
+              <p class="acc-desc">Rode a primeira caçada por nossa conta. <b>Se não encontrar ofertas reais validadas
+                  no ar, devolvemos 100% do valor.</b></p>
+              <ul class="acc-list">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>7 dias para instalar, disparar o <b>/cacar</b> e abrir o CSV</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Um único e-mail resolve. <b>Sem formulário, sem retenção</b></span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Reembolso integral, sem pergunta nem justificativa</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>O risco da decisão fica todo do lado de cá</span></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO: FAQ ════════════════ -->
+    <section class="section-faq" id="faq">
+      <div class="container">
+        <div class="sec-head center">
+          <span class="trace" aria-hidden="true">
+            <i style="width:34px;height:1px;background:currentColor;display:block"></i>
+            <i style="width:5px;height:5px;border-radius:50%;background:currentColor;display:block"></i>
+          </span>
+          <h2 class="sec-title">O que todo mundo pergunta <span class="accent">antes de entrar</span></h2>
+        </div>
+
+        <div class="faq-list">
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">Preciso saber programar?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Não. O Caçador dispara com <b>um comando</b>: <code>python cacador_ofertas.py</code>. Dentro dele,
+                  você digita <code>/cacar</code> e espera de 3 a 5 minutos. A Central tem o setup guiado em 4 passos
+                  com cada tela do processo.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">O que preciso ter na máquina?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Qualquer computador com <b>Python 3</b> instalado: Windows, Mac ou Linux. Não exige placa de vídeo
+                  nem máquina potente, porque o trabalho pesado é consulta de rede, não processamento local.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">Preciso pagar alguma API?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Não. O Caçador usa o <b>urlscan.io</b>, que oferece chave gratuita suficiente para as 18 queries de
+                  cada varredura. O passo a passo para gerar a sua chave em 2 minutos está no setup da Central.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">O que chega depois da compra?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Acesso imediato por e-mail à <b>Central afero hub</b>: o download do Caçador, o setup guiado, o
+                  leitor de CSV no navegador e o bônus do Agente Copywriter. Tudo liberado de uma vez, sem
+                  gotejamento.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">Quantas vezes posso rodar a caçada?<span
+                class="pm" aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p><b>Sem limite.</b> Cada varredura cobre uma janela de 7 dias, então rodar toda semana mantém o seu
+                  radar sempre com o mercado da semana corrente. O pagamento é único, sem mensalidade.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">E se não funcionar para mim?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Você tem <b>7 dias de garantia incondicional</b>. Instale, rode, abra o CSV. Se não fizer sentido
+                  para a sua operação, um e-mail resolve e o reembolso é integral.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO: FECHAMENTO ════════════════ -->
+    <section class="section-close" id="fechar">
+      <div class="container">
+        <div class="close-cell">
+          <div class="close-core">
+            <h2 class="sec-title">Respondeu <span class="accent">a sua última dúvida?</span></h2>
+            <p class="close-sub">Então o próximo passo é o mesmo de sempre: abrir a Central e deixar o Caçador
+              montar a lista enquanto você cuida do resto.</p>
+            <!-- TODO(Victor): trocar href="#" pela URL real do checkout -->
+            <a class="btn btn-primary btn-lg" href="#" data-checkout>Ativar o Caçador<span class="btn-ico" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9L9 3M9 3H4M9 3v5"/></svg></span></a>
+            <p class="close-note">Compra única · acesso permanente · o bônus do Copywriter entra junto no lote.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ════════════════ FOOTER ════════════════ -->
+  <footer class="site-footer bookend-dark">
+    <div class="container">
+      <div class="ftr-brand">
+        <a class="brand" href="#topo">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M 20.114 9.826 A 8.4 8.4 0 0 0 3.886 9.826" />
+              <path d="M 3.886 14.174 A 8.4 8.4 0 0 0 20.114 14.174" />
+              <path d="M 12 3.1 L 12 0" stroke-width="1.14" />
+              <path d="M 12 21.4 L 12 22.4" stroke-width="1.14" />
+              <path d="M 2.6 12 L 1 12" stroke-width="1.14" />
+              <path d="M 21.4 12 L 23 12" stroke-width="1.14" />
+              <path d="M 15.524 9.042 A 4.6 4.6 0 0 0 8.476 9.042" stroke-width="1" opacity="0.55" />
+              <path d="M 15.329 7.25 A 5.8 5.8 0 0 0 8.671 7.25" stroke-width="1" opacity="0.34" />
+              <path d="M 10.9 14.898 L 10.9 13.2 L 13.1 13.2 L 13.1 14.898 A 3.1 3.1 0 1 0 10.9 14.898 Z"
+                fill="var(--palmeira)" stroke="none" />
+            </svg>
+          </span>
+          <span class="wordmark">afero <em>hub</em></span>
+        </a>
+      </div>
+      <nav class="ftr-links" aria-label="Navegação do rodapé">
+        <a href="#central">A Central</a>
+        <a href="#modulos">Módulos</a>
+        <a href="#arsenal">Arsenal</a>
+        <a href="#acesso">Acesso</a>
+        <a href="#faq">FAQ</a>
+        <a href="hub-terminal.html">Já é aluno? Entrar</a>
+      </nav>
+      <p class="ftr-note">afero hub · inteligência de ofertas BR e LATAM. O Caçador lê apenas registros públicos do
+        urlscan.io e roda na sua máquina. Nenhum dado sai da sua máquina. Ferramenta de pesquisa: resultados dependem
+        do mercado e da execução.
+      </p>
+    </div>
+  </footer>
+
+  <style data-part="b">
+    /* ══════════════════════════════════════════════════════════════
+       PART-B · mecanismo, arsenal (acervo), acesso, faq, footer
+       Consome tokens e classes BASE de part-a. Não redeclara :root,
+       .container, .btn*, .sec-head, .sec-title, .sec-sub, .eyebrow,
+       .brand, .wordmark, .trace, .mark, .bookend-dark.
+       ══════════════════════════════════════════════════════════════ */
+
+    /* ── mecanismo ── */
+    .section-mechanism {
+      padding: var(--sec-pad) 0;
+    }
+
+    .mech-icon {
+      display: block;
+      width: 48px;
+      height: 48px;
+      color: var(--floresta);
+      margin-bottom: 24px;
+    }
+
+    .mech-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .mech-list {
+      margin-top: 56px;
+    }
+
+    .mech-row {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 32px;
+      padding: 40px 0;
+      border-top: 1px solid var(--hairline);
+      align-items: start;
+    }
+
+    .mech-row:last-child {
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .mech-num {
+      font-family: var(--font-mono);
+      line-height: 1;
+      color: var(--alcaparra);
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    /* O rotulo vai pequeno e o numero grande: "regra" inteiro a 48px pede
+       ~144px e a coluna tem 96px, entao a palavra vazava sobre o titulo. */
+    .mech-num i {
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    .mech-num b {
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: 'tnum' 1;
+      font-weight: 500;
+      font-size: clamp(32px, 4vw, 48px);
+    }
+
+    .mech-content h3 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin: 0 0 12px;
+    }
+
+    .mech-content p {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--ink);
+      opacity: .75;
+      margin: 0;
+    }
+
+    .mech-content p b {
+      opacity: 1;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    @media (max-width: 768px) {
+      .mech-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 28px 0;
+      }
+    }
+
+    /* ── arsenal (acervo) ── */
+    .section-arsenal {
+      padding: var(--sec-pad) 0;
+      background: var(--bg-1);
+    }
+
+    .arsenal-track {
+      display: flex;
+      gap: 20px;
+      margin-top: 48px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 4px 24px 24px;
+      margin-left: calc(-1 * max(24px, (100vw - var(--container-max)) / 2 + 24px));
+      margin-right: calc(-1 * max(24px, (100vw - var(--container-max)) / 2 + 24px));
+      padding-left: max(24px, (100vw - var(--container-max)) / 2 + 24px);
+      padding-right: max(24px, (100vw - var(--container-max)) / 2 + 24px);
+      scrollbar-width: thin;
+    }
+
+    .arsenal-card {
+      flex: 0 0 344px;
+      aspect-ratio: 3 / 4;
+      scroll-snap-align: start;
+      border-radius: var(--radius-card);
+      border: 1px solid rgba(86, 96, 63, 0.28);
+      background: var(--bg-0);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.7s var(--ease), border-color 0.7s var(--ease),
+                  border-color 0.22s var(--ease);
+    }
+
+    .arsenal-card:hover {
+      border-color: var(--floresta);
+    }
+
+    /* Deixa claro que a faixa corre para o lado, sem precisar de rotulo "arraste". */
+    .arsenal-track::-webkit-scrollbar { height: 6px; }
+    .arsenal-track::-webkit-scrollbar-thumb {
+      background: rgba(86, 96, 63, 0.3); border-radius: var(--radius-pill);
+    }
+    .arsenal-track::-webkit-scrollbar-track { background: transparent; }
+
+    .arsenal-art {
+      position: relative;
+      flex: 1 1 55%;
+      background: var(--img-bg);
+      overflow: hidden;
+    }
+
+    .arsenal-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .arsenal-num {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--bg-0);
+      background: rgba(33, 52, 44, .55);
+      padding: 4px 8px;
+      border-radius: var(--radius-doc);
+    }
+
+    .arsenal-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1 1 45%;
+    }
+
+    .arsenal-role {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--alcaparra);
+    }
+
+    .arsenal-body h3 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--ink);
+      margin: 0;
+    }
+
+    .arsenal-body p {
+      font-family: var(--font-body);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--ink);
+      opacity: .75;
+      margin: 0;
+      flex: 1;
+    }
+
+    .arsenal-tag {
+      align-self: flex-start;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--floresta);
+      background: rgba(36, 105, 106, .1);
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+    }
+
+    .arsenal-tag.locked {
+      color: var(--alcaparra);
+      background: rgba(86, 96, 63, .1);
+    }
+
+    @media (max-width: 768px) {
+      .arsenal-track {
+        gap: 14px;
+        padding: 4px 16px 20px;
+        margin-left: -16px;
+        margin-right: -16px;
+      }
+
+      /* Dois agentes por tela: o leitor ve que ha mais e arrasta para o lado. */
+      .arsenal-card {
+        flex: 0 0 calc((100vw - 46px) / 2);
+        aspect-ratio: auto;
+        min-height: 340px;
+      }
+
+      .arsenal-art { flex: 0 0 132px; }
+    }
+
+    /* ── acesso ── */
+    .section-access {
+      padding: var(--sec-pad) 0;
+    }
+
+    .acc-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+      align-items: start;
+    }
+
+    .acc-card {
+      background: var(--bg-0);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .acc-card.featured {
+      border-color: var(--floresta);
+      border-top-width: 2px;
+      border-top-color: var(--floresta);
+      padding-top: 31px;
+    }
+
+    .acc-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .acc-plan {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .acc-planname {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--alcaparra);
+    }
+
+    .acc-icon {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      color: var(--floresta);
+    }
+
+    .acc-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .acc-badge {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--bg-0);
+      background: var(--floresta);
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+    }
+
+    .acc-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--ink);
+    }
+
+    .acc-anchor {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--ink);
+      opacity: .8;
+    }
+
+    .acc-anchor em {
+      font-style: normal;
+      color: var(--floresta);
+      font-weight: 600;
+    }
+
+    .acc-header .btn {
+      margin-top: 8px;
+      align-self: flex-start;
+    }
+
+    .acc-body {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .acc-desc {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--ink);
+      opacity: .85;
+      margin: 0;
+    }
+
+    .acc-desc b {
+      opacity: 1;
+      font-weight: 700;
+    }
+
+    .acc-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .acc-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ink);
+      opacity: .85;
+    }
+
+    .acc-list li svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      color: var(--floresta);
+      margin-top: 1px;
+    }
+
+    .acc-list.negative li svg {
+      color: var(--alcaparra);
+    }
+
+    .acc-list li b {
+      opacity: 1;
+      font-weight: 700;
+    }
+
+    .acc-micro {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      font-family: var(--font-label);
+      font-size: 12px;
+      color: var(--alcaparra);
+      margin: 0;
+    }
+
+    .acc-seal {
+      width: 40px;
+      height: 40px;
+      color: var(--floresta);
+    }
+
+    .acc-seal svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .acc-grid {
+        grid-template-columns: 1fr;
+        max-width: 460px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .acc-card:nth-child(1) {
+        order: 2;
+      }
+
+      .acc-card.featured {
+        order: 1;
+        transform: none;
+      }
+
+      .acc-card:nth-child(3) {
+        order: 3;
+      }
+    }
+
+    /* ── faq ── */
+    .section-faq {
+      padding: var(--sec-pad) 0;
+    }
+
+    .faq-list {
+      margin-top: 48px;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--hairline);
+    }
+
+    .faq-q {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      padding: 22px 4px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 17px;
+      color: var(--ink);
+    }
+
+    .faq-q .pm {
+      font-family: var(--font-body);
+      font-size: 20px;
+      line-height: 1;
+      color: var(--floresta);
+      flex: 0 0 auto;
+      transition: transform .25s ease;
+    }
+
+    .faq-item.is-open .faq-q .pm {
+      transform: rotate(45deg);
+    }
+
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+    }
+
+    .faq-item.is-open .faq-a {
+      max-height: 480px;
+    }
+
+    .faq-a>div {
+      padding: 0 4px 22px;
+    }
+
+    .faq-a p {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--ink);
+      opacity: .8;
+      margin: 0;
+    }
+
+    .faq-a code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--bg-1);
+      padding: 2px 6px;
+      border-radius: var(--radius-doc);
+    }
+
+    .faq-a b {
+      opacity: 1;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    @media (max-width: 768px) {
+      .faq-q {
+        padding: 18px 4px;
+        font-size: 15px;
+      }
+    }
+
+    /* ── footer ── */
+    .site-footer {
+      padding: 56px 0;
+    }
+
+    .site-footer .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .ftr-brand {
+      display: flex;
+      align-items: center;
+    }
+
+    .ftr-brand .brand-mark {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+    }
+
+    .ftr-brand .brand-mark svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .ftr-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .ftr-links a {
+      font-family: var(--font-label);
+      font-size: 13px;
+      color: var(--bg-0);
+      opacity: .7;
+      text-decoration: none;
+    }
+
+    .ftr-links a:hover {
+      opacity: 1;
+    }
+
+    .ftr-note {
+      flex-basis: 100%;
+      font-family: var(--font-body);
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--bg-0);
+      opacity: .55;
+      max-width: 720px;
+    }
+
+    @media (max-width: 768px) {
+      .site-footer .container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .ftr-note {
+        text-align: center;
+      }
+    }
+    /* ── vozes (prova social) ─────────────────────────────────────────
+       Mesma arquitetura double-bezel da faixa de prova: casca externa em
+       palmeira translucido, nucleo claro dentro, raios concentricos. */
+    .section-voices {
+      padding: var(--sec-pad) 0;
+    }
+
+    .voices-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 20px;
+      margin-top: 56px;
+      /* stretch de proposito: sem isso o relato em destaque fica mais
+         curto que a pilha de tres e abre um vao vazio na coluna esquerda. */
+      align-items: stretch;
+    }
+
+    .voice-stack {
+      display: grid;
+      gap: 20px;
+    }
+
+    .voice-cell {
+      margin: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+    }
+
+    .voice-cell:hover .voice-core {
+      border-color: var(--floresta);
+    }
+
+    .voice-core {
+      height: 100%;
+      background: var(--bg-0);
+      border: var(--rule);
+      border-radius: var(--radius-card);
+      padding: 28px 26px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      transition: border-color 0.22s var(--ease);
+    }
+
+    .voice-cell blockquote {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.62;
+    }
+
+    /* A aspa decorativa so aparece no relato em destaque, para nao virar
+       ruido repetido quatro vezes na mesma tela. */
+    .voice-quote {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 62px;
+      line-height: 0.5;
+      color: var(--palmeira);
+      margin-bottom: -6px;
+    }
+
+    .voice-feature .voice-core {
+      padding: 34px 32px 30px;
+    }
+
+    .voice-feature blockquote {
+      font-size: clamp(17px, 1.5vw, 21px);
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+    }
+
+    .voice-who {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-top: auto;
+      padding-top: 4px;
+    }
+
+    /* Monograma no lugar de foto: nenhum rosto de banco de imagem, e cada
+       pessoa fica com uma marca propria em vez do mesmo avatar repetido. */
+    .voice-mono {
+      flex: 0 0 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--alcaparra);
+      color: var(--bg-0);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+
+    .voice-id {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .voice-id b {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+    }
+
+    .voice-id i {
+      font-style: normal;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--alcaparra);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── fechamento pos-faq ───────────────────────────────────────── */
+    .section-close {
+      padding: 0 0 var(--sec-pad);
+    }
+
+    .close-cell {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+    }
+
+    .close-core {
+      background: var(--bg-0);
+      border: var(--rule);
+      border-radius: var(--radius-card);
+      padding: clamp(48px, 6vw, 76px) 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 18px;
+    }
+
+    .close-sub {
+      max-width: 52ch;
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--alcaparra);
+      margin: 0;
+    }
+
+    .close-core .btn {
+      margin-top: 10px;
+    }
+
+    .close-note {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.04em;
+      color: var(--alcaparra);
+      margin: 4px 0 0;
+    }
+
+    @media (max-width: 860px) {
+      .voices-grid {
+        grid-template-columns: 1fr;
+        margin-top: 40px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .voice-core {
+        padding: 26px 22px 24px;
+      }
+
+      .close-core {
+        padding: 44px 22px;
+      }
+    }
+  </style>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      /* Bloqueio de clique direito e atalhos de copia/devtools.
+         Deterrente cosmetico contra copia casual, nao e protecao real:
+         qualquer pessoa com JS desabilitado ou view-source contorna isso. */
+      document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12') { e.preventDefault(); return; }
+        var ctrl = e.ctrlKey || e.metaKey;
+        if (ctrl && ['u', 'U', 's', 'S', 'c', 'C', 'a', 'A'].indexOf(e.key) !== -1) { e.preventDefault(); return; }
+        if (ctrl && e.shiftKey && ['i', 'I', 'j', 'J', 'c', 'C'].indexOf(e.key) !== -1) { e.preventDefault(); }
+      });
+
+      /* ══════════════ Carrossel: setas, teclado e arraste ══════════════ */
+      (function () {
+        var root = document.getElementById('carousel');
+        var track = document.getElementById('carTrack');
+        var viewport = document.getElementById('carViewport');
+        var cur = document.getElementById('carCur');
+        var title = document.getElementById('slideTitle');
+        var desc = document.getElementById('slideDesc');
+        if (!root || !track || !viewport) return;
+
+        var META = [
+          {
+            t: 'Catálogo Visual de Ofertas',
+            d: 'Cada oferta organizada com print real da página, faixa de prioridade e checkout detectado.'
+          },
+          {
+            t: 'Console de Comando e Filtros Rápidos',
+            d: 'Digite comandos de terminal para filtrar ofertas prioritárias, exportar ou abrir links sem tirar a mão do teclado.'
+          },
+          {
+            t: 'Auditoria de Nota e Sinal Duplo',
+            d: 'Decomposição exata do score com verificação de checkout (Hotmart, Kiwify, Cakto) e rastreador ativo (Utmify).'
+          }
+        ];
+        var TOTAL = META.length;
+        var idx = 0;
+
+        function goTo(i) {
+          idx = (i + TOTAL) % TOTAL;
+          track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+          if (cur) cur.textContent = '0' + (idx + 1);
+          if (title) title.textContent = META[idx].t;
+          if (desc) desc.textContent = META[idx].d;
+        }
+
+        var prevBtn = document.getElementById('carPrev');
+        var nextBtn = document.getElementById('carNext');
+        if (prevBtn) prevBtn.addEventListener('click', function () { goTo(idx - 1); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { goTo(idx + 1); });
+
+        /* Teclado: só quando o carrossel tem foco, para não sequestrar o scroll da página. */
+        root.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(idx - 1); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); goTo(idx + 1); }
+        });
+
+        /* Arraste por ponteiro (mouse e toque). */
+        var startX = 0, dragging = false, delta = 0;
+        viewport.addEventListener('pointerdown', function (e) {
+          dragging = true; startX = e.clientX; delta = 0;
+          track.classList.add('is-dragging');
+          viewport.setPointerCapture(e.pointerId);
+        });
+        viewport.addEventListener('pointermove', function (e) {
+          if (!dragging) return;
+          delta = e.clientX - startX;
+          track.style.transform = 'translateX(calc(-' + (idx * 100) + '% + ' + delta + 'px))';
+        });
+        function endDrag() {
+          if (!dragging) return;
+          dragging = false;
+          track.classList.remove('is-dragging');
+          if (Math.abs(delta) > 60) goTo(delta < 0 ? idx + 1 : idx - 1);
+          else goTo(idx);
+        }
+        viewport.addEventListener('pointerup', endDrag);
+        viewport.addEventListener('pointercancel', endDrag);
+        viewport.addEventListener('dragstart', function (e) { e.preventDefault(); });
+      })();
+
+      /* ══════════════ FAQ accordion ══════════════ */
+      (function () {
+        var items = document.querySelectorAll('.faq-item');
+        Array.prototype.forEach.call(items, function (item) {
+          var q = item.querySelector('.faq-q');
+          if (!q) return;
+          q.addEventListener('click', function () {
+            var open = item.classList.toggle('is-open');
+            q.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+        });
+      })();
+
+      /* ══════════════ GSAP Motion Engine ══════════════ */
+      window.addEventListener('DOMContentLoaded', function () {
+        /* Sem GSAP (vendor ausente ou CSP), a página fica 100% estática e legível:
+           nada aqui é o que torna o conteúdo visível, todo tween é .from(). */
+        if (!window.gsap || !window.ScrollTrigger) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        /* clearProps:'transform' em todo .from() que anima "y": sem isso o GSAP
+           deixa um transform inline apos a animacao, que vence qualquer transform
+           do CSS (:hover, ou o translateY(-16px) do card em destaque) e trava o
+           elemento na posicao final para sempre. */
+
+        gsap.from('[data-anim="hero"]', {
+          y: 34, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out', delay: 0.15,
+          clearProps: 'transform'
+        });
+
+        /* Traço-com-ponto cresce da esquerda quando cada cabeçalho de seção entra. */
+        Array.prototype.forEach.call(document.querySelectorAll('.sec-head'), function (head) {
+          var trace = head.querySelector('.trace');
+          if (!trace) return;
+          gsap.from(trace, {
+            scaleX: 0, transformOrigin: 'left center', duration: 0.6, ease: 'power2.out',
+            clearProps: 'transform',
+            scrollTrigger: { trigger: head, start: 'top 80%' }
+          });
+        });
+
+        gsap.from('.proof-cell', {
+          y: 40, opacity: 0, stagger: 0.08, duration: 0.7, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '.section-proof', start: 'top 82%' }
+        });
+
+        gsap.from('#carousel', {
+          y: 60, opacity: 0, duration: 1, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '#central', start: 'top 70%' }
+        });
+
+        gsap.from('#modulos .sec-title', {
+          y: 30, opacity: 0, duration: 0.8, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '#modulos', start: 'top 78%' }
+        });
+
+        gsap.from('.mod-cell', {
+          y: 50, opacity: 0, stagger: 0.08, duration: 0.75, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '#modulos', start: 'top 75%' }
+        });
+
+        gsap.from('.mech-row', {
+          y: 40, opacity: 0, stagger: 0.12, duration: 0.75, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '#mecanismo', start: 'top 72%' }
+        });
+
+        gsap.from('.arsenal-card', {
+          y: 50, opacity: 0, stagger: 0.1, duration: 0.75, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '#arsenal', start: 'top 75%' }
+        });
+
+        /* Acesso: clearProps é essencial aqui, senão o card em destaque nunca
+           reassenta no translateY(-16px) que o eleva sobre os vizinhos. */
+        gsap.from('.acc-card', {
+          y: 50, opacity: 0, stagger: 0.12, duration: 0.8, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '#acesso', start: 'top 72%' }
+        });
+
+        gsap.from('.faq-item', {
+          y: 24, opacity: 0, stagger: 0.06, duration: 0.55, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '#faq', start: 'top 80%' }
+        });
+
+        gsap.from('.voice-cell', {
+          y: 44, opacity: 0, stagger: 0.09, duration: 0.7, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '#vozes', start: 'top 76%' }
+        });
+
+        gsap.from('.close-cell', {
+          y: 36, opacity: 0, duration: 0.7, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '#fechar', start: 'top 85%' }
+        });
+
+        /* Header encolhe no scroll: ScrollTrigger, nunca listener de scroll cru. */
+        var header = document.getElementById('siteHeader');
+        if (header) {
+          ScrollTrigger.create({
+            start: 'top -30',
+            onEnter: function () { header.classList.add('is-scrolled'); },
+            onLeaveBack: function () { header.classList.remove('is-scrolled'); }
+          });
+        }
+      });
+    })();
+  </script>
+<script src="afero-checkout.js?v=1"></script>
+</body>
+
+</html>

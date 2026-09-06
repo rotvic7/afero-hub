@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Arquitetura do Hunter Hub: caçada local, upload privado de CSV e inteligência acumulada por workspace.">
+  <title>Arquitetura do Produto · Hunter Hub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-0: #080605;
+      --bg-1: #100b09;
+      --bg-2: #18100d;
+      --bg-3: #211510;
+      --glass: rgba(24, 17, 16, 0.76);
+      --hairline: rgba(255, 236, 224, 0.10);
+      --hairline-strong: rgba(255, 236, 224, 0.18);
+      --hairline-hot: rgba(255, 138, 74, 0.38);
+      --txt-0: #f4eae2;
+      --txt-1: #c7b9ae;
+      --txt-2: #88776d;
+      --ember: #e0703c;
+      --flare: #ff8a4a;
+      --amber: #f59e0b;
+      --clay: #b98b6a;
+      --rubi: #c8402a;
+      --green: #78b39c;
+      --glow: 0 0 42px rgba(224, 112, 60, 0.28);
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+      --font-brand: "Unbounded", "Bricolage Grotesque", sans-serif;
+      --font-display: "Bricolage Grotesque", "Hanken Grotesk", sans-serif;
+      --font-body: "Hanken Grotesk", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", "Courier New", monospace;
+      --maxw: 900px;
+      --radius: 20px;
+      --radius-sm: 13px;
+      --pill: 999px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--txt-0);
+      background:
+        radial-gradient(circle at 50% -14%, rgba(224, 112, 60, 0.18), transparent 34rem),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 34rem, #050403 100%);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.55;
+      background-image:
+        linear-gradient(rgba(224, 112, 60, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(224, 112, 60, 0.045) 1px, transparent 1px);
+      background-size: 58px 58px;
+      mask-image: linear-gradient(to bottom, black, transparent 78%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0.055;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.45'/%3E%3C/svg%3E");
+    }
+
+    a { color: inherit; }
+    button { font: inherit; }
+    code, pre { font-family: var(--font-mono); }
+    code {
+      color: var(--flare);
+      font-size: 0.9em;
+      overflow-wrap: anywhere;
+    }
+
+    .wrap {
+      width: min(calc(100% - 40px), var(--maxw));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 66px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--txt-2);
+    }
+
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--txt-1);
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--hairline-hot);
+      border-radius: 8px;
+      color: var(--flare);
+      background: rgba(224, 112, 60, 0.10);
+      box-shadow: var(--glow);
+      padding: 5px;
+    }
+
+    .brand-mark svg { display: block; width: 100%; height: 100%; }
+    .brand-wordmark { font-family: var(--font-brand); font-weight: 700; font-size: 13px; letter-spacing: -0.05em; text-transform: lowercase; }
+    .brand-wordmark em { color: var(--flare); font-style: normal; }
+
+    .topbar a.back {
+      padding: 7px 12px;
+      border: 1px solid var(--hairline);
+      border-radius: var(--pill);
+      color: var(--txt-2);
+      text-decoration: none;
+      transition: 180ms ease;
+    }
+    .topbar a.back:hover,
+    .topbar a.back:focus-visible {
+      color: var(--flare);
+      border-color: var(--hairline-hot);
+      background: rgba(224, 112, 60, 0.10);
+      outline: none;
+    }
+
+    .hero { margin-bottom: 46px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 18px;
+      color: var(--flare);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--flare);
+      box-shadow: 0 0 14px var(--flare);
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 780px;
+      margin-bottom: 20px;
+      font-family: var(--font-display);
+      font-size: clamp(38px, 7vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.055em;
+      line-height: 0.98;
+    }
+    h1 em {
+      color: var(--flare);
+      font-style: normal;
+    }
+    .hero-lead {
+      max-width: 680px;
+      margin-bottom: 28px;
+      color: var(--txt-1);
+      font-size: clamp(17px, 2.2vw, 20px);
+      line-height: 1.55;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .meta-chip {
+      padding: 7px 11px;
+      border: 1px solid var(--hairline);
+      border-radius: var(--pill);
+      color: var(--txt-2);
+      background: rgba(255, 236, 224, 0.035);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta-chip.hot {
+      color: var(--flare);
+      border-color: var(--hairline-hot);
+      background: rgba(224, 112, 60, 0.10);
+    }
+
+    .section {
+      position: relative;
+      margin: 22px 0;
+      padding: clamp(24px, 4vw, 38px);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      background: var(--glass);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .section::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 28px;
+      right: 28px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--hairline-hot), transparent);
+    }
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+    .section-index {
+      flex: none;
+      color: var(--ember);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    h2 {
+      margin-bottom: 9px;
+      font-family: var(--font-display);
+      font-size: clamp(24px, 4vw, 34px);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+    }
+    .section-intro {
+      max-width: 670px;
+      margin-bottom: 0;
+      color: var(--txt-1);
+      font-size: 16px;
+    }
+
+    .scope-grid,
+    .field-grid,
+    .tool-grid,
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .scope-card,
+    .field-card,
+    .tool-card,
+    .project-card {
+      padding: 17px 18px;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-sm);
+      background: rgba(8, 6, 5, 0.40);
+    }
+    .scope-card h3,
+    .field-card h3,
+    .tool-card h3,
+    .project-card h3 {
+      margin-bottom: 7px;
+      color: var(--txt-0);
+      font-family: var(--font-display);
+      font-size: 16px;
+      line-height: 1.25;
+    }
+    .scope-card p,
+    .field-card p,
+    .tool-card p,
+    .project-card p {
+      margin-bottom: 0;
+      color: var(--txt-2);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .scope-card.in { border-color: rgba(120, 179, 156, 0.30); }
+    .scope-card.in h3 { color: var(--green); }
+    .scope-card.out { border-color: rgba(255, 236, 224, 0.08); }
+    .scope-card.out h3 { color: var(--txt-2); }
+
+    .pipeline {
+      display: grid;
+      gap: 0;
+      position: relative;
+    }
+    .pipeline::before {
+      content: "";
+      position: absolute;
+      top: 23px;
+      bottom: 23px;
+      left: 18px;
+      width: 1px;
+      background: linear-gradient(var(--flare), rgba(255, 138, 74, 0.08));
+    }
+    .stage {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 15px;
+      position: relative;
+      padding: 12px 0 18px;
+    }
+    .stage:last-child { padding-bottom: 0; }
+    .stage-num {
+      display: grid;
+      place-items: center;
+      z-index: 1;
+      width: 37px;
+      height: 37px;
+      border: 1px solid var(--hairline-hot);
+      border-radius: 12px;
+      color: var(--flare);
+      background: var(--bg-2);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .stage-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .stage-title small {
+      color: var(--txt-2);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+    .stage p { margin-bottom: 0; color: var(--txt-1); font-size: 14px; }
+    .handoff {
+      display: inline-flex;
+      margin-top: 9px;
+      padding: 4px 8px;
+      border: 1px solid var(--hairline);
+      border-radius: 6px;
+      color: var(--txt-2);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+
+    .field-card strong,
+    .project-card strong,
+    .callout strong { color: var(--txt-0); }
+    .field-card .label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--flare);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+    .field-card.user .label { color: var(--amber); }
+
+    .callout {
+      margin-top: 22px;
+      padding: 15px 17px;
+      border: 1px solid var(--hairline-hot);
+      border-left: 3px solid var(--flare);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      background: rgba(224, 112, 60, 0.08);
+    }
+    .callout p { margin: 0; color: var(--txt-1); font-size: 14px; }
+
+    .export-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.9fr);
+      gap: 18px;
+      align-items: stretch;
+      min-width: 0;
+    }
+    .tree,
+    .terminal {
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-sm);
+      background: rgba(5, 4, 3, 0.78);
+    }
+    .tree-head,
+    .terminal-head {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--hairline);
+      color: var(--txt-2);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .tree pre,
+    .terminal pre {
+      margin: 0;
+      padding: 18px;
+      overflow-x: auto;
+      color: var(--txt-1);
+      font-size: 11px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .tree .folder { color: var(--flare); }
+    .tree .file { color: var(--txt-1); }
+    .tree .hint { color: var(--txt-2); }
+    .terminal + .terminal { margin-top: 12px; }
+    .terminal pre { color: #e8c6ae; }
+    .command {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--hairline);
+    }
+    .command code { color: var(--flare); font-size: 11px; white-space: nowrap; overflow-x: auto; }
+    .command code { min-width: 0; }
+    .copy-btn {
+      flex: none;
+      padding: 6px 9px;
+      border: 1px solid var(--hairline-strong);
+      border-radius: 7px;
+      color: var(--txt-1);
+      background: rgba(255, 236, 224, 0.05);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      transition: 180ms ease;
+    }
+    .copy-btn:hover,
+    .copy-btn:focus-visible {
+      border-color: var(--flare);
+      color: var(--bg-0);
+      background: var(--flare);
+      outline: none;
+    }
+
+    .tool-card { position: relative; padding-left: 48px; }
+    .tool-card::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      width: 17px;
+      height: 17px;
+      border: 1px solid var(--hairline-hot);
+      border-radius: 5px;
+      background: rgba(224, 112, 60, 0.14);
+    }
+    .tool-card:nth-child(2)::before { border-color: rgba(245, 158, 11, 0.40); background: rgba(245, 158, 11, 0.13); }
+    .tool-card:nth-child(3)::before { border-color: rgba(120, 179, 156, 0.40); background: rgba(120, 179, 156, 0.13); }
+    .tool-card:nth-child(4)::before { border-color: rgba(185, 139, 106, 0.45); background: rgba(185, 139, 106, 0.13); }
+
+    .project-card { border-color: rgba(255, 138, 74, 0.22); }
+    .project-card .value {
+      display: block;
+      margin-top: 5px;
+      color: var(--flare);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .project-note {
+      margin-top: 17px;
+      padding: 13px 15px;
+      border-radius: 10px;
+      color: var(--txt-1);
+      background: rgba(120, 179, 156, 0.08);
+      font-size: 13px;
+    }
+
+    .states {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .state {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 9px;
+      border: 1px solid var(--hairline);
+      border-radius: 7px;
+      color: var(--txt-1);
+      background: rgba(8, 6, 5, 0.38);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+    .state::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--txt-2); }
+    .state.active { border-color: var(--hairline-hot); color: var(--flare); }
+    .state.active::before { background: var(--flare); box-shadow: 0 0 9px var(--flare); }
+    .state.gate { color: var(--amber); border-color: rgba(245, 158, 11, 0.25); }
+    .state.gate::before { background: var(--amber); }
+
+    .checklist {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .checklist li {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--txt-1);
+      font-size: 14px;
+    }
+    .checklist li::before {
+      content: "✓";
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border: 1px solid rgba(120, 179, 156, 0.35);
+      border-radius: 7px;
+      color: var(--green);
+      background: rgba(120, 179, 156, 0.09);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    footer {
+      padding: 25px 0 0;
+      color: var(--txt-2);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+    footer span { color: var(--ember); }
+
+    .reveal { opacity: 0; transform: translateY(14px); animation: reveal 700ms var(--ease) forwards; }
+    .reveal:nth-of-type(2) { animation-delay: 70ms; }
+    .reveal:nth-of-type(3) { animation-delay: 120ms; }
+    @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 700px) {
+      .wrap { width: min(calc(100% - 28px), var(--maxw)); padding-top: 18px; }
+      .topbar { margin-bottom: 45px; }
+      .scope-grid, .field-grid, .tool-grid, .project-grid, .export-grid { grid-template-columns: 1fr; }
+      .section { padding: 24px 18px; border-radius: 16px; }
+      .section-head { display: block; }
+      .section-index { display: block; margin-bottom: 12px; }
+      .pipeline::before { left: 17px; }
+      .stage { grid-template-columns: 36px 1fr; gap: 12px; }
+      .stage-num { width: 35px; height: 35px; }
+      .command code { max-width: calc(100% - 70px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <nav class="topbar" aria-label="Navegação do guia">
+      <a class="brand-lockup" href="index.html">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><circle cx="16" cy="16" r="10"/><circle cx="16" cy="16" r="4.2" stroke-width="1.6" opacity="0.55"/><path d="M16 2v7M16 23v7M2 16h7M23 16h7"/></svg></span>
+        <span class="brand-wordmark">hunter <em>hub</em></span>
+      </a>
+      <a class="back" href="index.html">← voltar ao catálogo</a>
+    </nav>
+
+    <header class="hero reveal">
+      <span class="eyebrow">arquitetura do produto · v2</span>
+      <h1>A caçada é local. A <em>inteligência fica no Hub.</em></h1>
+      <p class="hero-lead">Cada membro usa a própria chave URLScan e roda o Caçador no computador. O Hunter Hub recebe o CSV, preserva o histórico privado do workspace, elimina repetição e transforma novas caçadas em decisão de mercado.</p>
+      <div class="hero-meta" aria-label="Características do processo">
+        <span class="meta-chip hot">local-first</span>
+        <span class="meta-chip">BYOK URLScan</span>
+        <span class="meta-chip">workspaces privados</span>
+        <span class="meta-chip">histórico acumulado</span>
+      </div>
+    </header>
+
+    <section class="section reveal" id="escopo">
+      <div class="section-head">
+        <div>
+          <span class="section-index">01 · fronteiras</span>
+          <h2>O que roda onde</h2>
+          <p class="section-intro">O produto separa responsabilidade e custo. O aluno controla sua própria coleta. A plataforma guarda, compara e organiza somente o que ele escolheu enviar.</p>
+        </div>
+      </div>
+      <div class="scope-grid">
+        <article class="scope-card in"><h3>Computador do membro</h3><p>O script Python usa a chave URLScan do próprio membro, executa a caçada e gera o CSV. A chave nunca sobe para o Hub.</p></article>
+        <article class="scope-card in"><h3>Hunter Hub online</h3><p>Login, upload privado, painel, recorrência, filtros, notas e passagem da oferta escolhida para o fluxo de Copy e Página.</p></article>
+        <article class="scope-card in"><h3>Supabase</h3><p>Auth, Postgres e Storage privado. As políticas de acesso garantem que cada workspace lê apenas seus próprios dados.</p></article>
+        <article class="scope-card out"><h3>Fora do MVP</h3><p>Raspagem em nuvem, chave URLScan compartilhada, Redis, fila de processamento e limite artificial de caçadas locais.</p></article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="funil">
+      <div class="section-head">
+        <div>
+          <span class="section-index">02 · fluxo de dados</span>
+          <h2>Da caçada local ao painel alimentado</h2>
+          <p class="section-intro">O Hub não disputa a chave, a máquina ou a cota do membro. Ele transforma cada CSV em memória privada e comparável.</p>
+        </div>
+      </div>
+      <div class="pipeline">
+        <article class="stage">
+          <span class="stage-num">01</span>
+          <div><div class="stage-title">Caçador Local <small>computador do membro</small></div><p>O Python consulta o URLScan com a chave do próprio usuário, aplica os filtros e salva o CSV com evidências da rodada.</p><span class="handoff">_INFOPRODUTOS_BR.csv</span></div>
+        </article>
+        <article class="stage">
+          <span class="stage-num">02</span>
+          <div><div class="stage-title">Upload privado <small>workspace</small></div><p>O membro envia o CSV. O arquivo original fica privado e recebe checksum, data, versão do motor e total de linhas importadas.</p><span class="handoff">hunt · arquivo CSV privado</span></div>
+        </article>
+        <article class="stage">
+          <span class="stage-num">03</span>
+          <div><div class="stage-title">Normalização <small>Postgres</small></div><p>URLs são canonizadas. A mesma oferta atualiza primeira e última vez vista, recorrência e sinais atuais sem apagar a leitura de cada caçada.</p><span class="handoff">offers · hunt_offers</span></div>
+        </article>
+        <article class="stage">
+          <span class="stage-num">04</span>
+          <div><div class="stage-title">Painel de inteligência <small>decisão humana</small></div><p>O usuário filtra, salva, descarta, adiciona notas e enxerga quais ofertas reaparecem em diferentes rodadas.</p><span class="handoff">status · notas · tags</span></div>
+        </article>
+        <article class="stage">
+          <span class="stage-num">05</span>
+          <div><div class="stage-title">Modelar a escolhida <small>ponte para execução</small></div><p>Quando uma oferta é escolhida, o Hub abre o fluxo de briefing, Copy e Página. A caçada continua preservada como fonte de evidência.</p><span class="handoff">projeto de modelagem</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="formulario">
+      <div class="section-head">
+        <div>
+          <span class="section-index">03 · importação</span>
+          <h2>O que o Hub registra a cada CSV</h2>
+          <p class="section-intro">A importação preserva a fonte e cria um registro auditável. O painel não depende de uma planilha aberta no computador do membro.</p>
+        </div>
+      </div>
+      <div class="field-grid">
+        <article class="field-card"><span class="label">arquivo da rodada</span><h3>Caçada</h3><p><strong>Nome do arquivo, checksum, data, quantidade de linhas, versão do Caçador e origem local.</strong></p></article>
+        <article class="field-card"><span class="label">evidência observada</span><h3>Oferta na rodada</h3><p><strong>URL, título, score, nicho, gateway, pixel, screenshot, query e links de investigação.</strong></p></article>
+        <article class="field-card user"><span class="label">decisão do workspace</span><h3>Inteligência própria</h3><p><strong>Status salvo ou descartado, notas, tags, prioridade e escolha para modelagem.</strong></p></article>
+        <article class="field-card user"><span class="label">controle de conta</span><h3>Privacidade</h3><p><strong>Todo registro pertence a um workspace. Somente membros autorizados podem ler, importar ou editar seus dados.</strong></p></article>
+      </div>
+      <div class="callout"><p><strong>Regra de importação:</strong> o arquivo é validado antes de entrar. Colunas inesperadas, fórmulas de planilha e arquivos acima do limite são rejeitados com um motivo claro.</p></div>
+    </section>
+
+    <section class="section reveal" id="exportacao">
+      <div class="section-head">
+        <div>
+          <span class="section-index">04 · dados</span>
+          <h2>Estrutura segura para contas e equipes</h2>
+          <p class="section-intro">O MVP já nasce com workspace. Isso permite uma conta individual hoje e equipe ou agência amanhã, sem migrar o acervo de caçadas.</p>
+        </div>
+      </div>
+      <div class="export-grid">
+        <div class="tree" aria-label="Estrutura da pasta exportada">
+          <div class="tree-head">fonte de verdade</div>
+          <pre><span class="folder">auth.users</span>
+└── <span class="folder">workspaces</span>
+    ├── <span class="file">workspace_members</span>
+    ├── <span class="file">hunts</span>
+    ├── <span class="file">offers</span>
+    ├── <span class="file">hunt_offers</span>
+    └── <span class="folder">storage/cacadas_csv/</span>
+        └── <span class="file">arquivo-original.csv</span></pre>
+        </div>
+        <div>
+          <div class="terminal">
+            <div class="terminal-head">RLS · dados do workspace</div>
+            <pre>Toda tabela recebe workspace_id. A política valida se a pessoa autenticada é membro daquele workspace.</pre>
+            <div class="command"><code>workspace_id → membership → acesso</code><button class="copy-btn" type="button" data-copy="workspace_id → membership → acesso">copiar</button></div>
+          </div>
+          <div class="terminal">
+            <div class="terminal-head">Storage · CSV privado</div>
+            <pre>O CSV original vai para bucket privado. O banco guarda apenas o caminho, checksum e metadados necessários para leitura.</pre>
+            <div class="command"><code>workspace/{id}/hunts/{id}.csv</code><button class="copy-btn" type="button" data-copy="workspace/{id}/hunts/{id}.csv">copiar</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout"><p><strong>Princípio de privacidade:</strong> a chave URLScan não chega ao Hunter Hub. O Hub recebe somente CSVs enviados pelo membro e aplica acesso privado por workspace.</p></div>
+    </section>
+
+    <section class="section reveal" id="arquivos">
+      <div class="section-head">
+        <div>
+          <span class="section-index">05 · contratos</span>
+          <h2>Regras que evitam vazamento e perda de histórico</h2>
+          <p class="section-intro">A camada de dados diferencia o registro atual de uma oferta da evidência observada em cada caçada.</p>
+        </div>
+      </div>
+      <div class="tool-grid">
+        <article class="tool-card"><h3><code>hunts</code></h3><p>Representa um CSV enviado e preserva origem, checksum, versão do motor, data e totais de importação.</p></article>
+        <article class="tool-card"><h3><code>offers</code></h3><p>Representa a oferta atual por URL canônica, com status, notas, tags, recorrência e score consolidado.</p></article>
+        <article class="tool-card"><h3><code>hunt_offers</code></h3><p>Guarda o que foi observado em uma oferta dentro de uma caçada específica: score, sinais, query e links de prova.</p></article>
+        <article class="tool-card"><h3><code>workspace_members</code></h3><p>Define os papéis de dono, editor e leitor. É a base para equipes compartilharem a mesma inteligência de mercado.</p></article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="projeto-atual">
+      <div class="section-head">
+        <div>
+          <span class="section-index">06 · produto</span>
+          <h2>O que sustenta a assinatura</h2>
+          <p class="section-intro">O usuário possui o script e roda quantas caçadas quiser. O valor contínuo está na memória, leitura e organização que só o Hub reúne.</p>
+        </div>
+      </div>
+      <div class="project-grid">
+        <article class="project-card"><h3>Caçador Local</h3><span class="value">Script e chave do próprio membro</span></article>
+        <article class="project-card"><h3>Hub recorrente</h3><span class="value">Acervo, análise e atualização do motor</span></article>
+        <article class="project-card"><h3>Conta individual</h3><span class="value">Workspace privado desde o primeiro CSV</span></article>
+        <article class="project-card"><h3>Equipe e agência</h3><span class="value">Papéis, acervo comum e decisão compartilhada</span></article>
+      </div>
+      <div class="project-note">O produto não cobra por caçada local. A assinatura remunera armazenamento privado, histórico acumulado, leitura comparativa, regras anti-ruído atualizadas e o fluxo que leva uma oferta escolhida para modelagem.</div>
+    </section>
+
+    <section class="section reveal" id="estados">
+      <div class="section-head">
+        <div>
+          <span class="section-index">07 · controle</span>
+          <h2>Estados de uma importação</h2>
+          <p class="section-intro">Cada CSV tem uma trilha própria. Assim, falhas ficam rastreáveis e o painel não mistura dados parcialmente importados com caçadas confirmadas.</p>
+        </div>
+      </div>
+      <div class="states" aria-label="Estados do projeto">
+        <span class="state active">arquivo-enviado</span>
+        <span class="state active">validando-colunas</span>
+        <span class="state gate">importando-em-lote</span>
+        <span class="state gate">deduplicando-url</span>
+        <span class="state">painel-atualizado</span>
+        <span class="state">revisão-humana</span>
+        <span class="state">pronto-para-modelar</span>
+      </div>
+      <div class="callout"><p><strong>Regra de integridade:</strong> a importação é atômica. Se o CSV não puder ser validado, nenhuma oferta parcial aparece no painel.</p></div>
+    </section>
+
+    <section class="section reveal" id="checklist">
+      <div class="section-head">
+        <div>
+          <span class="section-index">08 · antes de lançar</span>
+          <h2>Checklist do MVP</h2>
+          <p class="section-intro">A primeira versão já deve proteger dados de clientes e preservar uma saída segura se alguém decidir cancelar.</p>
+        </div>
+      </div>
+      <ul class="checklist">
+        <li>CSV padrão exportado pelo Caçador, sem chave URLScan ou dados sensíveis.</li>
+        <li>Autenticação, recuperação de senha e confirmação de e-mail testadas.</li>
+        <li>RLS validada com duas contas em workspaces diferentes.</li>
+        <li>CSV original privado, checksum e limite de upload configurados.</li>
+        <li>Deduplicação por URL canônica e histórico por caçada preservados.</li>
+        <li>Exportação dos dados disponível antes de qualquer cancelamento de conta.</li>
+      </ul>
+    </section>
+
+    <footer>Hunter Hub <span>·</span> arquitetura local + privada <span>·</span> 2026</footer>
+  </main>
+
+  <script>
+    (function protectShortcuts() {
+      document.addEventListener('contextmenu', function (event) { event.preventDefault(); });
+      document.addEventListener('keydown', function (event) {
+        var key = String(event.key || '').toLowerCase();
+        var blocked = key === 'f12' || (event.ctrlKey && ['u', 's', 'c', 'a'].indexOf(key) !== -1) || (event.ctrlKey && event.shiftKey && ['i', 'j', 'c'].indexOf(key) !== -1);
+        if (blocked) event.preventDefault();
+      });
+    }());
+
+    function copyText(value) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(value);
+      }
+      return new Promise(function (resolve, reject) {
+        var area = document.createElement('textarea');
+        area.value = value;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        var copied = false;
+        try { copied = document.execCommand('copy'); } catch (error) { copied = false; }
+        area.remove();
+        if (copied) resolve(); else reject(new Error('clipboard indisponível'));
+      });
+    }
+
+    document.querySelectorAll('[data-copy]').forEach(function (button) {
+      button.addEventListener('click', async function () {
+        var value = button.getAttribute('data-copy') || '';
+        try {
+          await copyText(value);
+          var original = button.textContent;
+          button.textContent = 'copiado';
+          window.setTimeout(function () { button.textContent = original; }, 1500);
+        } catch (error) {
+          button.textContent = 'indisponível';
+          window.setTimeout(function () { button.textContent = 'copiar'; }, 1500);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

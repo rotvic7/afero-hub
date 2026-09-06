@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>afero hub · descubra o que já está vendendo</title>
+  <meta name="description"
+    content="O afero hub une o garimpo invisível de ofertas escaladas a uma esteira de agentes de IA para remodelar copy, páginas e produtos em tempo recorde.">
+  <meta name="theme-color" content="#F7F6F1">
+  <meta property="og:title" content="afero hub · descubra o que já está vendendo">
+  <meta property="og:description" content="Do garimpo local no seu computador à esteira automatizada de execução.">
+  <meta property="og:type" content="website">
+
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F7F6F1' stroke-width='1.5'%3E%3Cpath d='M20.114 9.826A8.4 8.4 0 003.886 9.826M3.886 14.174A8.4 8.4 0 0020.114 14.174M12 3.1V0M12 21.4v1M2.6 12H1M21.4 12H23'/%3E%3Cpath d='M10.9 14.898V13.2h2.2v1.698a3.1 3.1 0 11-2.2 0z' fill='%238A9C7B' stroke='none'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Unbounded:wght@500;600;700;800&display=swap">
+
+  <!--
+    NOTA TECNICA (nao remover): gsap e ScrollTrigger vem de ./vendor/, nunca de CDN.
+    A CSP deste site e script-src 'self' 'unsafe-inline' e qualquer script externo e bloqueado.
+    Toda revelacao usa gsap.from(), entao sem GSAP a pagina continua legivel e completa.
+
+    NOTA DE MARCA: os 3 KPIs da hero usam Unbounded + tabular-nums, nao Space Mono.
+    Regra do CLAUDE.md (28/08): numero protagonista em Unbounded, Space Mono so em
+    dado tecnico pequeno de linha (as tags do mini-painel do card 2).
+    TODO(Victor): trocar os href="#" dos [data-checkout] pela URL real do checkout.
+  -->
+
+  <style>
+    /* ════════════════════════════════════════════════════════════════
+       AFERO HUB · LANDING ARSENAL
+       Hero clara em container suave + grade de features escura.
+       Paleta e tipografia do brandbook oficial, sem desvio.
+       ════════════════════════════════════════════════════════════════ */
+
+    :root {
+      /* ── paleta fechada (brandbook §3) ── */
+      --bg-page: #EFEEE6;
+      --bg-0: #F7F6F1;
+      --bg-1: #EFEEE6;
+      --ink: #21342C;
+      --palmeira: #8A9C7B;
+      --alcaparra: #56603F;
+      --floresta: #24696A;
+      --dark-0: #21342C;
+      --dark-1: #182620;
+
+      --hairline: rgba(33, 52, 44, 0.14);
+      --hairline-soft: rgba(33, 52, 44, 0.08);
+
+      /* ── tipografia: 4 famílias, papéis fixos (brandbook §4) ── */
+      --font-display: 'Unbounded', system-ui, sans-serif;
+      --font-body: 'Manrope', system-ui, sans-serif;
+      --font-label: 'Hanken Grotesk', system-ui, sans-serif;
+      --font-mono: 'Space Mono', 'Courier New', monospace;
+
+      /* ── raio ── */
+      --r-shell: 28px;
+      --r-card: 18px;
+      --r-sm: 6px;
+      --r-pill: 999px;
+
+      /* ── ritmo ── */
+      --sec-pad: clamp(88px, 11vw, 152px);
+      --container-max: 1400px;
+      --ease: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    /* ════════════════ RESET E BASE ════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-page);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.55;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img, svg { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; color: inherit; }
+    button { border: none; background: none; cursor: pointer; }
+    ul, ol { list-style: none; }
+
+    ::selection { background: var(--floresta); color: var(--bg-0); }
+    :focus-visible { outline: 2px solid var(--floresta); outline-offset: 3px; border-radius: 2px; }
+    .is-dark :focus-visible { outline-color: var(--palmeira); }
+
+    .container { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
+
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+    }
+
+    .skip-link {
+      position: absolute; left: -9999px; top: 8px; z-index: 999;
+      background: var(--ink); color: var(--bg-0); padding: 12px 20px;
+      border-radius: var(--r-pill); font-family: var(--font-label); font-weight: 600;
+    }
+    .skip-link:focus { left: 16px; }
+
+    /* ════════════════ PRIMITIVAS DE MARCA ════════════════ */
+    .lockup {
+      font-family: var(--font-display); font-size: 19px;
+      letter-spacing: -0.04em; line-height: 1;
+      display: inline-flex; align-items: baseline; gap: 0.16em;
+      text-transform: lowercase;
+    }
+    .lockup b { font-weight: 800; color: var(--ink); }
+    .lockup span { font-weight: 500; color: var(--floresta); }
+    .is-dark .lockup b { color: var(--bg-0); }
+    .is-dark .lockup span { color: var(--palmeira); }
+
+    /* eyebrow aprovado: traço curto + texto. Nada de pill/chip arredondado. */
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-label); font-weight: 600; font-size: 11.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--alcaparra);
+      line-height: 1.4;
+    }
+    .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--palmeira); flex: none; }
+    .is-dark .eyebrow { color: var(--palmeira); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      font-family: var(--font-label); font-weight: 600; font-size: 13px;
+      letter-spacing: 0.05em;
+      padding: 13px 24px; border-radius: var(--r-pill);
+      border: 1px solid transparent; white-space: nowrap;
+      transition: background 0.4s var(--ease), color 0.4s var(--ease),
+                  border-color 0.4s var(--ease), opacity 0.4s var(--ease);
+    }
+    .btn-solid { background: var(--ink); color: var(--bg-0); }
+    .btn-solid:hover { background: var(--floresta); }
+    .btn-quiet { color: var(--ink); opacity: 0.72; padding-inline: 10px; }
+    .btn-quiet:hover { opacity: 1; color: var(--floresta); }
+    .btn:active { opacity: 0.86; }
+    .btn .arw { transition: transform 0.4s var(--ease); }
+    .btn:hover .arw { transform: translateX(3px); }
+
+    /* ════════════════ SÍMBOLO OFICIAL ════════════════ */
+    .symbol { color: var(--ink); --symbol-core: var(--palmeira); }
+    .symbol svg { width: 100%; height: 100%; }
+
+    /* ════════════════════════════════════════════════════════════════
+       1 · HERO
+       ════════════════════════════════════════════════════════════════ */
+    .hero-wrap { padding: clamp(10px, 1.6vw, 22px); }
+
+    .hero-shell {
+      position: relative; isolation: isolate;
+      border-radius: var(--r-shell);
+      background: var(--bg-0);
+      border: 1px solid var(--hairline-soft);
+      box-shadow: 0 0 0 1px rgba(138, 156, 123, 0.08),
+                  0 40px 90px -60px rgba(33, 52, 44, 0.45),
+                  0 0 120px -40px rgba(138, 156, 123, 0.35);
+      overflow: hidden;
+    }
+
+    /* iluminação perimétrica: degradê radial em palmeira, camadas de ~4% nas bordas */
+    .hero-shell::before {
+      content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(74% 46% at 50% 0%, rgba(138, 156, 123, 0.16), transparent 72%),
+        radial-gradient(58% 44% at 0% 46%, rgba(138, 156, 123, 0.11), transparent 70%),
+        radial-gradient(58% 44% at 100% 46%, rgba(138, 156, 123, 0.11), transparent 70%),
+        radial-gradient(80% 40% at 50% 100%, rgba(36, 105, 106, 0.07), transparent 72%);
+    }
+
+    /* véu de grade fina, o mesmo papel de arquivo do brandbook */
+    .hero-shell::after {
+      content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(33, 52, 44, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(33, 52, 44, 0.035) 1px, transparent 1px);
+      background-size: 72px 72px;
+      -webkit-mask-image: radial-gradient(72% 62% at 50% 42%, #000 12%, transparent 78%);
+      mask-image: radial-gradient(72% 62% at 50% 42%, #000 12%, transparent 78%);
+    }
+
+    .hero-inner { position: relative; z-index: 2; }
+
+    /* ── navbar flutuante ── */
+    .nav-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      padding: clamp(18px, 2.4vw, 30px) clamp(20px, 3.4vw, 44px);
+    }
+    .nav-links { display: flex; align-items: center; gap: clamp(16px, 2.2vw, 34px); }
+    .nav-links a {
+      font-family: var(--font-label); font-weight: 600; font-size: 13px;
+      letter-spacing: 0.02em; color: rgba(33, 52, 44, 0.68);
+      transition: color 0.4s var(--ease);
+      position: relative; padding-block: 4px;
+    }
+    .nav-links a::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: var(--palmeira); transform: scaleX(0); transform-origin: left center;
+      transition: transform 0.4s var(--ease);
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+
+    .nav-toggle { display: none; width: 40px; height: 40px; border-radius: var(--r-sm); place-items: center; }
+    .nav-toggle span { display: block; width: 18px; height: 1.5px; background: var(--ink); position: relative; }
+    .nav-toggle span::before, .nav-toggle span::after {
+      content: ""; position: absolute; left: 0; width: 18px; height: 1.5px; background: var(--ink);
+    }
+    .nav-toggle span::before { top: -6px; }
+    .nav-toggle span::after { top: 6px; }
+
+    /* ── bloco central ── */
+    /* A dobra tem que caber a hero inteira mais os 3 cards de métrica num
+       1440x900, então o ritmo vertical aqui é deliberadamente contido. */
+    .hero-core {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: clamp(24px, 3.4vw, 44px) clamp(20px, 4vw, 56px) clamp(28px, 3.2vw, 44px);
+    }
+
+    .hero-symbol {
+      width: clamp(68px, 6.8vw, 94px); height: clamp(68px, 6.8vw, 94px);
+      margin-bottom: clamp(18px, 2vw, 26px);
+      will-change: transform;
+    }
+
+    .hero-core h1 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(28px, 3.9vw, 54px);
+      letter-spacing: -0.035em; line-height: 1.07;
+      max-width: 19ch; text-wrap: balance;
+    }
+    .hero-core h1 em { font-style: normal; color: var(--floresta); }
+
+    .hero-sub {
+      margin-top: clamp(16px, 1.4vw, 22px);
+      font-size: clamp(15px, 1.05vw, 17.5px);
+      line-height: 1.6; color: rgba(33, 52, 44, 0.74);
+      max-width: 58ch;
+    }
+
+    /* ── pílula de ação ── */
+    .hero-form {
+      margin-top: clamp(22px, 2.2vw, 32px);
+      display: flex; align-items: center; gap: 10px;
+      width: min(100%, 520px);
+      padding: 7px 7px 7px 18px;
+      background: var(--bg-0);
+      border: 1px solid var(--hairline);
+      border-radius: var(--r-pill);
+      transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    }
+    .hero-form:focus-within {
+      border-color: var(--palmeira);
+      box-shadow: 0 0 0 4px rgba(138, 156, 123, 0.16);
+    }
+    .hero-form .ico { flex: none; color: var(--alcaparra); }
+    .hero-form input {
+      flex: 1 1 auto; min-width: 0; border: none; background: transparent; outline: none;
+      font-size: 14.5px; color: var(--ink);
+    }
+    .hero-form input::placeholder { color: rgba(33, 52, 44, 0.44); }
+    .hero-form .btn { flex: none; padding: 12px 20px; }
+
+    .hero-note {
+      margin-top: 14px;
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em;
+      color: var(--alcaparra);
+    }
+
+    /* ── 3 cards de métrica ── */
+    .metrics {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--hairline-soft);
+      border-top: 1px solid var(--hairline-soft);
+    }
+    .metric {
+      background: var(--bg-0);
+      padding: clamp(16px, 1.5vw, 21px) clamp(18px, 2.4vw, 30px);
+      display: flex; flex-direction: column; gap: 6px;
+      transition: background 0.4s var(--ease);
+    }
+    .metric:hover { background: var(--bg-1); }
+
+    /* Regra do CLAUDE.md (28/08): número protagonista em Unbounded + tabular-nums.
+       Sem tnum o contador anima tremendo (o glifo `0` mede 220px e o `1`, 121px). */
+    .metric-num {
+      font-family: var(--font-display); font-weight: 700;
+      font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1;
+      font-size: clamp(26px, 2.4vw, 34px);
+      letter-spacing: -0.03em; line-height: 1;
+      color: var(--ink);
+    }
+    .metric-num.teal { color: var(--floresta); }
+    .metric-lab {
+      font-family: var(--font-label); font-weight: 600; font-size: 12px;
+      letter-spacing: 0.05em; color: rgba(33, 52, 44, 0.62); line-height: 1.4;
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       2 · GRADE DE FEATURES
+       ════════════════════════════════════════════════════════════════ */
+    .features {
+      background: var(--dark-0); color: var(--bg-0);
+      padding: var(--sec-pad) 0;
+      margin-top: clamp(10px, 1.6vw, 22px);
+      position: relative;
+    }
+    .features::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(64% 42% at 50% 0%, rgba(138, 156, 123, 0.10), transparent 70%);
+    }
+    .features .container { position: relative; z-index: 2; }
+
+    .sec-head {
+      max-width: 880px; margin: 0 auto clamp(46px, 5vw, 76px);
+      text-align: center; display: flex; flex-direction: column; align-items: center;
+    }
+    .sec-head .eyebrow { margin-bottom: 22px; }
+    .sec-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(25px, 3.3vw, 46px);
+      letter-spacing: -0.03em; line-height: 1.13; text-wrap: balance;
+    }
+    .sec-title em { font-style: normal; color: var(--floresta); }
+    .is-dark .sec-title em { color: var(--palmeira); }
+    .sec-sub {
+      margin-top: 20px; font-size: clamp(15px, 1.1vw, 17.5px);
+      line-height: 1.62; color: rgba(33, 52, 44, 0.74); max-width: 56ch;
+    }
+    .is-dark .sec-sub { color: rgba(247, 246, 241, 0.72); }
+
+    .fgrid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(16px, 1.8vw, 26px);
+    }
+
+    .fcard {
+      display: flex; flex-direction: column;
+      background: var(--dark-1);
+      border: 1px solid rgba(247, 246, 241, 0.08);
+      border-radius: var(--r-card);
+      padding: clamp(16px, 1.6vw, 22px);
+      /* O leve de hover usa a propriedade `translate`, não `transform`.
+         O GSAP escreve `transform` inline na revelação de scroll e uma transição
+         CSS na mesma propriedade travava o card no meio do caminho. */
+      transition: border-color 0.5s var(--ease), background 0.5s var(--ease),
+                  translate 0.5s var(--ease);
+    }
+    .fcard:hover {
+      border-color: rgba(138, 156, 123, 0.42);
+      background: #1b2a23;
+      translate: 0 -3px;
+    }
+
+    /* ── área visual superior ── */
+    .fviz {
+      position: relative; overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(247, 246, 241, 0.07);
+      background: #14201b;
+      aspect-ratio: 16 / 9; min-height: 190px;
+      display: grid; place-items: center;
+      transition: filter 0.6s var(--ease);
+    }
+    .fcard:hover .fviz { filter: drop-shadow(0 0 18px rgba(138, 156, 123, 0.32)); }
+
+    /* dot matrix */
+    .fviz::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(247, 246, 241, 0.12) 1px, transparent 1px);
+      background-size: 11px 11px;
+      -webkit-mask-image: radial-gradient(78% 78% at 50% 50%, #000 8%, transparent 82%);
+      mask-image: radial-gradient(78% 78% at 50% 50%, #000 8%, transparent 82%);
+    }
+    .fviz .glow {
+      position: absolute; inset: 0; pointer-events: none; z-index: 1;
+      background: radial-gradient(52% 52% at 50% 50%, rgba(138, 156, 123, 0.16), transparent 72%);
+      opacity: 0; transition: opacity 0.6s var(--ease);
+    }
+    .fcard:hover .fviz .glow { opacity: 1; }
+
+    .fviz > *:not(.glow) { position: relative; z-index: 2; }
+
+    .ftitle {
+      margin-top: clamp(20px, 2vw, 28px);
+      font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(17px, 1.5vw, 22px);
+      letter-spacing: -0.025em; line-height: 1.24; color: var(--bg-0);
+    }
+    .ftext {
+      margin-top: 12px; font-size: 15px; line-height: 1.65;
+      color: rgba(247, 246, 241, 0.8);
+    }
+    .ftext b { font-weight: 600; color: var(--palmeira); }
+
+    .fmeta {
+      margin-top: auto; padding-top: 18px;
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em;
+      text-transform: uppercase; color: rgba(247, 246, 241, 0.46);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .fmeta i { width: 5px; height: 5px; border-radius: 50%; background: var(--palmeira); flex: none; font-style: normal; }
+
+    /* ── card 1 · mini-radar ── */
+    .viz-radar { width: 74%; max-width: 230px; }
+    .viz-radar .ring { fill: none; stroke: rgba(247, 246, 241, 0.16); stroke-width: 1; }
+    .viz-radar .cross { stroke: rgba(247, 246, 241, 0.11); stroke-width: 1; }
+    .viz-radar .core { fill: var(--palmeira); }
+    .viz-radar .node { fill: var(--palmeira); }
+    .viz-radar .halo { fill: none; stroke: var(--palmeira); stroke-width: 1; opacity: 0; }
+    .viz-radar .sweep { fill: rgba(138, 156, 123, 0.18); }
+
+    /* ── card 2 · mini-painel ── */
+    .viz-panel {
+      width: 84%; max-width: 300px;
+      background: rgba(33, 52, 44, 0.94);
+      border: 1px solid rgba(247, 246, 241, 0.1);
+      border-radius: 10px; padding: 13px 14px 14px;
+      box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.9);
+    }
+    .vp-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding-bottom: 10px; margin-bottom: 11px;
+      border-bottom: 1px solid rgba(247, 246, 241, 0.08);
+    }
+    .vp-name {
+      font-family: var(--font-label); font-weight: 600; font-size: 11.5px;
+      letter-spacing: 0.04em; color: rgba(247, 246, 241, 0.9);
+    }
+    .vp-live {
+      font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--palmeira);
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .vp-live i { width: 4px; height: 4px; border-radius: 50%; background: var(--palmeira); font-style: normal; }
+    .vp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    /* rótulo de dado técnico: Space Mono em retângulo de 4px, nunca pill */
+    .vp-tag {
+      font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.03em;
+      color: rgba(247, 246, 241, 0.72);
+      border: 1px solid rgba(247, 246, 241, 0.14);
+      border-radius: 4px; padding: 3px 7px; white-space: nowrap;
+    }
+    .vp-tag.on { color: var(--palmeira); border-color: rgba(138, 156, 123, 0.4); }
+    .vp-tag.teal { color: #4c9fa0; border-color: rgba(36, 105, 106, 0.55); }
+    .vp-bars { display: flex; align-items: flex-end; gap: 4px; height: 32px; margin-top: 12px; }
+    .vp-bars i {
+      flex: 1; background: rgba(138, 156, 123, 0.3); border-radius: 2px 2px 0 0;
+      transform-origin: bottom center;
+    }
+    .vp-bars i.hot { background: var(--palmeira); }
+
+    /* ── card 3 · bloco de copy ── */
+    .viz-copy { width: 82%; max-width: 288px; display: flex; flex-direction: column; gap: 9px; }
+    .vc-line { height: 7px; border-radius: 3px; background: rgba(247, 246, 241, 0.13); }
+    .vc-line.hook {
+      background: rgba(36, 105, 106, 0.9);
+      box-shadow: 0 0 14px rgba(36, 105, 106, 0.5);
+    }
+    .vc-line.w90 { width: 90%; } .vc-line.w70 { width: 70%; }
+    .vc-line.w55 { width: 55%; } .vc-line.w80 { width: 80%; }
+    .vc-line.w40 { width: 40%; }
+    .vc-tag {
+      margin-top: 5px; font-family: var(--font-mono); font-size: 9.5px;
+      letter-spacing: 0.08em; text-transform: uppercase; color: #4c9fa0;
+    }
+
+    /* ── card 4 · camadas isométricas ── */
+    .viz-iso { width: 210px; height: 152px; position: relative; perspective: 820px; }
+    .iso-stack {
+      position: absolute; inset: 0;
+      transform-style: preserve-3d;
+      transform: rotateX(56deg) rotateZ(-42deg);
+    }
+    .iso-layer {
+      position: absolute; left: 28px; top: 22px; width: 154px; height: 108px;
+      border: 1px solid rgba(138, 156, 123, 0.45);
+      border-radius: 6px;
+      background: linear-gradient(140deg, rgba(138, 156, 123, 0.16), rgba(36, 105, 106, 0.06));
+      box-shadow: 0 0 22px -8px rgba(138, 156, 123, 0.5);
+    }
+    .iso-layer.l1 { transform: translateZ(0px); }
+    .iso-layer.l2 { transform: translateZ(26px); border-color: rgba(138, 156, 123, 0.6); }
+    .iso-layer.l3 {
+      transform: translateZ(52px); border-color: rgba(247, 246, 241, 0.42);
+      background: linear-gradient(140deg, rgba(247, 246, 241, 0.12), rgba(138, 156, 123, 0.1));
+    }
+    .iso-layer .rows { position: absolute; inset: 12px; display: flex; flex-direction: column; gap: 7px; }
+    .iso-layer .rows i { height: 5px; border-radius: 2px; background: rgba(247, 246, 241, 0.24); }
+    .iso-layer .rows i:nth-child(2) { width: 62%; background: rgba(138, 156, 123, 0.75); }
+    .iso-layer .rows i:nth-child(3) { width: 80%; }
+    .iso-layer .rows i:nth-child(4) { width: 45%; }
+    .iso-layer.l1 .rows { opacity: 0.4; }
+    .iso-layer.l2 .rows { opacity: 0.62; }
+
+    /* ════════════════════════════════════════════════════════════════
+       3 · SEÇÕES CLARAS (mecanismo · cofre · arsenal · aplicação · comparativo)
+       Mesmo vocabulário da grade escura: hairline de 1px e escada de superfície,
+       nunca box-shadow, e acento cromático só onde o dado importa.
+       ════════════════════════════════════════════════════════════════ */
+    .sec { padding: var(--sec-pad) 0; position: relative; scroll-margin-top: 24px; }
+    .sec-alt { background: var(--bg-1); }
+
+    .head-left { max-width: 830px; margin-bottom: clamp(38px, 4.2vw, 66px); }
+    .head-left .eyebrow { margin-bottom: 20px; }
+
+    .head-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+    }
+
+    .panel {
+      background: var(--bg-0);
+      border: 1px solid var(--hairline-soft);
+      border-radius: var(--r-card);
+      padding: clamp(18px, 2vw, 26px);
+    }
+
+    .meta {
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--alcaparra);
+    }
+
+    /* número estrutural: Unbounded + tnum, nunca monospace (regra do CLAUDE.md) */
+    .figure {
+      font-family: var(--font-display); font-weight: 700;
+      font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1;
+      letter-spacing: -0.03em; line-height: 1;
+    }
+
+    /* ── 3.1 · o caçador ── */
+    .cac-grid {
+      display: grid; grid-template-columns: 1.02fr 0.98fr;
+      gap: clamp(26px, 3.4vw, 54px); align-items: start;
+    }
+
+    .rule-row {
+      display: grid; grid-template-columns: 54px 1fr; gap: 16px;
+      padding: clamp(19px, 2vw, 26px) 0;
+      border-top: 1px solid var(--hairline-soft);
+    }
+    .rule-row:last-child { border-bottom: 1px solid var(--hairline-soft); }
+    .rule-row .figure { font-size: 23px; color: var(--palmeira); }
+    .rule-row h3 {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(16px, 1.25vw, 18.5px); letter-spacing: -0.022em; line-height: 1.3;
+    }
+    .rule-row p { margin-top: 9px; font-size: 15px; line-height: 1.62; color: rgba(33, 52, 44, 0.74); }
+
+    .evi { padding: 0; overflow: hidden; position: relative; }
+    .evi-head, .evi-foot {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 14px clamp(14px, 1.6vw, 20px);
+    }
+    .evi-head { border-bottom: 1px solid var(--hairline-soft); }
+    .evi-foot { border-top: 1px solid var(--hairline-soft); }
+    .evi-foot .figure { font-size: 13px; color: var(--floresta); }
+    .evi-dots { display: inline-flex; gap: 5px; }
+    .evi-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--hairline); }
+
+    .evi-scroll { overflow-x: auto; }
+    /* table-layout fixo: sem ele a coluna "oferta" empurra o score pra fora do
+       painel e o dado mais importante da linha fica escondido no scroll. */
+    .evi-table { width: 100%; border-collapse: collapse; min-width: 520px; table-layout: fixed; }
+    .evi-table th, .evi-table td {
+      text-align: left; padding: 11px clamp(14px, 1.6vw, 20px);
+      border-bottom: 1px solid var(--hairline-soft); white-space: nowrap;
+    }
+    .evi-table tr:last-child td { border-bottom: 0; }
+    .evi-table th {
+      font-family: var(--font-label); font-weight: 600; font-size: 10px;
+      letter-spacing: 0.13em; text-transform: uppercase; color: var(--alcaparra);
+    }
+    /* dado técnico de linha: aqui sim Space Mono */
+    .evi-table td { font-family: var(--font-mono); font-size: 11.5px; color: rgba(33, 52, 44, 0.72); }
+    /* seletor com o mesmo peso de `.evi-table td`, senão o nowrap de cima vence
+       e o nome da oferta atravessa a coluna vizinha em vez de quebrar linha. */
+    .evi-table td.cell-name {
+      font-family: var(--font-body); font-size: 13.5px; color: var(--ink);
+      white-space: normal; line-height: 1.4;
+    }
+    .evi-table td.cell-score { color: var(--floresta); font-weight: 700; }
+
+    /* a linha de varredura repete o gesto do radar do card 1 */
+    .evi-scan {
+      position: absolute; left: 0; right: 0; top: 0; height: 2px; opacity: 0;
+      pointer-events: none; z-index: 3;
+      background: linear-gradient(90deg, transparent, rgba(138, 156, 123, 0.85), transparent);
+    }
+
+    /* ── 3.2 · o cofre ── */
+    .vault-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 22px); }
+    .vault-viz { grid-column: 1 / -1; padding: 0; overflow: hidden; }
+    .conv {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      gap: clamp(18px, 2.6vw, 44px); align-items: center;
+      padding: clamp(20px, 2.4vw, 32px);
+    }
+    .conv-col > .meta { display: block; margin-bottom: 14px; }
+    .conv-in li {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
+      padding: 9px 0; border-bottom: 1px solid var(--hairline-soft);
+    }
+    .conv-in li:last-child { border-bottom: 0; }
+    .conv-in .lbl { font-family: var(--font-mono); font-size: 10.5px; color: var(--alcaparra); }
+    .conv-in .track { height: 3px; background: var(--hairline-soft); border-radius: 2px; }
+    .conv-in .track i { display: block; height: 100%; background: var(--palmeira); border-radius: 2px; transform-origin: left center; }
+    .conv-in b {
+      font-family: var(--font-display); font-weight: 600;
+      font-variant-numeric: tabular-nums; font-size: 14px; letter-spacing: -0.02em;
+    }
+    .conv-mid { display: grid; place-items: center; color: var(--floresta); }
+    .conv-out .figure { font-size: clamp(38px, 4.6vw, 62px); color: var(--floresta); }
+    .conv-note { margin-top: 12px; font-size: 14px; line-height: 1.58; color: rgba(33, 52, 44, 0.74); }
+    .conv-dedupe { margin-top: 16px; display: flex; flex-direction: column; gap: 6px; }
+    .conv-dedupe span {
+      display: flex; justify-content: space-between; gap: 14px;
+      font-family: var(--font-mono); font-size: 10.5px; color: var(--alcaparra);
+      padding-bottom: 6px; border-bottom: 1px solid var(--hairline-soft);
+    }
+    .conv-dedupe b { color: var(--ink); }
+
+    .lever { display: flex; flex-direction: column; }
+    .lever-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 15px; }
+    .lever-top .figure { font-size: 20px; color: var(--palmeira); }
+    .lever h3 {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(16px, 1.2vw, 18px); letter-spacing: -0.022em; line-height: 1.3;
+    }
+    .lever p { margin-top: 10px; font-size: 14.5px; line-height: 1.62; color: rgba(33, 52, 44, 0.74); }
+    .lever .meta.tag { margin-top: auto; padding-top: 16px; display: block; }
+
+    /* ── 3.3 · o arsenal ── */
+    .track-nav { display: flex; gap: 8px; }
+    /* em tela larga os 4 agentes cabem inteiros: sem transbordo, sem seta e sem
+       a dica de rolagem. O JS liga essa classe medindo scrollWidth. */
+    .track-nav.is-off, .track-hint.is-off { display: none; }
+    .track-nav button {
+      width: 40px; height: 40px; border-radius: var(--r-pill);
+      border: 1px solid var(--hairline); display: grid; place-items: center; color: var(--ink);
+      transition: border-color 0.4s var(--ease), color 0.4s var(--ease);
+    }
+    .track-nav button:hover { border-color: var(--floresta); color: var(--floresta); }
+
+    .agents-track {
+      display: grid; grid-auto-flow: column; grid-auto-columns: minmax(266px, 1fr);
+      gap: clamp(14px, 1.6vw, 22px);
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      padding-bottom: 16px; scrollbar-width: thin;
+    }
+    .agent {
+      scroll-snap-align: start; display: flex; flex-direction: column;
+      transition: border-color 0.5s var(--ease), translate 0.5s var(--ease);
+    }
+    .agent:hover { border-color: rgba(138, 156, 123, 0.62); translate: 0 -3px; }
+    .agent-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .agent-mark {
+      width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center;
+      border: 1px solid var(--hairline-soft); background: var(--bg-1); color: var(--floresta);
+      transition: color 0.5s var(--ease), border-color 0.5s var(--ease);
+    }
+    .agent:hover .agent-mark { color: var(--alcaparra); border-color: rgba(138, 156, 123, 0.5); }
+    .agent h3 { font-family: var(--font-display); font-weight: 600; font-size: 17px; letter-spacing: -0.025em; line-height: 1.25; }
+    .agent p { margin-top: 10px; font-size: 14.5px; line-height: 1.6; color: rgba(33, 52, 44, 0.74); }
+    .agent-out { margin-top: auto; padding-top: 18px; }
+    .agent-out ul { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+    .agent-out li {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.03em;
+      border: 1px solid var(--hairline); border-radius: 4px; padding: 3px 7px; color: var(--alcaparra);
+    }
+    .track-hint { margin-top: 18px; display: block; }
+
+    /* ── 3.4 · o que construir ── */
+    .build-row {
+      display: grid; grid-template-columns: 68px 1fr auto; gap: 20px; align-items: baseline;
+      padding: clamp(20px, 2.2vw, 30px) 0; border-top: 1px solid var(--hairline-soft);
+    }
+    .build-row:last-child { border-bottom: 1px solid var(--hairline-soft); }
+    .build-row .figure { font-size: 25px; color: var(--palmeira); }
+    .build-row h3 {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(17px, 1.5vw, 21px); letter-spacing: -0.025em; line-height: 1.24;
+    }
+    .build-row p { margin-top: 9px; font-size: 15px; line-height: 1.62; color: rgba(33, 52, 44, 0.74); max-width: 64ch; }
+    .b-tag {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--alcaparra); border: 1px solid var(--hairline); border-radius: 4px;
+      padding: 5px 9px; white-space: nowrap;
+    }
+
+    /* ── 3.5 · comparativo ── */
+    .cmp {
+      border: 1px solid var(--hairline-soft); border-radius: var(--r-card);
+      overflow: hidden; background: var(--bg-0);
+    }
+    .cmp-row { display: grid; grid-template-columns: 0.86fr 1.07fr 1.07fr; }
+    .cmp-row + .cmp-row { border-top: 1px solid var(--hairline-soft); }
+    .cmp-label {
+      padding: clamp(18px, 2vw, 26px);
+      font-family: var(--font-label); font-weight: 600; font-size: 13px; letter-spacing: 0.02em;
+    }
+    .cmp-cell { padding: clamp(18px, 2vw, 26px); border-left: 1px solid var(--hairline-soft); }
+    .cmp-cell p + p { margin-top: 9px; font-size: 14.5px; line-height: 1.6; color: rgba(33, 52, 44, 0.72); }
+    .cmp-cell .figure { font-size: 19px; }
+    /* a coluna do caminho ruim fica dessaturada de propósito: a hierarquia entre
+       as duas colunas vem do peso do cinza, sem entrar vermelho (fora da paleta). */
+    .cmp-dark .figure { color: rgba(33, 52, 44, 0.48); }
+    .cmp-good { background: rgba(138, 156, 123, 0.11); }
+    .cmp-good .figure { color: var(--floresta); }
+    .cmp-head .cmp-cell { background: var(--bg-1); padding-block: 18px; }
+    .cmp-head .cmp-good { background: rgba(138, 156, 123, 0.14); }
+    .col-title {
+      font-family: var(--font-display); font-weight: 600; font-size: 15px;
+      letter-spacing: -0.025em; display: flex; flex-direction: column; gap: 5px;
+    }
+    .col-title small {
+      font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--alcaparra); font-weight: 400;
+    }
+
+    /* ── 3.6 · fechamento escuro ── */
+    .fecho { background: var(--dark-0); color: var(--bg-0); padding: var(--sec-pad) 0; position: relative; }
+    .fecho::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(58% 40% at 22% 0%, rgba(138, 156, 123, 0.12), transparent 70%);
+    }
+    .fecho .container { position: relative; z-index: 2; }
+    .fecho-grid { display: grid; grid-template-columns: 1fr 0.92fr; gap: clamp(30px, 4vw, 62px); align-items: start; }
+    .fecho h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(25px, 3.1vw, 42px); letter-spacing: -0.03em; line-height: 1.12; text-wrap: balance;
+    }
+    .fecho h2 em { font-style: normal; color: var(--palmeira); }
+    .fecho-sub { margin-top: 20px; font-size: clamp(15px, 1.1vw, 17.5px); line-height: 1.62; color: rgba(247, 246, 241, 0.76); max-width: 52ch; }
+    .fecho-actions { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-light { background: var(--palmeira); color: var(--ink); }
+    .btn-light:hover { background: var(--bg-0); }
+    .btn-line { border-color: rgba(247, 246, 241, 0.22); color: var(--bg-0); }
+    .btn-line:hover { border-color: var(--palmeira); color: var(--palmeira); }
+
+    .seals { margin-top: 28px; display: flex; flex-direction: column; gap: 12px; }
+    .seal {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-family: var(--font-mono); font-size: 11px; line-height: 1.5;
+      color: rgba(247, 246, 241, 0.6);
+    }
+    .seal svg { flex: none; margin-top: 1px; color: var(--palmeira); }
+
+    .access {
+      background: var(--dark-1); border: 1px solid rgba(247, 246, 241, 0.1);
+      border-radius: var(--r-card); padding: clamp(20px, 2.2vw, 30px);
+    }
+    .access-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding-bottom: 16px; border-bottom: 1px solid rgba(247, 246, 241, 0.09);
+    }
+    .access .meta { color: rgba(247, 246, 241, 0.5); }
+    .access-list { margin-top: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .access-list li { display: flex; gap: 11px; }
+    .access-list svg { color: var(--palmeira); flex: none; margin-top: 3px; }
+    .access-list strong { display: block; font-family: var(--font-label); font-weight: 600; font-size: 14px; }
+    .access-list span { display: block; margin-top: 3px; font-size: 13.5px; line-height: 1.55; color: rgba(247, 246, 241, 0.66); }
+
+    .warranty { margin-top: 22px; padding-top: 20px; border-top: 1px solid rgba(247, 246, 241, 0.09); display: flex; gap: 12px; }
+    .warranty svg { color: var(--palmeira); flex: none; margin-top: 2px; }
+    .warranty strong { font-family: var(--font-label); font-weight: 600; font-size: 14px; }
+    .warranty p { margin-top: 7px; font-size: 13.5px; line-height: 1.58; color: rgba(247, 246, 241, 0.66); }
+
+    .ps {
+      margin-top: clamp(34px, 4vw, 56px); padding-top: 24px;
+      border-top: 1px solid rgba(247, 246, 241, 0.09);
+      font-size: 14.5px; line-height: 1.62; color: rgba(247, 246, 241, 0.66); max-width: 78ch;
+    }
+    .ps b { color: var(--palmeira); font-weight: 600; }
+
+    /* ════════════════ RODAPÉ ════════════════ */
+    .foot {
+      background: var(--dark-0); color: rgba(247, 246, 241, 0.6);
+      border-top: 1px solid rgba(247, 246, 241, 0.08);
+      padding: 30px 0;
+    }
+    .foot-in {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em;
+    }
+    .foot-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .foot-links a { transition: color 0.4s var(--ease); }
+    .foot-links a:hover { color: var(--palmeira); }
+
+    /* ════════════════ RESPONSIVO ════════════════ */
+    @media (max-width: 1024px) {
+      .nav-links { gap: 18px; }
+      .nav-links a { font-size: 12.5px; }
+    }
+
+    @media (max-width: 1000px) {
+      .cac-grid { grid-template-columns: 1fr; }
+      .vault-grid { grid-template-columns: 1fr; }
+      .conv { grid-template-columns: 1fr; gap: 22px; }
+      .conv-mid { transform: rotate(90deg); }
+      .fecho-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 900px) {
+      .fgrid { grid-template-columns: 1fr; }
+      /* em coluna única o 16/9 estica a caixa visual pra mais de 400px de altura
+         e o objeto central fica boiando: aqui a altura passa a ser fixa. */
+      .fviz { aspect-ratio: auto; height: clamp(186px, 32vw, 250px); }
+    }
+
+    @media (max-width: 760px) {
+      /* o comparativo vira pilha: cada célula carrega o nome da coluna no rótulo */
+      .cmp-head { display: none; }
+      .cmp-row { grid-template-columns: 1fr; }
+      .cmp-label {
+        padding-bottom: 0;
+        font-family: var(--font-display); font-weight: 600; font-size: 16px; letter-spacing: -0.02em;
+      }
+      .cmp-cell { border-left: 0; }
+      .cmp-cell::before {
+        content: attr(data-col); display: block; margin-bottom: 8px;
+        font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--alcaparra);
+      }
+      .build-row { grid-template-columns: 54px 1fr; }
+      .build-row .b-tag { grid-column: 2; justify-self: start; margin-top: 14px; }
+    }
+
+    @media (max-width: 860px) {
+      .nav-links { display: none; }
+      .nav-toggle { display: grid; }
+      .nav-bar { padding-inline: 20px; }
+      .hero-core h1 { max-width: 100%; }
+    }
+
+    @media (max-width: 640px) {
+      :root { --r-shell: 20px; }
+      .hero-wrap { padding: 10px; }
+      .metrics { grid-template-columns: 1fr; }
+      .metric { padding: 16px 20px; flex-direction: row; align-items: baseline; gap: 14px; }
+      .metric-num { font-size: 28px; min-width: 78px; }
+      .hero-form { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px; border-radius: 18px; }
+      .hero-form .ico { display: none; }
+      .hero-form input { padding: 6px 8px; text-align: center; }
+      .hero-form .btn { width: 100%; }
+      .nav-actions .btn-quiet { display: none; }
+      .fviz { min-height: 168px; }
+      .foot-in { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 400px) {
+      .hero-core h1 { font-size: 27px; }
+      .viz-iso { width: 178px; height: 132px; }
+    }
+
+    /* ════════════════ MOVIMENTO REDUZIDO ════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important; animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+      .fcard:hover { translate: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#recursos">pular para os recursos</a>
+
+  <!-- ════════════════ HERO ════════════════ -->
+  <div class="hero-wrap">
+    <div class="hero-shell" id="topo">
+      <div class="hero-inner">
+
+        <!-- navbar flutuante -->
+        <header class="nav-bar">
+          <a href="#topo" class="lockup" aria-label="afero hub, página inicial"><b>afero</b><span>hub</span></a>
+
+          <nav class="nav-links" aria-label="navegação principal">
+            <a href="#cofre">Acervo</a>
+            <a href="#cacador">Caçador Local</a>
+            <a href="#arsenal">Arsenal de Agentes</a>
+            <a href="#comparativo">Metodologia</a>
+          </nav>
+
+          <div class="nav-actions">
+            <a href="#" class="btn btn-quiet">Entrar</a>
+            <a href="#" class="btn btn-solid" data-checkout>Começar agora</a>
+            <button class="nav-toggle" type="button" aria-label="abrir menu"><span></span></button>
+          </div>
+        </header>
+
+        <!-- bloco central -->
+        <div class="hero-core">
+
+          <!-- símbolo oficial, interativo ao scroll -->
+          <div class="hero-symbol symbol" id="heroSymbol" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+              <path d="M 20.114 9.826 A 8.4 8.4 0 0 0 3.886 9.826" />
+              <path d="M 3.886 14.174 A 8.4 8.4 0 0 0 20.114 14.174" />
+              <path d="M 12 3.1 L 12 0" stroke-width="1" />
+              <path d="M 12 21.4 L 12 22.4" stroke-width="1" />
+              <path d="M 2.6 12 L 1 12" stroke-width="1" />
+              <path d="M 21.4 12 L 23 12" stroke-width="1" />
+              <path d="M 15.524 9.042 A 4.6 4.6 0 0 0 8.476 9.042" stroke-width="0.9" opacity=".55" />
+              <path d="M 15.329 7.25 A 5.8 5.8 0 0 0 8.671 7.25" stroke-width="0.9" opacity=".34" />
+              <path id="symbolCore"
+                d="M 10.9 14.898 L 10.9 13.2 L 13.1 13.2 L 13.1 14.898 A 3.1 3.1 0 1 0 10.9 14.898 Z"
+                fill="var(--symbol-core)" stroke="none" />
+            </svg>
+          </div>
+
+          <h1 data-anim>Descubra o que <em>já está vendendo</em> antes de criar qualquer coisa do zero.</h1>
+
+          <p class="hero-sub" data-anim>
+            O afero hub une o garimpo invisível de ofertas escaladas a uma esteira de agentes de IA
+            para remodelar copy, páginas e produtos em tempo recorde.
+          </p>
+
+          <form class="hero-form" data-anim autocomplete="off" novalidate>
+            <svg class="ico" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+              stroke-width="1.4" aria-hidden="true">
+              <circle cx="7" cy="7" r="4.6" />
+              <path d="M10.4 10.4 14 14" stroke-linecap="round" />
+            </svg>
+            <label class="visually-hidden" for="heroEmail">seu e-mail de operador</label>
+            <input id="heroEmail" type="email" name="email" placeholder="seu melhor e-mail de operador"
+              inputmode="email">
+            <button class="btn btn-solid" type="submit" data-checkout>
+              Acessar o Hub
+              <svg class="arw" width="14" height="12" viewBox="0 0 15 13" fill="none" aria-hidden="true">
+                <path d="M1 6.5h12M8.5 2l4.5 4.5L8.5 11" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </form>
+
+          <p class="hero-note" data-anim>varredura roda local · sem cartão para começar</p>
+        </div>
+
+        <!-- 3 cards de métrica -->
+        <div class="metrics">
+          <div class="metric" data-anim>
+            <span class="metric-num"><span data-count="94">94</span>%</span>
+            <span class="metric-lab">Menos tempo na validação</span>
+          </div>
+          <div class="metric" data-anim>
+            <span class="metric-num teal"><span data-count="3.8" data-dec="1">3.8</span>x</span>
+            <span class="metric-lab">Mais sinais de escala detectados</span>
+          </div>
+          <div class="metric" data-anim>
+            <span class="metric-num"><span data-count="48">48</span>h</span>
+            <span class="metric-lab">Da oferta caçada à página no ar</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ FEATURES ════════════════ -->
+  <main>
+    <section class="features is-dark" id="recursos">
+      <div class="container">
+
+        <div class="sec-head">
+          <p class="eyebrow" data-reveal>Recursos do Arsenal</p>
+          <h2 class="sec-title" data-reveal>Como o afero hub transforma <em>sinais em ofertas prontas</em></h2>
+          <p class="sec-sub" data-reveal>
+            Do garimpo local no seu computador à esteira automatizada de execução.
+          </p>
+        </div>
+
+        <div class="fgrid">
+
+          <!-- ── card 1 · o caçador local ── -->
+          <article class="fcard" data-card>
+            <div class="fviz">
+              <span class="glow"></span>
+              <svg class="viz-radar" viewBox="0 0 200 200" role="img"
+                aria-label="Radar de varredura com nós concêntricos captando sinais">
+                <circle class="ring" cx="100" cy="100" r="82" />
+                <circle class="ring" cx="100" cy="100" r="58" />
+                <circle class="ring" cx="100" cy="100" r="34" />
+                <path class="cross" d="M100 12v176M12 100h176" />
+                <path class="sweep" id="radarSweep" d="M100 100 L100 18 A82 82 0 0 1 158 42 Z" />
+                <circle class="halo" data-halo cx="100" cy="100" r="34" />
+                <circle class="halo" data-halo cx="100" cy="100" r="58" />
+                <circle class="node" data-blip cx="141" cy="72" r="3.4" />
+                <circle class="node" data-blip cx="66" cy="126" r="2.8" />
+                <circle class="node" data-blip cx="123" cy="139" r="3" />
+                <circle class="core" cx="100" cy="100" r="5" />
+              </svg>
+            </div>
+            <h3 class="ftitle">O Caçador Local</h3>
+            <p class="ftext">
+              A varredura roda no seu computador, com o seu IP e o seu navegador. Ela lê pixel,
+              checkout e recorrência de anúncio das páginas que já compram tráfego, e devolve a lista
+              de ofertas que <b>sustentam investimento há semanas</b>. Nada passa por servidor nosso,
+              então nenhum concorrente enxerga a sua caçada.
+            </p>
+            <p class="fmeta"><i></i> varredura local · sem proxy compartilhado</p>
+          </article>
+
+          <!-- ── card 2 · painel da caçada e memória ── -->
+          <article class="fcard" data-card>
+            <div class="fviz">
+              <span class="glow"></span>
+              <div class="viz-panel" role="img"
+                aria-label="Painel de dados exibindo uma oferta com recorrência de 12 dias, score 8.4 e checkout ativo">
+                <div class="vp-head">
+                  <span class="vp-name">oferta #0417</span>
+                  <span class="vp-live"><i data-pulse></i> rastreando</span>
+                </div>
+                <div class="vp-tags">
+                  <span class="vp-tag">Recorrência 12 dias</span>
+                  <span class="vp-tag teal">Score 8.4</span>
+                  <span class="vp-tag on">Checkout ativo</span>
+                </div>
+                <div class="vp-bars">
+                  <i data-bar style="height:38%"></i>
+                  <i data-bar style="height:54%"></i>
+                  <i data-bar style="height:44%"></i>
+                  <i data-bar style="height:72%"></i>
+                  <i data-bar style="height:61%"></i>
+                  <i data-bar class="hot" style="height:96%"></i>
+                  <i data-bar style="height:80%"></i>
+                </div>
+              </div>
+            </div>
+            <h3 class="ftitle">O Painel da Caçada &amp; Memória</h3>
+            <p class="ftext">
+              Toda oferta capturada entra num cofre privado com histórico de recorrência, status de
+              checkout e score de escala. Da segunda visita em diante o painel compara o hoje com o
+              que ele guardou e mostra <b>qual anúncio subiu de verba e qual saiu do ar</b>.
+            </p>
+            <p class="fmeta"><i></i> histórico versionado · comparação dia a dia</p>
+          </article>
+
+          <!-- ── card 3 · agente copywriter e vsl ── -->
+          <article class="fcard" data-card>
+            <div class="fviz">
+              <span class="glow"></span>
+              <div class="viz-copy" role="img"
+                aria-label="Bloco de copy com ganchos de resposta direta destacados">
+                <span class="vc-line w90"></span>
+                <span class="vc-line hook w70"></span>
+                <span class="vc-line w80"></span>
+                <span class="vc-line w55"></span>
+                <span class="vc-line hook w80"></span>
+                <span class="vc-line w40"></span>
+                <span class="vc-tag">gancho 02 · pas</span>
+              </div>
+            </div>
+            <h3 class="ftitle">Agente Copywriter &amp; VSL</h3>
+            <p class="ftext">
+              Você joga a oferta caçada no agente e recebe a estrutura remodelada: big idea nova,
+              ganchos de abertura, corpo em PAS e roteiro de VSL cronometrado. A promessa que já
+              converte vira <b>base de teste calibrada</b>, sem começar de página em branco.
+            </p>
+            <p class="fmeta"><i></i> big idea · ganchos · corpo · roteiro</p>
+          </article>
+
+          <!-- ── card 4 · agente de páginas html ── -->
+          <article class="fcard" data-card>
+            <div class="fviz">
+              <span class="glow"></span>
+              <div class="viz-iso" role="img"
+                aria-label="Camadas isométricas flutuantes representando estrutura de código limpo">
+                <div class="iso-stack" data-iso>
+                  <div class="iso-layer l1">
+                    <div class="rows"><i></i><i></i><i></i><i></i></div>
+                  </div>
+                  <div class="iso-layer l2">
+                    <div class="rows"><i></i><i></i><i></i><i></i></div>
+                  </div>
+                  <div class="iso-layer l3">
+                    <div class="rows"><i></i><i></i><i></i><i></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h3 class="ftitle">Agente de Páginas HTML</h3>
+            <p class="ftext">
+              A copy aprovada sai como página pronta em HTML e CSS limpos, responsiva de 360px a
+              1440px, com os eventos de conversão já marcados. Publica em <b>qualquer host estático</b>
+              e o teste sobe no mesmo dia.
+            </p>
+            <p class="fmeta"><i></i> html + css nativo · deploy imediato</p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ 3 · O CAÇADOR (PROBLEMA) ════════════════ -->
+    <section class="sec" id="cacador">
+      <div class="container">
+        <div class="head-left" data-reveal>
+          <p class="eyebrow">o carro-chefe · agente caçador local</p>
+          <h2 class="sec-title">O rastro de uma oferta que fatura <em>é público</em>. Quase ninguém sabe ler.</h2>
+          <p class="sec-sub">
+            Página no ar, pixel disparando, checkout ativo, criativo rodando há semanas. Esse rastro
+            fica exposto o tempo inteiro, na frente de todo mundo. O Caçador cruza as quatro frentes
+            direto da sua máquina e só te entrega quem passou no filtro duplo de sinal.
+          </p>
+        </div>
+
+        <div class="cac-grid">
+          <ol class="rules">
+            <li class="rule-row" data-rule>
+              <span class="figure">01</span>
+              <div>
+                <h3>Roda na sua máquina, com a sua chave</h3>
+                <p>
+                  O script executa local. A chave de API é sua, a lista que sai da varredura é sua e
+                  nenhuma linha do resultado passa por servidor intermediário. Ninguém fica sabendo
+                  o que você garimpou.
+                </p>
+              </div>
+            </li>
+            <li class="rule-row" data-rule>
+              <span class="figure">02</span>
+              <div>
+                <h3>Caçada ilimitada, sem mensalidade de espionagem</h3>
+                <p>
+                  Rodar dez vezes no mesmo dia custa o mesmo que rodar uma. Sem cota de crédito que
+                  acaba no dia 12, sem plano por assento, sem fila de processamento te travando no
+                  meio da pesquisa.
+                </p>
+              </div>
+            </li>
+            <li class="rule-row" data-rule>
+              <span class="figure">03</span>
+              <div>
+                <h3>Quatro frentes conferidas antes de virar linha</h3>
+                <p>
+                  Página, funil, gateway e biblioteca de criativos. A candidata que aparece em uma
+                  frente só fica de fora do relatório, então a lista que chega até você já vem limpa.
+                </p>
+              </div>
+            </li>
+          </ol>
+
+          <div class="panel evi" data-reveal>
+            <span class="evi-scan" id="eviScan" aria-hidden="true"></span>
+
+            <div class="evi-head">
+              <span class="evi-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="meta">saída bruta · cacada_2026-08-28.csv</span>
+            </div>
+
+            <div class="evi-scroll" tabindex="0" role="region" aria-label="Linhas de uma caçada, role para o lado">
+              <table class="evi-table">
+                <colgroup>
+                  <col style="width:13%"><col style="width:33%"><col style="width:24%">
+                  <col style="width:18%"><col style="width:12%">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">oferta</th>
+                    <th scope="col">sinal duplo</th>
+                    <th scope="col">recorrência</th>
+                    <th scope="col">score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-row>
+                    <td>SG-4471</td>
+                    <td class="cell-name">Protocolo de emagrecimento 21D</td>
+                    <td>pixel + checkout</td>
+                    <td>12 dias</td>
+                    <td class="cell-score">8.4</td>
+                  </tr>
+                  <tr data-row>
+                    <td>SG-4468</td>
+                    <td class="cell-name">Tráfego pago para clínicas</td>
+                    <td>pixel + criativo</td>
+                    <td>09 dias</td>
+                    <td class="cell-score">7.9</td>
+                  </tr>
+                  <tr data-row>
+                    <td>SG-4462</td>
+                    <td class="cell-name">Planner financeiro digital</td>
+                    <td>checkout + funil</td>
+                    <td>21 dias</td>
+                    <td class="cell-score">7.6</td>
+                  </tr>
+                  <tr data-row>
+                    <td>SG-4455</td>
+                    <td class="cell-name">Mentoria de inglês para TI</td>
+                    <td>pixel + checkout</td>
+                    <td>07 dias</td>
+                    <td class="cell-score">7.1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="evi-foot">
+              <span class="meta">linhas acima do corte</span>
+              <span class="figure">04 de 47</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ 4 · O COFRE (AGITAÇÃO) ════════════════ -->
+    <section class="sec sec-alt" id="cofre">
+      <div class="container">
+        <div class="head-left" data-reveal>
+          <p class="eyebrow">a memória do hub · cofre privado de caçadas</p>
+          <h2 class="sec-title">Cada varredura engorda o acervo. <em>O seu histórico vira vantagem.</em></h2>
+          <p class="sec-sub">
+            O Hub empilha os CSVs de todas as suas caçadas, cruza por domínio e por ID e mantém uma
+            lista única que só cresce. Quem caça há três meses lê o mercado de um jeito que quem
+            começou ontem ainda não consegue.
+          </p>
+        </div>
+
+        <div class="vault-grid">
+
+          <div class="panel vault-viz" data-reveal>
+            <div class="evi-head">
+              <span class="meta">histórico acumulado · agosto</span>
+              <span class="meta">deduplicação automática</span>
+            </div>
+
+            <div class="conv">
+              <div class="conv-col">
+                <span class="meta">entradas brutas</span>
+                <ul class="conv-in">
+                  <li>
+                    <span class="lbl">caçada 01 · 21.08</span>
+                    <span class="track"><i data-barx style="width:64%"></i></span>
+                    <b>47</b>
+                  </li>
+                  <li>
+                    <span class="lbl">caçada 02 · 22.08</span>
+                    <span class="track"><i data-barx style="width:52%"></i></span>
+                    <b>39</b>
+                  </li>
+                  <li>
+                    <span class="lbl">caçada 03 · 25.08</span>
+                    <span class="track"><i data-barx style="width:72%"></i></span>
+                    <b>52</b>
+                  </li>
+                  <li>
+                    <span class="lbl">caçada 04 · 27.08</span>
+                    <span class="track"><i data-barx style="width:60%"></i></span>
+                    <b>44</b>
+                  </li>
+                  <li>
+                    <span class="lbl">caçada 05 · 28.08</span>
+                    <span class="track"><i data-barx style="width:64%"></i></span>
+                    <b>47</b>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="conv-mid" aria-hidden="true">
+                <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                  <path d="M2 13h20M16.5 7l5.5 6-5.5 6" stroke="currentColor" stroke-width="1.4"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+
+              <div class="conv-col conv-out">
+                <span class="meta">acervo consolidado</span>
+                <p class="figure"><span data-count="163">163</span></p>
+                <p class="conv-note">
+                  ofertas únicas, sem uma linha repetida, prontas para filtrar por nicho, score ou
+                  recorrência.
+                </p>
+                <div class="conv-dedupe">
+                  <span>linhas recebidas <b>229</b></span>
+                  <span>duplicadas removidas <b>66</b></span>
+                  <span>recorrentes marcadas <b>24</b></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel lever" data-reveal>
+            <div class="lever-top">
+              <span class="figure">01</span>
+              <span class="meta">caixa rápido</span>
+            </div>
+            <h3>Levantar caixa em 48 horas</h3>
+            <p>
+              Filtre por entrega simples e score alto. São as ofertas que dá pra modelar, montar e
+              colocar no ar dentro de um fim de semana, sem produção pesada e sem equipe.
+            </p>
+            <span class="meta tag">filtro · score &gt; 7.5 · entrega simples</span>
+          </div>
+
+          <div class="panel lever" data-reveal>
+            <div class="lever-top">
+              <span class="figure">02</span>
+              <span class="meta">validação</span>
+            </div>
+            <h3>Confirmar o nicho antes de gravar a primeira aula</h3>
+            <p>
+              Veja quantas ofertas ativas o acervo já registrou naquele nicho e em que ângulo elas
+              estão vendendo. A decisão sai do achismo antes de você gastar a primeira hora de
+              produção.
+            </p>
+            <span class="meta tag">filtro · nicho · janela de 90 dias</span>
+          </div>
+
+          <div class="panel lever" data-reveal>
+            <div class="lever-top">
+              <span class="figure">03</span>
+              <span class="meta">recorrência</span>
+            </div>
+            <h3>Ler quem continua no ar semana após semana</h3>
+            <p>
+              O acervo marca a oferta que reaparece em varreduras seguidas. Ninguém sustenta tráfego
+              por 21 dias no prejuízo, então essa coluna é a prova de lucro mais direta que existe.
+            </p>
+            <span class="meta tag">filtro · recorrência &gt; 14 dias</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ 5 · O ARSENAL (SOLUÇÃO) ════════════════ -->
+    <section class="sec" id="arsenal">
+      <div class="container">
+        <div class="head-left head-row" data-reveal>
+          <div>
+            <p class="eyebrow">a esteira de remodelação · 4 agentes</p>
+            <h2 class="sec-title">A oferta entra crua e sai <em>pronta pra subir</em>.</h2>
+            <p class="sec-sub">
+              Achar o que vende resolve metade do problema. A outra metade é o trabalho pesado de
+              remodelar tudo com o seu ângulo, e é aí que a esteira assume.
+            </p>
+          </div>
+          <div class="track-nav">
+            <button type="button" data-track-prev aria-label="Agente anterior">
+              <svg width="15" height="13" viewBox="0 0 15 13" fill="none" aria-hidden="true">
+                <path d="M14 6.5H2M6.5 2 2 6.5 6.5 11" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button type="button" data-track-next aria-label="Próximo agente">
+              <svg width="15" height="13" viewBox="0 0 15 13" fill="none" aria-hidden="true">
+                <path d="M1 6.5h12M8.5 2 13 6.5 8.5 11" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="agents-track" data-track tabindex="0" role="region"
+          aria-label="Os quatro agentes do arsenal, role para o lado">
+
+          <article class="panel agent" data-agent>
+            <div class="agent-top">
+              <span class="agent-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none">
+                  <path d="M3 15V3h7l5 5v7H3Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+                  <path d="M6 8.5h6M6 11.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="meta">agente 01</span>
+            </div>
+            <h3>Agente Copywriter</h3>
+            <p>
+              Recebe a oferta minerada e escreve a narrativa nova de resposta direta com o seu
+              ângulo: big idea, ganchos de criativo, carta de vendas completa e roteiro de VSL
+              cronometrado.
+            </p>
+            <div class="agent-out">
+              <span class="meta">entrega</span>
+              <ul>
+                <li>ganchos</li>
+                <li>carta de vendas</li>
+                <li>roteiro de vsl</li>
+                <li>e-mails</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel agent" data-agent>
+            <div class="agent-top">
+              <span class="agent-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none">
+                  <rect x="2.5" y="3" width="13" height="12" rx="1.4" stroke="currentColor" stroke-width="1.3" />
+                  <path d="M2.5 6.5h13M5.5 9.5h4M5.5 12h7" stroke="currentColor" stroke-width="1.3"
+                    stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="meta">agente 02</span>
+            </div>
+            <h3>Agente de Páginas</h3>
+            <p>
+              Devolve HTML e CSS limpos da página de vendas já estruturados no design system,
+              responsivos de 360px a 1440px e prontos pra subir na Vercel ou no host que você já usa.
+            </p>
+            <div class="agent-out">
+              <span class="meta">entrega</span>
+              <ul>
+                <li>página de vendas</li>
+                <li>html + css</li>
+                <li>responsivo</li>
+                <li>deploy direto</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel agent" data-agent>
+            <div class="agent-top">
+              <span class="agent-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none">
+                  <path d="M4 2.5h7.5L15 6v9.5H4V2.5Z" stroke="currentColor" stroke-width="1.3"
+                    stroke-linejoin="round" />
+                  <path d="M11 2.5V6h4M6.8 9.5h5M6.8 12h3.4" stroke="currentColor" stroke-width="1.3"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span class="meta">agente 03</span>
+            </div>
+            <h3>Agente de Entregáveis</h3>
+            <p>
+              Constrói o produto que o comprador recebe depois do checkout: e-book, manual
+              operacional, checklist e guia passo a passo, escritos em cima do ângulo já validado.
+            </p>
+            <div class="agent-out">
+              <span class="meta">entrega</span>
+              <ul>
+                <li>e-book</li>
+                <li>manual</li>
+                <li>checklists</li>
+                <li>bônus</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel agent" data-agent>
+            <div class="agent-top">
+              <span class="agent-mark" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none">
+                  <circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.3" />
+                  <path d="M9 5.6v3.6l2.4 1.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span class="meta">agente 04</span>
+            </div>
+            <h3>Agente de Quiz &amp; Escala</h3>
+            <p>
+              Monta o funil interativo que segmenta o lead por perfil, entrega a oferta certa pra
+              cada tipo de comprador e derruba o custo por lead no tráfego frio.
+            </p>
+            <div class="agent-out">
+              <span class="meta">entrega</span>
+              <ul>
+                <li>funil de quiz</li>
+                <li>perfis</li>
+                <li>ofertas por trilha</li>
+                <li>captura</li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+
+        <span class="meta track-hint" data-reveal>
+          role a faixa para o lado · os quatro agentes trabalham em cima do mesmo relatório de caçada
+        </span>
+      </div>
+    </section>
+
+    <!-- ════════════════ 6 · O QUE CONSTRUIR ════════════════ -->
+    <section class="sec sec-alt" id="construir">
+      <div class="container">
+        <div class="head-left" data-reveal>
+          <p class="eyebrow">aplicação prática</p>
+          <h2 class="sec-title">O que sai da esteira <em>num fim de semana</em></h2>
+          <p class="sec-sub">
+            O mesmo ecossistema serve pra quem vende um e-book de vinte e sete reais e pra quem monta
+            funil com esteira de upsell. Muda o pedido, o mecanismo continua o mesmo.
+          </p>
+        </div>
+
+        <ol class="build-list">
+          <li class="build-row" data-build>
+            <span class="figure">01</span>
+            <div>
+              <h3>Infoprodutos de entrada e e-books</h3>
+              <p>
+                Produto de ticket baixo feito pra cobrir o custo de tráfego e gerar comprador
+                imediato na base. O Agente de Entregáveis escreve o conteúdo inteiro.
+              </p>
+            </div>
+            <span class="b-tag">ticket 27 a 97</span>
+          </li>
+          <li class="build-row" data-build>
+            <span class="figure">02</span>
+            <div>
+              <h3>Funis de alta conversão com VSL</h3>
+              <p>
+                Página completa com roteiro persuasivo e esteira de order bump, upsell e downsell
+                montada pra subir o ticket médio sem aumentar o investimento em anúncio.
+              </p>
+            </div>
+            <span class="b-tag">vsl + esteira</span>
+          </li>
+          <li class="build-row" data-build>
+            <span class="figure">03</span>
+            <div>
+              <h3>Micro-SaaS e ferramentas web</h3>
+              <p>
+                Dashboards, calculadoras e aplicações leves em código limpo, construídas em cima de
+                uma demanda que o acervo já mostrou estar sendo atendida com produto pago.
+              </p>
+            </div>
+            <span class="b-tag">código limpo</span>
+          </li>
+          <li class="build-row" data-build>
+            <span class="figure">04</span>
+            <div>
+              <h3>Funis de diagnóstico interativo</h3>
+              <p>
+                Página de perguntas que segmenta o público por perfil e entrega a oferta certa pra
+                cada tipo de comprador, barateando o lead qualificado no tráfego frio.
+              </p>
+            </div>
+            <span class="b-tag">quiz + segmentação</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ════════════════ 7 · COMPARATIVO ════════════════ -->
+    <section class="sec" id="comparativo">
+      <div class="container">
+        <div class="head-left" data-reveal>
+          <p class="eyebrow">comparativo direto</p>
+          <h2 class="sec-title">Criar no escuro cobra caro. <em>A conta chega em três lugares.</em></h2>
+          <p class="sec-sub">
+            Tempo até o primeiro anúncio no ar, dinheiro em risco e a mensalidade fixa das
+            ferramentas. Todo operador sente os três já no primeiro mês.
+          </p>
+        </div>
+
+        <div class="cmp">
+          <div class="cmp-row cmp-head">
+            <div class="cmp-label" aria-hidden="true"></div>
+            <div class="cmp-cell cmp-dark">
+              <p class="col-title">Criar no escuro <small>modo padrão do mercado</small></p>
+            </div>
+            <div class="cmp-cell cmp-good">
+              <p class="col-title">Método afero hub <small>caçada + esteira guiada</small></p>
+            </div>
+          </div>
+
+          <div class="cmp-row" data-cmp>
+            <div class="cmp-label">Tempo pra colocar no ar</div>
+            <div class="cmp-cell cmp-dark" data-col="criar no escuro">
+              <p class="figure">Semanas</p>
+              <p>
+                Bloqueio criativo em cada etapa. Nicho, ângulo, copy e página viram quatro decisões
+                travadas em fila, e cada uma sozinha come um dia.
+              </p>
+            </div>
+            <div class="cmp-cell cmp-good" data-col="método afero hub">
+              <p class="figure">Poucos dias</p>
+              <p>
+                A caçada entrega o ângulo já testado e a esteira devolve copy, página e entregável.
+                Você revisa e publica.
+              </p>
+            </div>
+          </div>
+
+          <div class="cmp-row" data-cmp>
+            <div class="cmp-label">Risco financeiro</div>
+            <div class="cmp-cell cmp-dark" data-col="criar no escuro">
+              <p class="figure">Alto</p>
+              <p>
+                O tráfego vira o teste. Você descobre se aquele público compra depois de já ter
+                queimado o orçamento tentando descobrir.
+              </p>
+            </div>
+            <div class="cmp-cell cmp-good" data-col="método afero hub">
+              <p class="figure">Controlado</p>
+              <p>
+                Você investe em cima de modelo que estava faturando quando a varredura rodou, com
+                pixel e checkout confirmados na mesma linha.
+              </p>
+            </div>
+          </div>
+
+          <div class="cmp-row" data-cmp>
+            <div class="cmp-label">Custo operacional</div>
+            <div class="cmp-cell cmp-dark" data-col="criar no escuro">
+              <p class="figure">Mensalidade</p>
+              <p>
+                Centenas de reais por mês em ferramenta de espionagem, com cota de crédito e limite
+                de consulta no plano de entrada.
+              </p>
+            </div>
+            <div class="cmp-cell cmp-good" data-col="método afero hub">
+              <p class="figure">Caçada local</p>
+              <p>
+                O script roda na sua máquina com a sua chave. Varredura ilimitada, sem servidor no
+                meio e sem cobrança por consulta.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ 8 · FECHAMENTO ════════════════ -->
+    <section class="fecho is-dark" id="acesso">
+      <div class="container">
+        <div class="fecho-grid">
+
+          <div data-reveal>
+            <p class="eyebrow">acesso completo</p>
+            <h2>Pare de apostar no escuro e comece a <em>modelar o que já vende</em>.</h2>
+            <p class="fecho-sub">
+              Você entra sem ideia e sai com uma oferta validada, estruturada e pronta pra subir.
+              Cada dia parado é um dia a mais em que o concorrente escala em cima de um sinal que
+              estava disponível pros dois.
+            </p>
+
+            <div class="fecho-actions">
+              <a href="#" class="btn btn-light" data-checkout>
+                Ativar o Caçador
+                <svg class="arw" width="15" height="13" viewBox="0 0 15 13" fill="none" aria-hidden="true">
+                  <path d="M1 6.5h12M8.5 2l4.5 4.5L8.5 11" stroke="currentColor" stroke-width="1.6"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+              <a href="#cacador" class="btn btn-line">Rever o mecanismo</a>
+            </div>
+
+            <div class="seals">
+              <p class="seal">
+                <svg width="13" height="15" viewBox="0 0 13 15" fill="none" aria-hidden="true">
+                  <path d="M6.5 1 1.5 3v4c0 3.2 2.1 6.1 5 6.9 2.9-.8 5-3.7 5-6.9V3L6.5 1Z" stroke="currentColor"
+                    stroke-width="1.2" stroke-linejoin="round" />
+                  <path d="M4.5 7.4 6 8.9l2.8-2.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                privacidade rigorosa · as caçadas ficam no seu workspace privado
+              </p>
+              <p class="seal">
+                <svg width="13" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" />
+                  <path d="M7 3.6V7l2.4 1.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                atualizações de heurística incluídas enquanto o acesso estiver ativo
+              </p>
+            </div>
+          </div>
+
+          <div class="access" data-reveal>
+            <div class="access-head">
+              <span class="meta">o que entra no acesso</span>
+              <span class="meta">04 itens</span>
+            </div>
+
+            <ul class="access-list">
+              <li data-access>
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8.6 6 12.5 14 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <div>
+                  <strong>Script do Caçador Local</strong>
+                  <span>Instalação guiada na sua máquina, com a sua chave e caçada ilimitada.</span>
+                </div>
+              </li>
+              <li data-access>
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8.6 6 12.5 14 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <div>
+                  <strong>Acesso à Central afero hub</strong>
+                  <span>O cofre que acumula, deduplica e organiza todo o histórico das suas caçadas.</span>
+                </div>
+              </li>
+              <li data-access>
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8.6 6 12.5 14 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <div>
+                  <strong>Arsenal de prompts dos 4 agentes</strong>
+                  <span>Copywriter, Páginas, Entregáveis e Quiz, prontos pra colar e rodar.</span>
+                </div>
+              </li>
+              <li data-access>
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8.6 6 12.5 14 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <div>
+                  <strong>Atualizações de heurística</strong>
+                  <span>Quando o critério de sinal melhora, a sua varredura melhora junto.</span>
+                </div>
+              </li>
+            </ul>
+
+            <div class="warranty">
+              <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M9 1.6 2.6 4v5c0 4 2.7 7.6 6.4 8.5C12.7 16.6 15.4 13 15.4 9V4L9 1.6Z"
+                  stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                <path d="M6.2 9.2 8.2 11.2l3.7-3.8" stroke="currentColor" stroke-width="1.3"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <div>
+                <strong>Garantia incondicional de 7 dias</strong>
+                <p>
+                  Roda a primeira caçada, abre o acervo, testa a esteira inteira. Se em sete dias
+                  você achar que o ecossistema não serve pro seu jogo, devolvemos o valor cheio sem
+                  pedir justificativa.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <p class="ps" data-reveal>
+          <b>P.S.</b> O anúncio que roda há 21 dias no seu nicho já pagou a validação que você ainda
+          está tentando fazer com o seu orçamento. A informação está no ar agora. A pergunta é quem
+          vai ler primeiro.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot is-dark">
+    <div class="container foot-in">
+      <span class="lockup" style="font-size:15px"><b>afero</b><span>hub</span></span>
+      <nav class="foot-links" aria-label="links do rodapé">
+        <a href="#cacador">caçador</a>
+        <a href="#cofre">cofre</a>
+        <a href="#arsenal">arsenal</a>
+        <a href="#comparativo">comparativo</a>
+      </nav>
+      <span>victor neiva · inteligência de ofertas br e latam</span>
+    </div>
+  </footer>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var EASE = 'power2.out';
+
+      /* o formulário ainda não tem destino: leva para o mesmo lugar do CTA do topo.
+         TODO(Victor): trocar por POST real ou pela URL de checkout. */
+      var form = document.querySelector('.hero-form');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var alvo = document.querySelector('[data-checkout]');
+          if (alvo && alvo.getAttribute('href') && alvo.getAttribute('href') !== '#') {
+            window.location.href = alvo.getAttribute('href');
+          }
+        });
+      }
+
+      /* ── setas da faixa de agentes: rolagem por card, sem depender do GSAP ── */
+      var faixa = document.querySelector('[data-track]');
+      if (faixa) {
+        var passo = function () {
+          var card = faixa.querySelector('.agent');
+          return card ? card.getBoundingClientRect().width + 22 : 300;
+        };
+        var anda = function (dir) {
+          faixa.scrollBy({ left: dir * passo(), behavior: REDUCED ? 'auto' : 'smooth' });
+        };
+        var btnPrev = document.querySelector('[data-track-prev]');
+        var btnNext = document.querySelector('[data-track-next]');
+        if (btnPrev) btnPrev.addEventListener('click', function () { anda(-1); });
+        if (btnNext) btnNext.addEventListener('click', function () { anda(1); });
+
+        var nav = document.querySelector('.track-nav');
+        var dica = document.querySelector('.track-hint');
+        var aferirTransbordo = function () {
+          var cabe = faixa.scrollWidth <= faixa.clientWidth + 4;
+          if (nav) nav.classList.toggle('is-off', cabe);
+          if (dica) dica.classList.toggle('is-off', cabe);
+        };
+        aferirTransbordo();
+        window.addEventListener('resize', aferirTransbordo);
+      }
+
+      /* A página é legível e completa sem GSAP: toda revelação usa gsap.from(),
+         então o estado final é o próprio HTML. */
+      if (REDUCED || !window.gsap || !window.ScrollTrigger) return;
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* ── entrada da hero ── */
+      var tl = gsap.timeline({ defaults: { ease: EASE } });
+      tl.from('#heroSymbol', { scale: 0.7, opacity: 0, duration: 0.9 })
+        .from('.nav-bar > *', { y: -12, opacity: 0, duration: 0.6, stagger: 0.08 }, 0.1)
+        .from('.hero-core [data-anim]', { y: 22, opacity: 0, duration: 0.8, stagger: 0.1 }, 0.25)
+        .from('.metric', { y: 18, opacity: 0, duration: 0.7, stagger: 0.09 }, 0.5);
+
+      /* ── microinteração do símbolo ao rolar ──
+         reduz de 1 para 0.65, gira 15 graus e pulsa em palmeira,
+         entregando a atenção para a headline e a grade de features. */
+      gsap.to('#heroSymbol', {
+        scale: 0.65, rotation: 15, transformOrigin: '50% 50%', ease: 'none',
+        scrollTrigger: { trigger: '.hero-shell', start: 'top top', end: '+=520', scrub: 0.6 }
+      });
+
+      gsap.to('#symbolCore', {
+        opacity: 0.5, ease: 'none',
+        scrollTrigger: { trigger: '.hero-shell', start: 'top top', end: '+=520', scrub: 0.6 }
+      });
+
+      gsap.to('#symbolCore', {
+        scale: 1.14, transformOrigin: '50% 62%', duration: 1.5,
+        repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* ── revelação da seção de features ──
+         ScrollTrigger.batch em vez de gsap.from com scrollTrigger: o batch só
+         anima no onEnter, então nada fica pré-escondido em opacity 0. Se o
+         trigger nunca disparar, a seção continua visível em vez de sumir. */
+      ScrollTrigger.batch('[data-reveal]', {
+        start: 'top 90%',
+        onEnter: function (lote) {
+          gsap.from(lote, { y: 24, opacity: 0, duration: 0.8, stagger: 0.1, ease: EASE, overwrite: true });
+        }
+      });
+
+      ScrollTrigger.batch('[data-card]', {
+        start: 'top 88%',
+        onEnter: function (lote) {
+          gsap.from(lote, { y: 34, opacity: 0, duration: 0.85, stagger: 0.12, ease: EASE, overwrite: true });
+        }
+      });
+
+      /* ── objetos visuais dos cards ── */
+      gsap.to('#radarSweep', {
+        rotation: 360, svgOrigin: '100 100', duration: 5.4, repeat: -1, ease: 'none'
+      });
+
+      gsap.to('[data-blip]', {
+        opacity: 0.25, duration: 1.1, repeat: -1, yoyo: true, stagger: 0.4, ease: 'sine.inOut'
+      });
+
+      gsap.fromTo('[data-halo]',
+        { opacity: 0.5, scale: 0.72, transformOrigin: '50% 50%' },
+        { opacity: 0, scale: 1.18, duration: 2.4, repeat: -1, stagger: 0.8, ease: 'sine.out' });
+
+      gsap.to('[data-pulse]', {
+        opacity: 0.25, duration: 0.9, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* [data-bar] cresce de baixo (colunas do mini-painel);
+         [data-barx] cresce da esquerda (barras horizontais do cofre). */
+      ScrollTrigger.batch('[data-bar]', {
+        start: 'top 92%',
+        onEnter: function (lote) {
+          gsap.from(lote, {
+            scaleY: 0, transformOrigin: 'bottom center',
+            duration: 0.7, stagger: 0.06, ease: EASE, overwrite: true
+          });
+        }
+      });
+
+      ScrollTrigger.batch('[data-barx]', {
+        start: 'top 94%',
+        onEnter: function (lote) {
+          gsap.from(lote, {
+            scaleX: 0, transformOrigin: 'left center',
+            duration: 0.8, stagger: 0.08, ease: EASE, overwrite: true
+          });
+        }
+      });
+
+      gsap.to('[data-iso]', {
+        rotateZ: -50, duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+
+      /* ── seções claras: mesma gramática de revelação, tudo por batch ── */
+      [
+        ['[data-rule]', { y: 22, opacity: 0, duration: 0.75, stagger: 0.12 }],
+        ['[data-row]', { y: 14, opacity: 0, duration: 0.55, stagger: 0.09 }],
+        ['[data-build]', { y: 26, opacity: 0, duration: 0.75, stagger: 0.1 }],
+        ['[data-cmp]', { y: 20, opacity: 0, duration: 0.7, stagger: 0.11 }],
+        ['[data-agent]', { y: 30, opacity: 0, duration: 0.8, stagger: 0.1 }],
+        ['[data-access]', { x: 16, opacity: 0, duration: 0.6, stagger: 0.09 }]
+      ].forEach(function (par) {
+        ScrollTrigger.batch(par[0], {
+          start: 'top 90%',
+          onEnter: function (lote) {
+            gsap.from(lote, Object.assign({ ease: EASE, overwrite: true }, par[1]));
+          }
+        });
+      });
+
+      /* ── linha de varredura do painel de saída ──
+         mesmo gesto do sweep do radar, aplicado ao relatório da caçada. */
+      var scan = document.getElementById('eviScan');
+      if (scan) {
+        var alvo = scan.parentElement;
+        gsap.timeline({
+          repeat: -1, repeatDelay: 1.6,
+          scrollTrigger: { trigger: alvo, start: 'top 85%', end: 'bottom 15%', toggleActions: 'play pause resume pause' }
+        })
+          .set(scan, { y: 0, opacity: 0 })
+          .to(scan, { opacity: 1, duration: 0.25 })
+          .to(scan, { y: function () { return alvo.offsetHeight - 2; }, duration: 2.1, ease: 'none' }, 0)
+          .to(scan, { opacity: 0, duration: 0.3 }, 1.9);
+      }
+
+      /* ── contadores: o valor final já está no HTML, a contagem só decora ── */
+      Array.prototype.forEach.call(document.querySelectorAll('[data-count]'), function (el) {
+        var fim = parseFloat(el.getAttribute('data-count'));
+        if (isNaN(fim)) return;
+        var casas = parseInt(el.getAttribute('data-dec') || '0', 10);
+        var obj = { v: 0 };
+        gsap.to(obj, {
+          v: fim, duration: 1.3, ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 94%' },
+          onUpdate: function () { el.textContent = obj.v.toFixed(casas); },
+          onComplete: function () { el.textContent = fim.toFixed(casas); }
+        });
+      });
+
+      ScrollTrigger.refresh();
+    })();
+  </script>
+<script src="afero-checkout.js?v=1"></script>
+</body>
+
+</html>

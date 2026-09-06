@@ -1,0 +1,20 @@
+# Local credentials and Supabase function secrets
+.env
+.env.*
+!.env.example
+supabase/functions/.env
+supabase/functions/.env.*
+!supabase/functions/.env.example
+
+# Local runtime state and generated test artifacts
+debug.log
+.review-run
+.impeccable/
+.vercel/
+playwright-report/
+test-results/
+
+# Operating-system and editor files
+.DS_Store
+Thumbs.db
+*.swp

@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>afero hub · o ecossistema de ofertas validadas</title>
+  <meta name="description"
+    content="Caçador local que garimpa ofertas escaladas no seu próprio computador, cofre privado de caçadas e arsenal de 4 agentes de IA para remodelar copy, páginas, entregáveis e quiz.">
+  <meta name="theme-color" content="#21342C">
+  <meta property="og:title" content="afero hub · o ecossistema de ofertas validadas">
+  <meta property="og:description"
+    content="Descubra o que já está vendendo antes de gastar um centavo criando do zero.">
+  <meta property="og:type" content="website">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F7F6F1' stroke-width='1.5'%3E%3Cpath d='M20.114 9.826A8.4 8.4 0 003.886 9.826M3.886 14.174A8.4 8.4 0 0020.114 14.174M12 3.1V0M12 21.4v1M2.6 12H1M21.4 12H23'/%3E%3Cpath d='M10.9 14.898V13.2h2.2v1.698a3.1 3.1 0 11-2.2 0z' fill='%238A9C7B' stroke='none'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Unbounded:wght@500;600;700;800&display=swap">
+
+  <!--
+    NOTA TECNICA (nao remover): gsap e ScrollTrigger vem de ./vendor/, nunca de CDN.
+    A CSP deste site e script-src 'self' 'unsafe-inline' e qualquer script externo e bloqueado.
+    Toda revelacao usa gsap.from(), entao sem GSAP a pagina continua legivel e completa.
+    TODO(Victor): trocar os href="#" dos botoes [data-checkout] pela URL real do checkout.
+  -->
+
+  <style>
+    /* ════════════════════════════════════════════════════════════════
+       AFERO HUB · LANDING DO ECOSSISTEMA
+       Tema claro de acervo, com dois bookends escuros (hero + fechamento).
+       Primitivas herdadas do spec de instrumento: .panel .meta .figure .rule
+       ════════════════════════════════════════════════════════════════ */
+
+    :root {
+      /* ── paleta fechada (brandbook §3) ── */
+      --bg-0: #F7F6F1;
+      --bg-1: #EFEEE6;
+      --ink: #21342C;
+      --palmeira: #8A9C7B;
+      --alcaparra: #56603F;
+      --floresta: #24696A;
+
+      --hairline: rgba(33, 52, 44, 0.14);
+      --hairline-soft: rgba(33, 52, 44, 0.08);
+      --hairline-d: rgba(247, 246, 241, 0.16);
+      --hairline-d-soft: rgba(247, 246, 241, 0.09);
+
+      /* ── tipografia: 4 famílias, papéis fixos (brandbook §4) ── */
+      --font-display: 'Unbounded', system-ui, sans-serif;
+      --font-body: 'Manrope', system-ui, sans-serif;
+      --font-label: 'Hanken Grotesk', system-ui, sans-serif;
+      --font-mono: 'Space Mono', 'Courier New', monospace;
+
+      /* ── raio: 3 degraus, sem desvio (brandbook §6) ── */
+      --radius-doc: 4px;
+      --radius-card: 6px;
+      --radius-pill: 999px;
+
+      /* ── rótulo técnico ── */
+      --meta-size: 10.5px;
+      --meta-track: 0.12em;
+
+      /* ── ritmo ── */
+      --sec-pad: clamp(88px, 11vw, 152px);
+      --container-max: 1400px;
+      --header-h: 64px;
+      --ease: cubic-bezier(0.32, 0.72, 0, 1);
+
+      /* ── luz de borda que acompanha o cursor (desktop) ── */
+      --glow-x: 50%;
+      --glow-y: 50%;
+      --glow-opacity: 0;
+    }
+
+    /* ════════════════ RESET E BASE ════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-0);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.55;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img, svg { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; border: none; background: none; color: inherit; cursor: pointer; }
+    ul, ol { list-style: none; }
+
+    ::selection { background: var(--floresta); color: var(--bg-0); }
+    :focus-visible { outline: 2px solid var(--floresta); outline-offset: 3px; border-radius: 2px; }
+    .bookend-dark :focus-visible { outline-color: var(--palmeira); }
+
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg-1); }
+    ::-webkit-scrollbar-thumb { background: var(--alcaparra); border-radius: var(--radius-pill); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--floresta); }
+
+    section { padding: var(--sec-pad) 0; position: relative; scroll-margin-top: var(--header-h); }
+
+    .container { width: 100%; max-width: var(--container-max); margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
+
+    .skip-link {
+      position: absolute; left: -9999px; top: 8px; z-index: 999;
+      background: var(--ink); color: var(--bg-0); padding: 12px 20px;
+      border-radius: var(--radius-pill); font-family: var(--font-label); font-weight: 600;
+    }
+    .skip-link:focus { left: 16px; }
+
+    /* ════════════════ PRIMITIVAS ════════════════ */
+
+    /* .meta · rótulo técnico monospace */
+    .meta {
+      font-family: var(--font-mono);
+      font-size: var(--meta-size);
+      letter-spacing: var(--meta-track);
+      text-transform: uppercase;
+      color: var(--alcaparra);
+      line-height: 1.4;
+    }
+    .bookend-dark .meta { color: var(--palmeira); }
+
+    /* .figure · número tabular */
+    .figure {
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    /* .rule · régua hairline */
+    .rule { height: 1px; background: var(--hairline); border: 0; width: 100%; }
+    .bookend-dark .rule { background: var(--hairline-d); }
+
+    /* .panel · superfície de aplicação, hairline no lugar de sombra */
+    .panel {
+      position: relative;
+      background: var(--bg-0);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-card);
+      transition: border-color 0.5s var(--ease), background 0.5s var(--ease);
+    }
+    .bookend-dark .panel { background: rgba(247, 246, 241, 0.035); border-color: var(--hairline-d); }
+
+    /* luz de borda suave que acompanha o cursor · só onde existe mouse fino */
+    @media (hover: hover) and (pointer: fine) {
+      .panel::before {
+        content: "";
+        position: absolute; inset: -1px;
+        border-radius: inherit;
+        padding: 1px;
+        background: radial-gradient(180px circle at var(--glow-x) var(--glow-y),
+                    var(--floresta), transparent 62%);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        mask-composite: exclude;
+        opacity: var(--glow-opacity);
+        transition: opacity 0.45s var(--ease);
+        pointer-events: none;
+        z-index: 2;
+      }
+      .bookend-dark .panel::before {
+        background: radial-gradient(180px circle at var(--glow-x) var(--glow-y),
+                    var(--palmeira), transparent 62%);
+      }
+      .panel::after {
+        content: "";
+        position: absolute; inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(280px circle at var(--glow-x) var(--glow-y),
+                    rgba(138, 156, 123, 0.11), transparent 70%);
+        opacity: var(--glow-opacity);
+        transition: opacity 0.45s var(--ease);
+        pointer-events: none;
+        z-index: 0;
+      }
+    }
+
+    /* .stat-row · par rótulo/valor alinhado à régua */
+    .stat-row {
+      display: grid; grid-template-columns: 1fr auto; align-items: baseline;
+      gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--hairline-soft);
+    }
+    .stat-row:last-child { border-bottom: 0; }
+    .bookend-dark .stat-row { border-bottom-color: var(--hairline-d-soft); }
+
+    /* ════════════════ TIPOGRAFIA DE SEÇÃO ════════════════ */
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-label); font-weight: 600; font-size: 11.5px;
+      letter-spacing: 0.16em; text-transform: uppercase; color: var(--alcaparra);
+      line-height: 1.4;
+    }
+    .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--palmeira); flex: none; }
+    .bookend-dark .eyebrow { color: var(--palmeira); }
+
+    .sec-head { max-width: 800px; margin-bottom: clamp(44px, 5vw, 76px); }
+    .sec-head .eyebrow { margin-bottom: 22px; }
+
+    .sec-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(25px, 3.4vw, 47px);
+      letter-spacing: -0.03em; line-height: 1.14;
+      text-wrap: balance;
+    }
+    .sec-title em { font-style: normal; color: var(--floresta); }
+    .bookend-dark .sec-title em { color: var(--palmeira); }
+
+    .sec-sub {
+      margin-top: 20px; font-size: clamp(15.5px, 1.1vw, 18px);
+      color: rgba(33, 52, 44, 0.78);
+      max-width: 62ch; line-height: 1.62;
+    }
+    .bookend-dark .sec-sub { color: rgba(247, 246, 241, 0.76); }
+
+    /* ════════════════ WORDMARK ════════════════ */
+    .lockup {
+      font-family: var(--font-display); font-size: 20px;
+      letter-spacing: -0.03em; line-height: 1;
+      display: inline-flex; align-items: baseline; gap: 0.18em;
+    }
+    .lockup b { font-weight: 800; }
+    .lockup span { font-weight: 500; color: var(--floresta); }
+    .bookend-dark .lockup span { color: var(--palmeira); }
+
+    /* ════════════════ BOTÕES ════════════════ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      font-family: var(--font-label); font-weight: 600; font-size: 13.5px;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 17px 30px; border-radius: var(--radius-pill);
+      border: 1px solid transparent; white-space: nowrap; cursor: pointer;
+      transition: background 0.45s var(--ease), color 0.45s var(--ease),
+                  border-color 0.45s var(--ease), opacity 0.45s var(--ease);
+    }
+    .btn-primary { background: var(--floresta); color: var(--bg-0); }
+    .btn-primary:hover { background: var(--ink); }
+    .bookend-dark .btn-primary { background: var(--palmeira); color: var(--ink); }
+    .bookend-dark .btn-primary:hover { background: var(--bg-0); }
+
+    .btn-ghost { border-color: var(--hairline); color: var(--ink); background: transparent; }
+    .btn-ghost:hover { border-color: var(--floresta); color: var(--floresta); }
+    .bookend-dark .btn-ghost { border-color: var(--hairline-d); color: var(--bg-0); }
+    .bookend-dark .btn-ghost:hover { border-color: var(--palmeira); color: var(--palmeira); }
+
+    .btn .arw { transition: transform 0.45s var(--ease); }
+    .btn:hover .arw { transform: translateX(4px); }
+    .btn:active { opacity: 0.86; }
+
+    .seal {
+      display: inline-flex; align-items: center; gap: 9px;
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
+      color: var(--alcaparra); line-height: 1.4;
+    }
+    .bookend-dark .seal { color: rgba(247, 246, 241, 0.62); }
+    .seal svg { flex: none; }
+
+    /* ════════════════ HEADER ════════════════ */
+    .site-header {
+      position: fixed; inset: 0 0 auto 0; z-index: 90; height: var(--header-h);
+      display: flex; align-items: center;
+      background: rgba(33, 52, 44, 0.88);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid transparent;
+      transition: background 0.5s var(--ease), border-color 0.5s var(--ease),
+                  height 0.5s var(--ease), color 0.5s var(--ease);
+      color: var(--bg-0);
+    }
+    .site-header.is-light {
+      background: rgba(247, 246, 241, 0.92);
+      border-bottom-color: var(--hairline);
+      color: var(--ink);
+      height: 56px;
+    }
+    .site-header .lockup span { color: var(--palmeira); }
+    .site-header.is-light .lockup span { color: var(--floresta); }
+
+    .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; width: 100%; }
+
+    .nav { display: flex; align-items: center; gap: 30px; }
+    .nav a {
+      font-family: var(--font-label); font-weight: 500; font-size: 13px;
+      letter-spacing: 0.07em; text-transform: lowercase; opacity: 0.74;
+      transition: opacity 0.4s var(--ease), color 0.4s var(--ease);
+    }
+    .nav a:hover { opacity: 1; color: var(--palmeira); }
+    .site-header.is-light .nav a:hover { color: var(--floresta); }
+
+    .header-cta { padding: 11px 22px; font-size: 12px; }
+
+    @media (max-width: 900px) {
+      .nav { display: none; }
+      .header-cta { padding: 10px 18px; font-size: 11.5px; }
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       01 · HERO · bookend escuro, split assimétrico
+       ════════════════════════════════════════════════════════════════ */
+    .bookend-dark { background: var(--ink); color: var(--bg-0); }
+
+    .hero {
+      padding-top: calc(var(--header-h) + clamp(56px, 7vw, 104px));
+      padding-bottom: 0;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: ""; position: absolute; inset: auto 0 0 0; height: 1px;
+      background: var(--hairline-d);
+    }
+
+    .hero-grid {
+      display: grid; grid-template-columns: 1.1fr 0.9fr;
+      gap: clamp(40px, 5vw, 76px); align-items: center;
+      padding-bottom: clamp(64px, 8vw, 112px);
+    }
+
+    /* eyebrow do hero em régua de ficha técnica.
+       O pill com dot pulsante saiu de propósito: é o clichê de template de LP. */
+    .hero-slug {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 20px 32px; flex-wrap: wrap;
+      padding-top: 14px; border-top: 1px solid var(--hairline-d);
+      font-family: var(--font-label); font-weight: 600; font-size: 11px;
+      letter-spacing: 0.16em; text-transform: uppercase; line-height: 1.5;
+    }
+    .hero-slug .slug-cat { color: rgba(247, 246, 241, 0.82); }
+    .hero-slug .slug-val { color: var(--palmeira); }
+
+    @media (max-width: 700px) {
+      .hero-slug { flex-direction: column; align-items: flex-start; gap: 7px; }
+    }
+
+    .hero h1 {
+      margin-top: 30px;
+      font-family: var(--font-display); font-weight: 700;
+      /* Unbounded é larga: acima de ~50px a headline passa de 4 linhas no desktop. */
+      font-size: clamp(29px, 3.35vw, 49px);
+      line-height: 1.08; letter-spacing: -0.032em;
+      text-wrap: balance;
+    }
+    .hero h1 em { font-style: normal; color: var(--palmeira); }
+
+    .hero-sub {
+      margin-top: 26px; max-width: 54ch;
+      font-size: clamp(15.5px, 1.15vw, 18.5px); line-height: 1.62;
+      color: rgba(247, 246, 241, 0.76);
+    }
+
+    .hero-actions {
+      margin-top: 38px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .hero-seal { margin-top: 22px; }
+
+    /* ── o instrumento: radar + registro ── */
+    .rig { position: relative; }
+
+    .rig-radar {
+      position: relative; z-index: 1; overflow: hidden;
+      /* o registro sobe 26px por cima: o padding de baixo reserva esse espaço */
+      padding: 20px 22px 46px;
+      background: rgba(247, 246, 241, 0.04);
+    }
+    .rig-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 14px; padding-bottom: 16px; border-bottom: 1px solid var(--hairline-d-soft);
+    }
+    .rig-head .meta { color: rgba(247, 246, 241, 0.62); }
+    .rig-file {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 11px; color: var(--palmeira);
+      letter-spacing: 0.02em;
+    }
+
+    .radar-stage {
+      position: relative; height: clamp(150px, 17vw, 196px);
+      display: grid; place-items: center; overflow: hidden;
+    }
+    .radar-svg { width: clamp(160px, 20vw, 230px); height: auto; }
+    .radar-svg circle.ring { fill: none; stroke: rgba(247, 246, 241, 0.16); stroke-width: 1; }
+    .radar-svg .cross { stroke: rgba(247, 246, 241, 0.12); stroke-width: 1; }
+    .radar-svg .core { fill: var(--palmeira); }
+    /* a origem da rotação é dada pelo GSAP via svgOrigin, em unidades do viewBox.
+       Definir transform-origin em px aqui joga o setor para fora do eixo. */
+    .radar-svg .blip { fill: var(--palmeira); opacity: 0; }
+
+    .radar-read {
+      display: block; margin-top: 14px;
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em;
+      color: rgba(247, 246, 241, 0.55); text-transform: uppercase;
+    }
+    .radar-read b { color: var(--palmeira); font-weight: 400; }
+
+    /* registro sobreposto */
+    .rig-log {
+      /* o parallax do radar aplica transform e cria contexto de empilhamento;
+         sem z-index explícito nos dois, a borda do radar corta este cabeçalho. */
+      position: relative; z-index: 5;
+      margin: -26px 0 0 clamp(0px, 3vw, 44px);
+      border: 1px solid var(--hairline-d);
+      border-radius: var(--radius-card);
+      padding: 22px 20px 20px;
+    }
+    /* precisa vencer `.bookend-dark .panel`, que é translúcido:
+       o registro sobrepõe o radar e tem de ser opaco. */
+    .bookend-dark .rig-log { background: var(--ink); }
+    .rig-log .rig-head { border-bottom-color: var(--hairline-d); }
+
+    .log-list { margin-top: 4px; }
+    .log-row {
+      display: grid; grid-template-columns: auto 1fr auto;
+      align-items: center; gap: 14px;
+      padding: 13px 0; border-bottom: 1px solid var(--hairline-d-soft);
+    }
+    .log-row:last-child { border-bottom: 0; }
+    .log-id {
+      font-family: var(--font-mono); font-size: 11px; color: var(--palmeira);
+      letter-spacing: 0.04em;
+    }
+    .log-name {
+      font-family: var(--font-body); font-weight: 600; font-size: 13.5px;
+      color: rgba(247, 246, 241, 0.92); line-height: 1.3;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .log-name small {
+      display: block; font-family: var(--font-mono); font-weight: 400;
+      font-size: 10.5px; letter-spacing: 0.05em; color: rgba(247, 246, 241, 0.44);
+      margin-top: 3px; text-transform: uppercase;
+    }
+    .log-score {
+      font-family: var(--font-display); font-weight: 600; font-size: 17px;
+      font-variant-numeric: tabular-nums; color: var(--palmeira);
+      letter-spacing: -0.02em;
+    }
+    .log-score small {
+      display: block; font-family: var(--font-mono); font-weight: 400; font-size: 9.5px;
+      letter-spacing: 0.12em; color: rgba(247, 246, 241, 0.4); margin-top: 4px;
+      text-align: right;
+    }
+
+    .sig-set { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .sig {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 6px 12px; border-radius: var(--radius-pill);
+      border: 1px solid var(--hairline-d);
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.07em;
+      color: rgba(247, 246, 241, 0.6); text-transform: uppercase;
+      transition: border-color 0.5s var(--ease), color 0.5s var(--ease), background 0.5s var(--ease);
+    }
+    .sig i {
+      width: 5px; height: 5px; border-radius: 50%; background: rgba(247, 246, 241, 0.3);
+      flex: none; transition: background 0.5s var(--ease);
+    }
+    .sig.on {
+      border-color: rgba(138, 156, 123, 0.5); color: var(--palmeira);
+      background: rgba(138, 156, 123, 0.08);
+    }
+    .sig.on i { background: var(--palmeira); }
+
+    .rig-out {
+      margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hairline-d);
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      flex-wrap: wrap;
+    }
+    .rig-out .meta { color: rgba(247, 246, 241, 0.5); }
+    .rig-arrow {
+      display: inline-flex; align-items: center; gap: 9px;
+      font-family: var(--font-label); font-weight: 600; font-size: 11px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--palmeira);
+    }
+
+    /* faixa de 4 specs, fecha o hero */
+    .hero-strip {
+      border-top: 1px solid var(--hairline-d);
+      display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .hero-strip li {
+      padding: clamp(24px, 3vw, 38px) clamp(14px, 2vw, 30px);
+      border-left: 1px solid var(--hairline-d);
+    }
+    .hero-strip li:first-child { border-left: 0; padding-left: 0; }
+    .hero-strip .figure {
+      font-size: clamp(22px, 2.4vw, 33px); font-weight: 600; color: var(--bg-0);
+    }
+    .hero-strip .meta { margin-top: 11px; color: rgba(247, 246, 241, 0.55); }
+
+    @media (max-width: 1024px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+      .rig-log { margin-left: 0; }
+      .hero-strip { grid-template-columns: repeat(2, 1fr); }
+      .hero-strip li:nth-child(3) { border-left: 0; padding-left: 0; }
+      .hero-strip li:nth-child(-n+2) { border-bottom: 1px solid var(--hairline-d); }
+    }
+    @media (max-width: 520px) {
+      .hero-strip { grid-template-columns: 1fr; }
+      .hero-strip li { border-left: 0; padding-left: 0; border-bottom: 1px solid var(--hairline-d); }
+      .hero-strip li:last-child { border-bottom: 0; }
+      .hero-actions .btn { width: 100%; }
+      .log-row { grid-template-columns: 1fr auto; }
+      .log-id { grid-column: 1 / -1; }
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       02 · CAÇADOR LOCAL · pilha de regras + evidência
+       ════════════════════════════════════════════════════════════════ */
+    .s-cacador { background: var(--bg-0); }
+
+    .cac-grid {
+      display: grid; grid-template-columns: 0.94fr 1.06fr;
+      gap: clamp(40px, 5vw, 80px); align-items: start;
+    }
+    /* a tabela de evidência tem min-width própria e rola dentro de si;
+       sem isto ela empurra a largura da coluna do grid e estoura o mobile. */
+    .cac-grid > * { min-width: 0; }
+    .evi-scroll { min-width: 0; max-width: 100%; }
+
+    .rules { border-top: 1px solid var(--hairline); }
+    .rule-row {
+      display: grid; grid-template-columns: 58px 1fr; gap: clamp(14px, 2vw, 26px);
+      padding: clamp(26px, 3vw, 34px) 0; border-bottom: 1px solid var(--hairline);
+      transition: background 0.5s var(--ease);
+    }
+    .rule-row .figure {
+      font-size: 15px; font-weight: 500; color: var(--palmeira);
+      font-family: var(--font-mono); letter-spacing: 0.08em; padding-top: 4px;
+    }
+    .rule-row h3 {
+      font-family: var(--font-display); font-weight: 600; font-size: clamp(17px, 1.5vw, 21px);
+      letter-spacing: -0.02em; line-height: 1.25;
+      transition: color 0.5s var(--ease);
+    }
+    .rule-row p {
+      margin-top: 11px; font-size: 15px; line-height: 1.62;
+      color: rgba(33, 52, 44, 0.72);
+      transition: color 0.5s var(--ease);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .rule-row:hover h3 { color: var(--floresta); }
+      .rule-row:hover p { color: rgba(33, 52, 44, 0.55); }
+    }
+
+    /* card de evidência */
+    .evi { padding: clamp(20px, 2.2vw, 28px); background: var(--bg-1); }
+    .evi-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      padding-bottom: 15px; border-bottom: 1px solid var(--hairline);
+      flex-wrap: wrap;
+    }
+    .evi-dots { display: inline-flex; gap: 6px; }
+    .evi-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--hairline); }
+    .evi-dots i:first-child { background: var(--palmeira); }
+
+    .evi-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 6px; }
+    .evi-table { width: 100%; min-width: 520px; border-collapse: collapse; }
+    .evi-table th {
+      text-align: left; padding: 14px 14px 12px 0;
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--alcaparra); font-weight: 400;
+      border-bottom: 1px solid var(--hairline);
+      white-space: nowrap;
+    }
+    .evi-table th:last-child, .evi-table td:last-child { padding-right: 0; text-align: right; }
+    .evi-table td {
+      padding: 15px 14px 15px 0; border-bottom: 1px solid var(--hairline-soft);
+      font-family: var(--font-mono); font-size: 12px; color: rgba(33, 52, 44, 0.8);
+      white-space: nowrap;
+    }
+    .evi-table tr:last-child td { border-bottom: 0; }
+    .evi-table .cell-name {
+      font-family: var(--font-body); font-weight: 600; font-size: 13.5px; color: var(--ink);
+      white-space: normal; min-width: 170px;
+    }
+    .evi-table .cell-id { color: var(--floresta); }
+    .evi-table .cell-score {
+      font-family: var(--font-display); font-weight: 600; font-size: 15px;
+      color: var(--floresta); font-variant-numeric: tabular-nums;
+    }
+    .evi-table tbody tr { transition: background 0.45s var(--ease); }
+    @media (hover: hover) and (pointer: fine) {
+      .evi-table tbody tr:hover { background: rgba(138, 156, 123, 0.1); }
+    }
+
+    .evi-foot {
+      margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hairline);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    }
+    .evi-foot .figure { font-size: 15px; color: var(--floresta); }
+
+    @media (max-width: 1024px) {
+      .cac-grid { grid-template-columns: 1fr; gap: 44px; }
+    }
+    @media (max-width: 520px) {
+      .rule-row { grid-template-columns: 1fr; gap: 10px; }
+      .evi { padding: 18px 16px; }
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       03 · O COFRE · bento assimétrico + convergência de caçadas
+       ════════════════════════════════════════════════════════════════ */
+    .s-cofre { background: var(--bg-1); }
+
+    .vault-grid {
+      display: grid; grid-template-columns: repeat(12, 1fr);
+      gap: clamp(14px, 1.5vw, 20px);
+    }
+    .vault-viz { grid-column: span 7; padding: clamp(22px, 2.4vw, 32px); background: var(--bg-0); }
+    .vault-lever {
+      grid-column: span 5; padding: clamp(22px, 2.2vw, 30px); background: var(--bg-0);
+      display: flex; flex-direction: column;
+    }
+    /* 7+5 na primeira linha, 5+7 na segunda: assimetria que ainda fecha as 12 colunas */
+    .vault-lever--wide { grid-column: span 7; }
+
+    .lever-top { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+    .lever-top .figure { font-size: clamp(26px, 2.6vw, 36px); font-weight: 600; color: var(--palmeira); }
+    .vault-lever h3 {
+      margin-top: 18px; font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(17px, 1.5vw, 21px); letter-spacing: -0.02em; line-height: 1.25;
+      transition: color 0.5s var(--ease);
+    }
+    .vault-lever p {
+      margin-top: 12px; font-size: 15px; line-height: 1.62; color: rgba(33, 52, 44, 0.72);
+      transition: color 0.5s var(--ease);
+    }
+    .vault-lever .lever-tag {
+      margin-top: auto; padding-top: 20px;
+      display: inline-flex; align-items: center; gap: 9px;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .vault-lever:hover h3 { color: var(--floresta); }
+      .vault-lever:hover p { color: rgba(33, 52, 44, 0.55); }
+    }
+
+    /* convergência: 5 caçadas viram 1 acervo */
+    .conv { display: grid; grid-template-columns: 1fr 64px 1fr; gap: 0; align-items: center; margin-top: 24px; }
+    .conv-col > .meta { padding-bottom: 12px; border-bottom: 1px solid var(--hairline); }
+
+    .conv-in li {
+      display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px;
+      padding: 11px 0; border-bottom: 1px solid var(--hairline-soft);
+      font-family: var(--font-mono); font-size: 11.5px; color: rgba(33, 52, 44, 0.72);
+    }
+    .conv-in li:last-child { border-bottom: 0; }
+    .conv-in .bar {
+      display: block; height: 3px; background: var(--palmeira); border-radius: 2px;
+      margin-top: 7px; opacity: 0.5; transform-origin: left center;
+    }
+    .conv-in b { font-weight: 400; color: var(--alcaparra); }
+
+    .conv-mid { display: grid; place-items: center; height: 100%; position: relative; }
+    .conv-mid::before {
+      content: ""; position: absolute; inset: 18px auto 18px 50%;
+      width: 1px; background: var(--hairline);
+    }
+    .conv-mid svg { position: relative; z-index: 2; background: var(--bg-0); padding: 8px 0; }
+
+    .conv-out {
+      padding: 18px; background: var(--bg-1); border-radius: var(--radius-doc);
+      border: 1px solid var(--hairline);
+    }
+    .conv-out .figure { font-size: clamp(32px, 3.4vw, 46px); font-weight: 700; color: var(--floresta); }
+    .conv-out .conv-note { margin-top: 8px; font-size: 13px; color: rgba(33, 52, 44, 0.7); line-height: 1.5; }
+    .conv-dedupe {
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--hairline);
+      display: flex; flex-direction: column; gap: 9px;
+    }
+    .conv-dedupe span {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--alcaparra);
+    }
+    .conv-dedupe span b { color: var(--floresta); font-weight: 400; }
+
+    @media (max-width: 1024px) {
+      .vault-viz, .vault-lever { grid-column: 1 / -1; }
+    }
+    @media (max-width: 560px) {
+      .conv { grid-template-columns: 1fr; gap: 18px; }
+      .conv-mid { height: 44px; transform: rotate(90deg); }
+      .conv-mid::before { inset: 50% 0 auto 0; width: auto; height: 1px; }
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       04 · ARSENAL · faixa horizontal com scroll-snap, retrato 3:4
+       ════════════════════════════════════════════════════════════════ */
+    .s-arsenal { background: var(--bg-0); overflow: hidden; }
+    .arsenal-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; }
+    .arsenal-nav { display: flex; gap: 10px; flex: none; }
+    /* setas só existem quando a faixa realmente transborda */
+    .arsenal-nav.is-hidden { display: none; }
+    .arsenal-nav button {
+      width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--hairline);
+      display: grid; place-items: center; color: var(--ink);
+      transition: border-color 0.4s var(--ease), color 0.4s var(--ease), opacity 0.4s var(--ease);
+    }
+    .arsenal-nav button:hover { border-color: var(--floresta); color: var(--floresta); }
+    .arsenal-nav button[disabled] { opacity: 0.3; cursor: default; }
+    .arsenal-nav button[disabled]:hover { border-color: var(--hairline); color: var(--ink); }
+
+    .arsenal-track {
+      display: grid; grid-auto-flow: column; grid-auto-columns: minmax(272px, 1fr);
+      gap: clamp(14px, 1.5vw, 20px);
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      scrollbar-width: none; -ms-overflow-style: none;
+      padding-bottom: 4px;
+    }
+    .arsenal-track::-webkit-scrollbar { display: none; }
+
+    .agent {
+      scroll-snap-align: start; aspect-ratio: 3 / 4;
+      padding: clamp(20px, 2.2vw, 28px);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .agent-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .agent-mark {
+      width: 40px; height: 40px; border-radius: var(--radius-doc);
+      border: 1px solid var(--hairline); display: grid; place-items: center;
+      color: var(--floresta); flex: none;
+      transition: background 0.5s var(--ease), border-color 0.5s var(--ease), color 0.5s var(--ease);
+    }
+    .agent h3 {
+      margin-top: auto; font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(18px, 1.6vw, 22px); letter-spacing: -0.025em; line-height: 1.2;
+      transition: color 0.5s var(--ease);
+    }
+    .agent p {
+      margin-top: 14px; font-size: 14.5px; line-height: 1.6; color: rgba(33, 52, 44, 0.72);
+      transition: color 0.5s var(--ease);
+    }
+    .agent-out { margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--hairline); }
+    .agent-out ul { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .agent-out li {
+      padding: 5px 11px; border: 1px solid var(--hairline); border-radius: var(--radius-pill);
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
+      color: var(--alcaparra); text-transform: uppercase;
+      transition: border-color 0.5s var(--ease), color 0.5s var(--ease);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .agent:hover h3 { color: var(--floresta); }
+      .agent:hover p { color: rgba(33, 52, 44, 0.55); }
+      .agent:hover .agent-mark { background: var(--floresta); border-color: var(--floresta); color: var(--bg-0); }
+      .agent:hover .agent-out li { border-color: rgba(36, 105, 106, 0.4); color: var(--floresta); }
+    }
+
+    .arsenal-hint { margin-top: 22px; display: flex; align-items: center; gap: 10px; }
+
+    @media (max-width: 760px) {
+      .arsenal-head { flex-direction: column; align-items: flex-start; gap: 26px; }
+      .arsenal-nav { display: none; }
+      .arsenal-track { grid-auto-columns: 80%; }
+      .agent { aspect-ratio: auto; min-height: 400px; }
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       05 · O QUE CONSTRUIR · índice editorial de largura total
+       ════════════════════════════════════════════════════════════════ */
+    .s-construir { background: var(--bg-1); }
+    .build-list { border-top: 1px solid var(--hairline); }
+
+    .build-row {
+      display: grid; grid-template-columns: 76px minmax(220px, 0.85fr) 1.15fr auto;
+      align-items: center; gap: clamp(16px, 2.4vw, 40px);
+      padding: clamp(26px, 3vw, 38px) 0; border-bottom: 1px solid var(--hairline);
+      position: relative; transition: color 0.5s var(--ease);
+    }
+    .build-row .b-num {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em;
+      color: var(--palmeira);
+    }
+    .build-row h3 {
+      font-family: var(--font-display); font-weight: 600;
+      font-size: clamp(18px, 1.9vw, 26px); letter-spacing: -0.025em; line-height: 1.2;
+      transition: color 0.5s var(--ease);
+    }
+    .build-row p {
+      font-size: 15px; line-height: 1.62; color: rgba(33, 52, 44, 0.72);
+      transition: color 0.5s var(--ease);
+    }
+    .build-row .b-tag {
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--alcaparra); white-space: nowrap;
+      padding: 7px 14px; border: 1px solid var(--hairline); border-radius: var(--radius-pill);
+      transition: border-color 0.5s var(--ease), color 0.5s var(--ease);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .build-row:hover h3 { color: var(--floresta); }
+      .build-row:hover p { color: rgba(33, 52, 44, 0.52); }
+      .build-row:hover .b-tag { border-color: rgba(36, 105, 106, 0.45); color: var(--floresta); }
+    }
+
+    @media (max-width: 1024px) {
+      .build-row { grid-template-columns: 60px 1fr; row-gap: 12px; }
+      .build-row p { grid-column: 2; }
+      .build-row .b-tag { grid-column: 2; justify-self: start; }
+    }
+    @media (max-width: 520px) {
+      .build-row { grid-template-columns: 1fr; gap: 12px; }
+      .build-row p, .build-row .b-tag { grid-column: 1; }
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       06 · COMPARATIVO · duas colunas, coluna ativa em destaque
+       ════════════════════════════════════════════════════════════════ */
+    .s-compara { background: var(--bg-0); }
+
+    .cmp {
+      border: 1px solid var(--hairline); border-radius: var(--radius-card); overflow: hidden;
+    }
+    .cmp-row {
+      display: grid; grid-template-columns: minmax(150px, 0.72fr) 1fr 1fr;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .cmp-row:last-child { border-bottom: 0; }
+    .cmp-row > * {
+      padding: clamp(18px, 2.1vw, 28px);
+      border-left: 1px solid var(--hairline);
+      transition: background 0.5s var(--ease), color 0.5s var(--ease);
+    }
+    .cmp-row > *:first-child { border-left: 0; }
+
+    .cmp-head { background: var(--bg-1); }
+    .cmp-head .col-title {
+      font-family: var(--font-display); font-weight: 600; font-size: clamp(14.5px, 1.3vw, 18px);
+      letter-spacing: -0.02em; line-height: 1.25;
+    }
+    .cmp-head .col-title small {
+      display: block; margin-top: 8px;
+      font-family: var(--font-mono); font-weight: 400; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--alcaparra);
+    }
+    .cmp-col-good { background: rgba(36, 105, 106, 0.05); }
+    .cmp-head .cmp-col-good .col-title { color: var(--floresta); }
+
+    .cmp-label {
+      font-family: var(--font-label); font-weight: 600; font-size: 12px;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--alcaparra);
+      display: flex; align-items: center;
+    }
+    .cmp-cell .figure { font-size: clamp(19px, 1.9vw, 26px); font-weight: 600; }
+    .cmp-cell.cmp-col-dark .figure { color: rgba(33, 52, 44, 0.4); }
+    .cmp-cell.cmp-col-good .figure { color: var(--floresta); }
+    .cmp-cell p {
+      margin-top: 11px; font-size: 14.5px; line-height: 1.58; color: rgba(33, 52, 44, 0.72);
+    }
+    .cmp-cell.cmp-col-dark p { color: rgba(33, 52, 44, 0.5); }
+
+    @media (max-width: 860px) {
+      .cmp-row { grid-template-columns: 1fr; }
+      .cmp-row > * { border-left: 0; border-top: 1px solid var(--hairline); }
+      .cmp-row > *:first-child { border-top: 0; }
+      .cmp-row.cmp-head { display: none; }
+      .cmp-label { padding-bottom: 4px; }
+      .cmp-cell::before {
+        content: attr(data-col); display: block; margin-bottom: 10px;
+        font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+        text-transform: uppercase; color: var(--alcaparra);
+      }
+      .cmp-cell.cmp-col-good::before { color: var(--floresta); }
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       07 · FECHAMENTO · bookend escuro
+       ════════════════════════════════════════════════════════════════ */
+    .s-fecho { overflow: hidden; }
+    .fecho-grid {
+      display: grid; grid-template-columns: 1.05fr 0.95fr;
+      gap: clamp(36px, 4.5vw, 72px); align-items: start;
+    }
+    .fecho h2 {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(29px, 3.7vw, 52px); letter-spacing: -0.032em; line-height: 1.08;
+      margin-top: 24px; text-wrap: balance;
+    }
+    .fecho h2 em { font-style: normal; color: var(--palmeira); }
+    .fecho-sub {
+      margin-top: 24px; max-width: 50ch; font-size: clamp(15.5px, 1.1vw, 18px);
+      line-height: 1.62; color: rgba(247, 246, 241, 0.76);
+    }
+    .fecho-actions { margin-top: 36px; display: flex; gap: 16px; flex-wrap: wrap; }
+    .fecho-seals { margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+
+    .access { padding: clamp(24px, 2.6vw, 34px); }
+    .access-list { margin-top: 6px; }
+    .access-list li {
+      display: grid; grid-template-columns: 22px 1fr; gap: 14px; align-items: start;
+      padding: 16px 0; border-bottom: 1px solid var(--hairline-d-soft);
+    }
+    .access-list li:last-child { border-bottom: 0; }
+    .access-list svg { margin-top: 3px; color: var(--palmeira); flex: none; }
+    .access-list strong {
+      display: block; font-family: var(--font-body); font-weight: 600; font-size: 15px;
+      color: var(--bg-0); line-height: 1.35;
+    }
+    .access-list span {
+      display: block; margin-top: 6px; font-size: 13.5px; line-height: 1.55;
+      color: rgba(247, 246, 241, 0.62);
+    }
+    .access-foot {
+      margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--hairline-d);
+    }
+    .warranty {
+      display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start;
+    }
+    .warranty-mark {
+      width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--palmeira);
+      display: grid; place-items: center; color: var(--palmeira);
+    }
+    .warranty strong {
+      display: block; font-family: var(--font-display); font-weight: 600; font-size: 15px;
+      letter-spacing: -0.015em; color: var(--bg-0);
+    }
+    .warranty p { margin-top: 8px; font-size: 13.5px; line-height: 1.58; color: rgba(247, 246, 241, 0.66); }
+
+    @media (max-width: 1024px) { .fecho-grid { grid-template-columns: 1fr; gap: 42px; } }
+    @media (max-width: 520px) { .fecho-actions .btn { width: 100%; } }
+
+    /* ════════════════ RODAPÉ ════════════════ */
+    .site-footer { padding: 46px 0 56px; border-top: 1px solid var(--hairline-d); }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-links a {
+      font-family: var(--font-label); font-weight: 500; font-size: 12.5px;
+      letter-spacing: 0.06em; color: rgba(247, 246, 241, 0.6);
+      transition: color 0.4s var(--ease);
+    }
+    .footer-links a:hover { color: var(--palmeira); }
+
+    /* ════════════════ MOVIMENTO REDUZIDO ════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .panel::before, .panel::after { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#conteudo">pular para o conteúdo</a>
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="site-header" id="header">
+    <div class="container header-inner">
+      <a href="#topo" class="lockup" aria-label="afero hub, início"><b>afero</b><span>hub</span></a>
+      <nav class="nav" aria-label="seções da página">
+        <a href="#cacador">caçador</a>
+        <a href="#cofre">cofre</a>
+        <a href="#arsenal">arsenal</a>
+        <a href="#construir">construir</a>
+        <a href="#acesso">acesso</a>
+      </nav>
+      <a href="#" class="btn btn-primary header-cta" data-checkout>ativar o caçador</a>
+    </div>
+  </header>
+
+  <main id="conteudo">
+
+    <!-- ═══════════════ 01 · HERO ═══════════════ -->
+    <section class="hero bookend-dark" id="topo">
+      <div class="container">
+        <div class="hero-grid">
+
+          <div class="hero-copy">
+            <p class="hero-slug" data-anim="hero">
+              <span class="slug-cat">inteligência de mercado</span>
+              <span class="slug-val">caçador local + arsenal de ia</span>
+            </p>
+
+            <h1 data-anim="hero">
+              Descubra o que já está vendendo <em>antes de gastar um único centavo</em> criando do zero.
+            </h1>
+
+            <p class="hero-sub" data-anim="hero">
+              O afero hub une o garimpo invisível de ofertas escaladas a um arsenal completo de agentes
+              de IA para remodelar copy, páginas e produtos em tempo recorde.
+            </p>
+
+            <div class="hero-actions" data-anim="hero">
+              <a href="#" class="btn btn-primary" data-checkout>
+                ativar o caçador
+                <svg class="arw" width="15" height="13" viewBox="0 0 15 13" fill="none" aria-hidden="true">
+                  <path d="M1 6.5h12M8.5 2l4.5 4.5L8.5 11" stroke="currentColor" stroke-width="1.6"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+              <a href="#cacador" class="btn btn-ghost">ver o mecanismo</a>
+            </div>
+
+            <p class="seal hero-seal" data-anim="hero">
+              <svg width="13" height="15" viewBox="0 0 13 15" fill="none" aria-hidden="true">
+                <path d="M6.5 1 1.5 3v4c0 3.2 2.1 6.1 5 6.9 2.9-.8 5-3.7 5-6.9V3L6.5 1Z" stroke="currentColor"
+                  stroke-width="1.2" stroke-linejoin="round" />
+                <path d="M4.5 7.4 6 8.9l2.8-2.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              a caçada roda e fica no seu computador. nenhum dado sai do seu workspace.
+            </p>
+          </div>
+
+          <!-- instrumento: radar + registro -->
+          <div class="rig" data-anim="rig">
+            <div class="panel rig-radar" data-glow>
+              <div class="rig-head">
+                <span class="meta">varredura local · registro público</span>
+                <span class="rig-file">
+                  <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
+                    <path d="M1 1h6l3 3v8H1V1Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" />
+                    <path d="M7 1v3h3" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" />
+                  </svg>
+                  cacada_2026-08-28.csv
+                </span>
+              </div>
+
+              <div class="radar-stage">
+                <svg class="radar-svg" viewBox="0 0 200 200" role="img"
+                  aria-label="Radar de varredura com quatro sinais captados">
+                  <circle class="ring" cx="100" cy="100" r="86" />
+                  <circle class="ring" cx="100" cy="100" r="62" />
+                  <circle class="ring" cx="100" cy="100" r="38" />
+                  <path class="cross" d="M100 6v34M100 160v34M6 100h34M160 100h34" stroke-linecap="round" />
+                  <g class="sweep" data-sweep>
+                    <path d="M100 100 L100 14 A86 86 0 0 1 161 39 Z" fill="url(#sweepGrad)" opacity="0.5" />
+                  </g>
+                  <defs>
+                    <linearGradient id="sweepGrad" x1="100" y1="100" x2="160" y2="30"
+                      gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#8A9C7B" stop-opacity="0.42" />
+                      <stop offset="1" stop-color="#8A9C7B" stop-opacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="blip" data-blip cx="138" cy="72" r="3.4" />
+                  <circle class="blip" data-blip cx="66" cy="128" r="3.4" />
+                  <circle class="blip" data-blip cx="124" cy="140" r="3.4" />
+                  <circle class="blip" data-blip cx="78" cy="62" r="3.4" />
+                  <circle class="core" cx="100" cy="100" r="5.2" />
+                </svg>
+              </div>
+              <span class="radar-read">sinais captados nesta varredura · <b data-count="47">47</b></span>
+            </div>
+
+            <div class="panel rig-log" data-glow>
+              <div class="rig-head">
+                <span class="meta">ofertas confirmadas</span>
+                <span class="rig-file">3 de 47 acima do corte</span>
+              </div>
+
+              <ul class="log-list">
+                <li class="log-row" data-logrow>
+                  <span class="log-id">SG-4471</span>
+                  <span class="log-name">Protocolo de emagrecimento 21D
+                    <small>saúde · vsl + order bump</small></span>
+                  <span class="log-score">8.4<small>score</small></span>
+                </li>
+                <li class="log-row" data-logrow>
+                  <span class="log-id">SG-4468</span>
+                  <span class="log-name">Tráfego pago para clínicas
+                    <small>serviços · quiz + call</small></span>
+                  <span class="log-score">7.9<small>score</small></span>
+                </li>
+                <li class="log-row" data-logrow>
+                  <span class="log-id">SG-4462</span>
+                  <span class="log-name">Planner financeiro digital
+                    <small>finanças · checkout direto</small></span>
+                  <span class="log-score">7.6<small>score</small></span>
+                </li>
+              </ul>
+
+              <div class="sig-set">
+                <span class="sig" data-sig><i aria-hidden="true"></i>pixel ativo</span>
+                <span class="sig" data-sig><i aria-hidden="true"></i>checkout validado</span>
+                <span class="sig" data-sig><i aria-hidden="true"></i>recorrência 12 dias</span>
+                <span class="sig" data-sig><i aria-hidden="true"></i>score 8.4</span>
+              </div>
+
+              <div class="rig-out">
+                <span class="meta">saída</span>
+                <span class="rig-arrow">
+                  esteira de remodelagem · 4 agentes
+                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" aria-hidden="true">
+                    <path d="M1 6.5h12M8.5 2l4.5 4.5L8.5 11" stroke="currentColor" stroke-width="1.6"
+                      stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <ul class="hero-strip">
+          <li>
+            <p class="figure">18</p>
+            <p class="meta">queries cruzadas por varredura</p>
+          </li>
+          <li>
+            <p class="figure">R$ 0</p>
+            <p class="meta">custo de servidor por caçada</p>
+          </li>
+          <li>
+            <p class="figure">4</p>
+            <p class="meta">agentes na esteira de remodelagem</p>
+          </li>
+          <li>
+            <p class="figure">100%</p>
+            <p class="meta">dos dados no seu workspace</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 02 · CAÇADOR LOCAL ═══════════════ -->
+    <section class="s-cacador" id="cacador">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">o carro-chefe · agente caçador local</p>
+          <h2 class="sec-title">O garimpo invisível encontra <em>quem já está recebendo tráfego pesado</em> agora.</h2>
+          <p class="sec-sub">
+            Oferta escalada deixa rastro público: página no ar, pixel disparando, checkout ativo,
+            criativo rodando há semanas. O Caçador cruza esse rastro direto da sua máquina e devolve
+            apenas o que passou no filtro duplo de sinal.
+          </p>
+        </div>
+
+        <div class="cac-grid">
+          <ol class="rules" data-reveal>
+            <li class="rule-row">
+              <span class="figure">01</span>
+              <div>
+                <h3>Roda no seu computador, com a sua própria chave</h3>
+                <p>
+                  O script executa local. A chave de API é sua, a lista que sai da varredura é sua,
+                  e nenhuma linha do resultado passa por um servidor intermediário.
+                </p>
+              </div>
+            </li>
+            <li class="rule-row">
+              <span class="figure">02</span>
+              <div>
+                <h3>Caçadas ilimitadas, sem mensalidade de espionagem</h3>
+                <p>
+                  Rodar dez vezes no mesmo dia custa o mesmo que rodar uma. Sem cota de créditos,
+                  sem plano por assento, sem fila de processamento.
+                </p>
+              </div>
+            </li>
+            <li class="rule-row">
+              <span class="figure">03</span>
+              <div>
+                <h3>Varre página, funil, gateway e biblioteca de criativos</h3>
+                <p>
+                  Cada candidata é conferida em quatro frentes antes de entrar na lista. Oferta que
+                  aparece só em uma frente fica de fora do relatório.
+                </p>
+              </div>
+            </li>
+          </ol>
+
+          <div class="panel evi" data-glow data-reveal>
+            <div class="evi-head">
+              <span class="evi-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="meta">saída bruta · cacada_2026-08-28.csv</span>
+            </div>
+
+            <div class="evi-scroll" tabindex="0" role="region" aria-label="Linhas de uma caçada, role para o lado">
+              <table class="evi-table">
+                <thead>
+                  <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">oferta</th>
+                    <th scope="col">sinal duplo</th>
+                    <th scope="col">recorrência</th>
+                    <th scope="col">score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="cell-id">SG-4471</td>
+                    <td class="cell-name">Protocolo de emagrecimento 21D</td>
+                    <td>pixel + checkout</td>
+                    <td>12 dias</td>
+                    <td class="cell-score">8.4</td>
+                  </tr>
+                  <tr>
+                    <td class="cell-id">SG-4468</td>
+                    <td class="cell-name">Tráfego pago para clínicas</td>
+                    <td>pixel + criativo</td>
+                    <td>09 dias</td>
+                    <td class="cell-score">7.9</td>
+                  </tr>
+                  <tr>
+                    <td class="cell-id">SG-4462</td>
+                    <td class="cell-name">Planner financeiro digital</td>
+                    <td>checkout + funil</td>
+                    <td>21 dias</td>
+                    <td class="cell-score">7.6</td>
+                  </tr>
+                  <tr>
+                    <td class="cell-id">SG-4455</td>
+                    <td class="cell-name">Mentoria de inglês para TI</td>
+                    <td>pixel + checkout</td>
+                    <td>07 dias</td>
+                    <td class="cell-score">7.1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="evi-foot">
+              <span class="meta">linhas acima do corte</span>
+              <span class="figure">04 de 47</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 03 · O COFRE ═══════════════ -->
+    <section class="s-cofre" id="cofre">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">a memória do hub · cofre privado de caçadas</p>
+          <h2 class="sec-title">Toda varredura entra no <em>acervo</em>, e nada do que você minerou se perde.</h2>
+          <p class="sec-sub">
+            O Hub acumula os CSVs de todas as suas caçadas, cruza por domínio e por ID, e mantém uma
+            lista única que só cresce. Quanto mais você caça, mais afiada fica a leitura do mercado.
+          </p>
+        </div>
+
+        <div class="vault-grid">
+
+          <div class="panel vault-viz" data-glow data-reveal>
+            <div class="evi-head">
+              <span class="meta">histórico acumulado · agosto</span>
+              <span class="meta">deduplicação automática</span>
+            </div>
+
+            <div class="conv">
+              <div class="conv-col conv-in-col">
+                <p class="meta">entradas brutas</p>
+                <ul class="conv-in">
+                  <li>
+                    <span>caçada 01 · 21.08<span class="bar" data-bar style="width:64%"></span></span>
+                    <b>47</b>
+                  </li>
+                  <li>
+                    <span>caçada 02 · 22.08<span class="bar" data-bar style="width:52%"></span></span>
+                    <b>39</b>
+                  </li>
+                  <li>
+                    <span>caçada 03 · 25.08<span class="bar" data-bar style="width:72%"></span></span>
+                    <b>52</b>
+                  </li>
+                  <li>
+                    <span>caçada 04 · 27.08<span class="bar" data-bar style="width:60%"></span></span>
+                    <b>44</b>
+                  </li>
+                  <li>
+                    <span>caçada 05 · 28.08<span class="bar" data-bar style="width:64%"></span></span>
+                    <b>47</b>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="conv-mid" aria-hidden="true">
+                <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                  <path d="M2 13h20M16.5 7l5.5 6-5.5 6" stroke="#24696A" stroke-width="1.4"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+
+              <div class="conv-col">
+                <p class="meta">acervo consolidado</p>
+                <div class="conv-out">
+                  <p class="figure" data-count="163">163</p>
+                  <p class="conv-note">ofertas únicas, sem uma linha repetida, prontas para filtrar por
+                    nicho, score ou recorrência.</p>
+                  <div class="conv-dedupe">
+                    <span>linhas recebidas <b>229</b></span>
+                    <span>duplicadas removidas <b>66</b></span>
+                    <span>recorrentes marcadas <b>24</b></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel vault-lever" data-glow data-reveal>
+            <div class="lever-top">
+              <span class="figure">01</span>
+              <span class="meta">caixa rápido</span>
+            </div>
+            <h3>Levantar caixa em 48 horas</h3>
+            <p>
+              Filtre por produto simples de entrega e score alto. São as ofertas que dá para modelar,
+              montar e colocar no ar dentro de um fim de semana, sem depender de produção pesada.
+            </p>
+            <span class="lever-tag meta">filtro · score &gt; 7.5 · entrega simples</span>
+          </div>
+
+          <div class="panel vault-lever" data-glow data-reveal>
+            <div class="lever-top">
+              <span class="figure">02</span>
+              <span class="meta">validação</span>
+            </div>
+            <h3>Confirmar o nicho antes de produzir</h3>
+            <p>
+              Antes de gravar a primeira aula ou escrever a primeira página, veja quantas ofertas
+              ativas o acervo já registrou naquele nicho e em que ângulo elas estão vendendo.
+            </p>
+            <span class="lever-tag meta">filtro · nicho · janela de 90 dias</span>
+          </div>
+
+          <div class="panel vault-lever vault-lever--wide" data-glow data-reveal>
+            <div class="lever-top">
+              <span class="figure">03</span>
+              <span class="meta">recorrência</span>
+            </div>
+            <h3>Ler quem continua no ar semana após semana</h3>
+            <p>
+              O acervo marca a oferta que reaparece em varreduras seguidas. Ninguém sustenta tráfego
+              por 21 dias no prejuízo, então essa coluna é a prova de lucro mais direta que existe.
+            </p>
+            <span class="lever-tag meta">filtro · recorrência &gt; 14 dias</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 04 · ARSENAL ═══════════════ -->
+    <section class="s-arsenal" id="arsenal">
+      <div class="container">
+        <div class="sec-head arsenal-head" data-reveal>
+          <div>
+            <p class="eyebrow">o arsenal de remodelação · esteira de 4 agentes</p>
+            <h2 class="sec-title">A oferta minerada entra crua e sai <em>pronta para vender</em>.</h2>
+            <p class="sec-sub">
+              Achar a oferta resolve metade do problema. A outra metade é o trabalho pesado de
+              remodelar tudo com o seu ângulo, e é aí que a esteira assume.
+            </p>
+          </div>
+          <div class="arsenal-nav">
+            <button type="button" data-track-prev aria-label="Agente anterior">
+              <svg width="15" height="13" viewBox="0 0 15 13" fill="none" aria-hidden="true">
+                <path d="M14 6.5H2M6.5 2 2 6.5 6.5 11" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button type="button" data-track-next aria-label="Próximo agente">
+              <svg width="15" height="13" viewBox="0 0 15 13" fill="none" aria-hidden="true">
+                <path d="M1 6.5h12M8.5 2 13 6.5 8.5 11" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="arsenal-track" data-track tabindex="0" role="region"
+          aria-label="Os quatro agentes do arsenal, role para o lado">
+
+          <article class="panel agent" data-glow>
+            <div class="agent-top">
+              <span class="agent-mark">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path d="M3 15V3h7l5 5v7H3Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+                  <path d="M6 8.5h6M6 11.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="meta">agente 01</span>
+            </div>
+            <h3>Agente Copywriter</h3>
+            <p>
+              Recebe a oferta minerada e escreve uma narrativa nova de resposta direta com o seu
+              ângulo: big idea, ganchos de criativo, carta de vendas completa e roteiro de VSL.
+            </p>
+            <div class="agent-out">
+              <span class="meta">entrega</span>
+              <ul>
+                <li>ganchos</li>
+                <li>carta de vendas</li>
+                <li>roteiro de vsl</li>
+                <li>e-mails</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel agent" data-glow>
+            <div class="agent-top">
+              <span class="agent-mark">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <rect x="2.5" y="3" width="13" height="12" rx="1.4" stroke="currentColor" stroke-width="1.3" />
+                  <path d="M2.5 6.5h13M5.5 9.5h4M5.5 12h7" stroke="currentColor" stroke-width="1.3"
+                    stroke-linecap="round" />
+                </svg>
+              </span>
+              <span class="meta">agente 02</span>
+            </div>
+            <h3>Agente de Páginas</h3>
+            <p>
+              Devolve o HTML e o CSS limpos da página de vendas já estruturados no design system,
+              prontos para subir na Vercel ou no servidor que você usa hoje.
+            </p>
+            <div class="agent-out">
+              <span class="meta">entrega</span>
+              <ul>
+                <li>página de vendas</li>
+                <li>html + css</li>
+                <li>responsivo</li>
+                <li>deploy direto</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel agent" data-glow>
+            <div class="agent-top">
+              <span class="agent-mark">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path d="M4 2.5h7.5L15 6v9.5H4V2.5Z" stroke="currentColor" stroke-width="1.3"
+                    stroke-linejoin="round" />
+                  <path d="M11 2.5V6h4M6.8 9.5h5M6.8 12h3.4" stroke="currentColor" stroke-width="1.3"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span class="meta">agente 03</span>
+            </div>
+            <h3>Agente de Entregáveis</h3>
+            <p>
+              Constrói o produto que o comprador recebe depois do checkout: e-book, manual operacional,
+              checklist e guia passo a passo, todos escritos em cima do ângulo já validado.
+            </p>
+            <div class="agent-out">
+              <span class="meta">entrega</span>
+              <ul>
+                <li>e-book</li>
+                <li>manual</li>
+                <li>checklists</li>
+                <li>bônus</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="panel agent" data-glow>
+            <div class="agent-top">
+              <span class="agent-mark">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.3" />
+                  <path d="M9 5.6v3.6l2.4 1.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span class="meta">agente 04</span>
+            </div>
+            <h3>Agente de Quiz &amp; Escala</h3>
+            <p>
+              Monta o funil interativo de qualificação que segmenta o lead por perfil, entrega a oferta
+              certa para cada tipo de comprador e derruba o custo por lead no tráfego frio.
+            </p>
+            <div class="agent-out">
+              <span class="meta">entrega</span>
+              <ul>
+                <li>funil de quiz</li>
+                <li>perfis</li>
+                <li>ofertas por trilha</li>
+                <li>captura</li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+
+        <p class="arsenal-hint meta" data-reveal>
+          role a faixa para o lado · os quatro agentes trabalham em cima do mesmo relatório de caçada
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 05 · O QUE CONSTRUIR ═══════════════ -->
+    <section class="s-construir" id="construir">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">aplicação prática</p>
+          <h2 class="sec-title">O que dá para construir com o <em>afero hub</em></h2>
+          <p class="sec-sub">
+            O mesmo ecossistema atende quem vende um e-book de vinte e sete reais e quem monta um funil
+            completo com esteira de upsell. Muda o que você pede à esteira, o mecanismo continua o mesmo.
+          </p>
+        </div>
+
+        <ol class="build-list">
+          <li class="build-row">
+            <span class="b-num">01</span>
+            <h3>Infoprodutos de entrada e e-books</h3>
+            <p>
+              Produto de ticket baixo, entre R$ 27 e R$ 97, feito para cobrir o custo de tráfego e
+              gerar comprador imediato na base. O Agente de Entregáveis escreve o conteúdo inteiro.
+            </p>
+            <span class="b-tag">ticket 27 a 97</span>
+          </li>
+          <li class="build-row">
+            <span class="b-num">02</span>
+            <h3>Funis de alta conversão com VSL</h3>
+            <p>
+              Página completa com roteiro persuasivo e esteira de order bump, upsell e downsell
+              montada para subir o ticket médio sem aumentar o investimento em anúncio.
+            </p>
+            <span class="b-tag">vsl + esteira</span>
+          </li>
+          <li class="build-row">
+            <span class="b-num">03</span>
+            <h3>Micro-SaaS e ferramentas web</h3>
+            <p>
+              Dashboards, calculadoras e aplicações leves em código limpo, construídas em cima de uma
+              demanda que o acervo já mostrou estar sendo atendida com produto pago.
+            </p>
+            <span class="b-tag">código limpo</span>
+          </li>
+          <li class="build-row">
+            <span class="b-num">04</span>
+            <h3>Funis de diagnóstico interativo</h3>
+            <p>
+              Página de perguntas que segmenta o público por perfil e entrega a oferta certa para cada
+              tipo de comprador, barateando o lead qualificado no tráfego frio.
+            </p>
+            <span class="b-tag">quiz + segmentação</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 06 · COMPARATIVO ═══════════════ -->
+    <section class="s-compara" id="comparativo">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">comparativo direto</p>
+          <h2 class="sec-title">Criar no escuro cobra caro. <em>O método cobra menos.</em></h2>
+          <p class="sec-sub">
+            A diferença entre os dois caminhos aparece em três lugares que todo operador sente no
+            primeiro mês: o tempo até o primeiro anúncio no ar, o dinheiro em risco e a conta fixa
+            das ferramentas.
+          </p>
+        </div>
+
+        <div class="cmp" data-reveal>
+          <div class="cmp-row cmp-head">
+            <div class="cmp-label" aria-hidden="true"></div>
+            <div class="cmp-col-dark">
+              <p class="col-title">Criar no escuro<small>modo padrão do mercado</small></p>
+            </div>
+            <div class="cmp-col-good">
+              <p class="col-title">Método afero hub<small>caçada + esteira guiada</small></p>
+            </div>
+          </div>
+
+          <div class="cmp-row">
+            <div class="cmp-label">Tempo para colocar no ar</div>
+            <div class="cmp-cell cmp-col-dark" data-col="criar no escuro">
+              <p class="figure">Semanas</p>
+              <p>Bloqueio criativo em cada etapa. Escolher nicho, decidir ângulo, escrever a copy e
+                montar a página viram quatro decisões travadas em sequência.</p>
+            </div>
+            <div class="cmp-cell cmp-col-good" data-col="método afero hub">
+              <p class="figure">Poucos dias</p>
+              <p>A caçada entrega o ângulo já testado e a esteira devolve copy, página e entregável.
+                Você decide, revisa e publica.</p>
+            </div>
+          </div>
+
+          <div class="cmp-row">
+            <div class="cmp-label">Risco financeiro</div>
+            <div class="cmp-cell cmp-col-dark" data-col="criar no escuro">
+              <p class="figure">Alto</p>
+              <p>O tráfego vira o teste. Você descobre se aquele público compra depois de já ter
+                queimado o orçamento tentando descobrir.</p>
+            </div>
+            <div class="cmp-cell cmp-col-good" data-col="método afero hub">
+              <p class="figure">Controlado</p>
+              <p>Você investe em cima de modelo que já estava faturando quando a varredura rodou, com
+                pixel e checkout confirmados na mesma linha.</p>
+            </div>
+          </div>
+
+          <div class="cmp-row">
+            <div class="cmp-label">Custo operacional</div>
+            <div class="cmp-cell cmp-col-dark" data-col="criar no escuro">
+              <p class="figure">Mensalidade</p>
+              <p>Centenas de reais por mês em ferramenta de espionagem, com cota de créditos e
+                limite de consultas no plano de entrada.</p>
+            </div>
+            <div class="cmp-cell cmp-col-good" data-col="método afero hub">
+              <p class="figure">Caçada local</p>
+              <p>O script roda na sua máquina com a sua chave. Varredura ilimitada, sem servidor no
+                meio e sem cobrança por consulta.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ 07 · FECHAMENTO ═══════════════ -->
+    <section class="s-fecho bookend-dark" id="acesso">
+      <div class="container">
+        <div class="fecho-grid fecho">
+
+          <div data-reveal>
+            <p class="eyebrow">acesso completo</p>
+            <h2>Pare de apostar no escuro e comece a <em>modelar o que já vende</em>.</h2>
+            <p class="fecho-sub">
+              Você entra sem ideia e sai com uma oferta validada, estruturada e pronta para subir.
+              O Caçador mostra o que o mercado já aprovou, o arsenal monta o resto.
+            </p>
+
+            <div class="fecho-actions">
+              <a href="#" class="btn btn-primary" data-checkout>
+                ativar o caçador
+                <svg class="arw" width="15" height="13" viewBox="0 0 15 13" fill="none" aria-hidden="true">
+                  <path d="M1 6.5h12M8.5 2l4.5 4.5L8.5 11" stroke="currentColor" stroke-width="1.6"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+              <a href="#cacador" class="btn btn-ghost">rever o mecanismo</a>
+            </div>
+
+            <div class="fecho-seals">
+              <p class="seal">
+                <svg width="13" height="15" viewBox="0 0 13 15" fill="none" aria-hidden="true">
+                  <path d="M6.5 1 1.5 3v4c0 3.2 2.1 6.1 5 6.9 2.9-.8 5-3.7 5-6.9V3L6.5 1Z" stroke="currentColor"
+                    stroke-width="1.2" stroke-linejoin="round" />
+                  <path d="M4.5 7.4 6 8.9l2.8-2.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                privacidade rigorosa · as caçadas ficam no seu workspace privado
+              </p>
+              <p class="seal">
+                <svg width="13" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2" />
+                  <path d="M7 3.6V7l2.4 1.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                atualizações de heurística incluídas enquanto o acesso estiver ativo
+              </p>
+            </div>
+          </div>
+
+          <div class="panel access" data-glow data-reveal>
+            <div class="rig-head">
+              <span class="meta">o que entra no acesso</span>
+              <span class="meta">04 itens</span>
+            </div>
+
+            <ul class="access-list">
+              <li>
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8.6 6 12.5 14 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <div>
+                  <strong>Script do Caçador Local</strong>
+                  <span>Instalação guiada na sua máquina, com a sua chave e caçadas ilimitadas.</span>
+                </div>
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8.6 6 12.5 14 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <div>
+                  <strong>Acesso à Central afero hub</strong>
+                  <span>O cofre que acumula, deduplica e organiza todo o histórico das suas caçadas.</span>
+                </div>
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8.6 6 12.5 14 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <div>
+                  <strong>Arsenal de prompts dos 4 agentes</strong>
+                  <span>Copywriter, Páginas, Entregáveis e Quiz, prontos para colar e rodar.</span>
+                </div>
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M2 8.6 6 12.5 14 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <div>
+                  <strong>Atualizações de heurística</strong>
+                  <span>Quando o critério de sinal melhora, a sua varredura melhora junto.</span>
+                </div>
+              </li>
+            </ul>
+
+            <div class="access-foot">
+              <div class="warranty">
+                <span class="warranty-mark" aria-hidden="true">
+                  <svg width="17" height="17" viewBox="0 0 18 18" fill="none">
+                    <path d="M9 1.6 2.6 4v5c0 4 2.7 7.6 6.4 8.5C12.7 16.6 15.4 13 15.4 9V4L9 1.6Z"
+                      stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                    <path d="M6.2 9.2 8.2 11.2l3.7-3.8" stroke="currentColor" stroke-width="1.3"
+                      stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <div>
+                  <strong>Garantia incondicional de 7 dias</strong>
+                  <p>
+                    Roda a primeira caçada, abre o acervo, testa a esteira inteira. Se em sete dias
+                    você achar que o ecossistema não serve para o seu jogo, devolvemos o valor cheio
+                    sem pedir justificativa.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="container">
+        <footer class="site-footer">
+          <div class="footer-inner">
+            <span class="lockup"><b>afero</b><span>hub</span></span>
+            <nav class="footer-links" aria-label="links do rodapé">
+              <a href="#cacador">caçador</a>
+              <a href="#cofre">cofre</a>
+              <a href="#arsenal">arsenal</a>
+              <a href="#comparativo">comparativo</a>
+            </nav>
+            <span class="meta">victor neiva · inteligência de ofertas br e latam</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var FINE = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+      /* Bloqueio de clique direito e atalhos de copia/devtools.
+         Deterrente cosmetico contra copia casual, nao e protecao real:
+         qualquer pessoa com JS desabilitado ou view-source contorna isso. */
+      document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'F12') { e.preventDefault(); return; }
+        var ctrl = e.ctrlKey || e.metaKey;
+        if (ctrl && ['u', 'U', 's', 'S', 'c', 'C', 'a', 'A'].indexOf(e.key) !== -1) { e.preventDefault(); return; }
+        if (ctrl && e.shiftKey && ['i', 'I', 'j', 'J', 'c', 'C'].indexOf(e.key) !== -1) { e.preventDefault(); }
+      });
+
+      /* ══════════════ Header: escuro sobre o hero, claro no miolo ══════════════ */
+      (function () {
+        var header = document.getElementById('header');
+        var hero = document.getElementById('topo');
+        if (!header || !hero || !('IntersectionObserver' in window)) return;
+
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            header.classList.toggle('is-light', !entry.isIntersecting);
+          });
+        }, { rootMargin: '-64px 0px 0px 0px', threshold: 0 });
+
+        io.observe(hero);
+      })();
+
+      /* ══════════════ Luz de borda que acompanha o cursor ══════════════ */
+      (function () {
+        if (!FINE || REDUCED) return;
+        var panels = document.querySelectorAll('[data-glow]');
+
+        Array.prototype.forEach.call(panels, function (el) {
+          var frame = null;
+
+          el.addEventListener('pointermove', function (e) {
+            if (frame) return;
+            frame = requestAnimationFrame(function () {
+              frame = null;
+              var r = el.getBoundingClientRect();
+              el.style.setProperty('--glow-x', (e.clientX - r.left) + 'px');
+              el.style.setProperty('--glow-y', (e.clientY - r.top) + 'px');
+            });
+          });
+
+          el.addEventListener('pointerenter', function () { el.style.setProperty('--glow-opacity', '1'); });
+          el.addEventListener('pointerleave', function () { el.style.setProperty('--glow-opacity', '0'); });
+        });
+      })();
+
+      /* ══════════════ Sinais do hero acendendo em sequência ══════════════ */
+      (function () {
+        var sigs = document.querySelectorAll('[data-sig]');
+        if (!sigs.length) return;
+
+        if (REDUCED) {
+          Array.prototype.forEach.call(sigs, function (s) { s.classList.add('on'); });
+          return;
+        }
+        Array.prototype.forEach.call(sigs, function (s, i) {
+          window.setTimeout(function () { s.classList.add('on'); }, 620 + i * 210);
+        });
+      })();
+
+      /* ══════════════ Faixa do arsenal: setas e teclado ══════════════ */
+      (function () {
+        var track = document.querySelector('[data-track]');
+        var prev = document.querySelector('[data-track-prev]');
+        var next = document.querySelector('[data-track-next]');
+        if (!track) return;
+
+        function step() {
+          var card = track.querySelector('.agent');
+          if (!card) return track.clientWidth * 0.8;
+          var gap = parseFloat(window.getComputedStyle(track).columnGap) || 18;
+          return card.getBoundingClientRect().width + gap;
+        }
+
+        function slide(dir) {
+          track.scrollBy({ left: dir * step(), behavior: REDUCED ? 'auto' : 'smooth' });
+        }
+
+        function sync() {
+          var nav = document.querySelector('.arsenal-nav');
+          var overflows = track.scrollWidth > track.clientWidth + 4;
+          if (nav) nav.classList.toggle('is-hidden', !overflows);
+          if (!prev || !next) return;
+          var max = track.scrollWidth - track.clientWidth - 2;
+          prev.disabled = track.scrollLeft <= 2;
+          next.disabled = track.scrollLeft >= max;
+        }
+
+        if (prev) prev.addEventListener('click', function () { slide(-1); });
+        if (next) next.addEventListener('click', function () { slide(1); });
+
+        track.addEventListener('scroll', sync, { passive: true });
+        window.addEventListener('resize', sync);
+
+        track.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowRight') { e.preventDefault(); slide(1); }
+          if (e.key === 'ArrowLeft') { e.preventDefault(); slide(-1); }
+        });
+
+        sync();
+      })();
+
+      /* ══════════════ Movimento · GSAP ══════════════
+         Toda revelação usa gsap.from(), então sem a biblioteca a página
+         continua completa e legível. Nada de conteúdo escondido por CSS. */
+      (function () {
+        if (REDUCED) return;
+        if (!window.gsap || !window.ScrollTrigger) return;
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        var EASE = 'power3.out';
+
+        /* entrada orquestrada do hero */
+        var tl = gsap.timeline({ defaults: { ease: EASE } });
+        tl.from('[data-anim="hero"]', { y: 26, opacity: 0, duration: 0.9, stagger: 0.09 })
+          .from('[data-anim="rig"]', { y: 34, opacity: 0, duration: 1.05 }, '-=0.65')
+          .from('[data-logrow]', { y: 14, opacity: 0, duration: 0.6, stagger: 0.1 }, '-=0.5')
+          .from('.hero-strip li', { y: 18, opacity: 0, duration: 0.7, stagger: 0.07 }, '-=0.45');
+
+        /* radar vivo */
+        gsap.to('[data-sweep]', {
+          rotation: 360, svgOrigin: '100 100',
+          duration: 7, repeat: -1, ease: 'none'
+        });
+        gsap.to('[data-blip]', {
+          opacity: 1, duration: 0.5, stagger: { each: 1.75, repeat: -1, yoyo: true, repeatDelay: 3.2 }
+        });
+
+        /* profundidade: o radar corre um pouco atrás do registro */
+        gsap.to('.rig-radar', {
+          yPercent: -7, ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 }
+        });
+
+        /* revelações de seção */
+        ScrollTrigger.batch('[data-reveal]', {
+          start: 'top 88%',
+          onEnter: function (batch) {
+            gsap.from(batch, { y: 28, opacity: 0, duration: 0.85, stagger: 0.09, ease: EASE, overwrite: true });
+          }
+        });
+
+        gsap.from('.rule-row', {
+          y: 22, opacity: 0, duration: 0.75, stagger: 0.12, ease: EASE,
+          scrollTrigger: { trigger: '.rules', start: 'top 82%' }
+        });
+
+        gsap.from('.agent', {
+          y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: EASE,
+          scrollTrigger: { trigger: '.arsenal-track', start: 'top 85%' }
+        });
+
+        gsap.from('.build-row', {
+          y: 24, opacity: 0, duration: 0.7, stagger: 0.09, ease: EASE,
+          scrollTrigger: { trigger: '.build-list', start: 'top 85%' }
+        });
+
+        gsap.from('.cmp-row', {
+          y: 20, opacity: 0, duration: 0.7, stagger: 0.08, ease: EASE,
+          scrollTrigger: { trigger: '.cmp', start: 'top 85%' }
+        });
+
+        gsap.from('.access-list li', {
+          x: 16, opacity: 0, duration: 0.65, stagger: 0.09, ease: EASE,
+          scrollTrigger: { trigger: '.access', start: 'top 82%' }
+        });
+
+        /* barras de entrada do acervo */
+        gsap.from('[data-bar]', {
+          scaleX: 0, transformOrigin: 'left center', duration: 0.85, stagger: 0.08, ease: EASE,
+          scrollTrigger: { trigger: '.vault-viz', start: 'top 80%' }
+        });
+
+        /* contadores: o valor final já está no HTML, a contagem só decora */
+        Array.prototype.forEach.call(document.querySelectorAll('[data-count]'), function (el) {
+          var end = parseFloat(el.getAttribute('data-count'));
+          if (isNaN(end)) return;
+          var obj = { v: 0 };
+          gsap.to(obj, {
+            v: end, duration: 1.4, ease: 'power2.out',
+            scrollTrigger: { trigger: el, start: 'top 92%' },
+            onUpdate: function () { el.textContent = Math.round(obj.v); },
+            onComplete: function () { el.textContent = end; }
+          });
+        });
+
+        ScrollTrigger.refresh();
+      })();
+
+    })();
+  </script>
+<script src="afero-checkout.js?v=1"></script>
+</body>
+
+</html>

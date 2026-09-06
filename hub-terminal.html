@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hunter Hub · Terminal de Comando</title>
+<meta name="description" content="Entrada da central de inteligência do Hunter Hub: terminal de comando, atalhos dos módulos liberados e execução do Caçador de Ofertas." />
+<meta name="theme-color" content="#06070a" />
+<meta property="og:title" content="Hunter Hub · Terminal de Comando" />
+<meta property="og:description" content="Central de comando do Builder Hub. Terminal interativo, agentes de IA e Caçador de Ofertas em uma tela." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='6' width='26' height='20' rx='4' fill='none' stroke='%23ff7a18' stroke-width='2.2'/%3E%3Cpath d='M10 13l4 3-4 3M17 19h5' stroke='%23ff7a18' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<!--
+  NOTA TÉCNICA (não remover): three.js vem de ./vendor/three.min.js (r150 UMD), nunca de CDN.
+  A CSP deste site é script-src 'self' 'unsafe-inline' e qualquer script externo é bloqueado.
+-->
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --void-0:#06070a; --void-1:#0b0e14; --void-2:#10141d;
+  --glass:rgba(18,22,32,.7);
+  --glass-2:rgba(22,27,39,.82);
+
+  --stroke:rgba(243,245,250,.08);
+  --stroke-2:rgba(243,245,250,.16);
+
+  --txt:#f3f5fa; --dim:#828b9e; --dim-2:#5d6577;
+
+  --amber:#d45d1b;
+  --orange:#ff7a18;
+  --orange-2:#ff6a2b;
+  --flare:#ff9a3c;
+  --hi:#ffb076;
+  --ok:#10b981;
+
+  --r:16px; --r-sm:10px;
+  --ease:cubic-bezier(.22,1,.36,1);
+
+  --f-d:'Space Grotesk',system-ui,sans-serif;
+  --f-m:'JetBrains Mono',ui-monospace,monospace;
+}
+
+/* ============ BASE ============ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  font-family:var(--f-d);
+  background:var(--void-0);
+  color:var(--txt);
+  font-size:16px;line-height:1.6;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+body.loading{overflow:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:rgba(255,122,24,.28)}
+
+/* atmosfera estática atrás do canvas */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(90% 60% at 50% -10%,rgba(255,122,24,.10),transparent 62%),
+    radial-gradient(70% 50% at 82% 108%,rgba(255,106,43,.07),transparent 60%),
+    linear-gradient(180deg,var(--void-1) 0%,var(--void-0) 55%);
+}
+#bg3d{position:fixed;inset:0;z-index:1;display:block;width:100%;height:100%;pointer-events:none}
+
+/* ============ PRELOADER ============ */
+#preloader{
+  position:fixed;inset:0;z-index:100;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:26px;padding:24px;
+  background:radial-gradient(120% 90% at 50% 50%,rgba(6,7,10,.52) 0%,rgba(6,7,10,.93) 68%,rgba(6,7,10,.98) 100%);
+  transition:opacity .85s var(--ease),transform .85s var(--ease),filter .85s var(--ease);
+  will-change:opacity,transform,filter;
+}
+#preloader.gone{opacity:0;transform:scale(1.06);filter:blur(14px);pointer-events:none}
+.pre-tag{
+  font-family:var(--f-m);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--dim-2);
+}
+.pre-tag b{color:var(--amber);font-weight:500}
+#preText{
+  font-family:var(--f-d);font-weight:700;
+  font-size:clamp(19px,3.6vw,38px);
+  letter-spacing:.06em;text-align:center;
+  color:var(--txt);
+  min-height:1.2em;
+}
+#preText .ch{display:inline-block;min-width:.42em;text-align:center}
+#preText .ch.scrambling{color:var(--dim-2)}
+#preText .ch.sp{min-width:.34em}
+
+.pre-track{
+  position:relative;width:min(440px,78vw);height:2px;
+  background:rgba(243,245,250,.09);border-radius:2px;
+}
+.pre-fill{
+  position:absolute;inset:0 auto 0 0;width:0%;border-radius:2px;
+  background:var(--amber);
+  transition:background .4s linear,box-shadow .4s linear;
+}
+.pre-fill::after{
+  content:"";position:absolute;top:50%;right:-1px;transform:translateY(-50%);
+  width:3px;height:8px;border-radius:2px;background:#fff;opacity:0;
+  box-shadow:0 0 12px 2px var(--flare);
+  transition:opacity .3s linear;
+}
+.pre-track.p2 .pre-fill{background:var(--orange);box-shadow:0 0 20px rgba(255,122,24,.55)}
+.pre-track.p2 .pre-fill::after{opacity:.7}
+.pre-track.p3 .pre-fill{
+  background:linear-gradient(90deg,var(--orange) 0%,var(--flare) 62%,#fff 100%);
+  box-shadow:0 0 26px rgba(255,154,60,.75),0 0 60px rgba(255,122,24,.35);
+  animation:barPulse 1s ease-in-out infinite;
+}
+.pre-track.p3 .pre-fill::after{opacity:1}
+@keyframes barPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}
+.pre-meta{
+  display:flex;align-items:center;gap:14px;
+  width:min(440px,78vw);
+  font-family:var(--f-m);font-size:11px;letter-spacing:.12em;color:var(--dim-2);
+}
+.pre-meta #preStat{flex:1;text-transform:lowercase}
+.pre-meta #prePct{color:var(--hi);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* ============ HUB ============ */
+.hub{position:relative;z-index:3;padding:0 0 clamp(40px,7vw,88px)}
+.shell{max-width:1240px;margin:0 auto;padding:0 clamp(18px,4vw,40px)}
+
+.hub [data-e]{
+  opacity:0;transform:translateY(16px);
+  transition:opacity .7s var(--ease),transform .7s var(--ease);
+  transition-delay:var(--d,0s);
+}
+.hub.in [data-e]{opacity:1;transform:none}
+.no-motion .hub [data-e]{opacity:1;transform:none;transition:none}
+
+/* topbar */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:22px 0 0;
+}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .gem{
+  width:11px;height:11px;flex:none;transform:rotate(45deg);
+  background:linear-gradient(135deg,var(--flare),var(--orange-2));
+  box-shadow:0 0 14px rgba(255,122,24,.6);border-radius:2px;
+}
+.brand strong{font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.brand .kernel{
+  font-family:var(--f-m);font-size:10.5px;letter-spacing:.1em;color:var(--dim-2);
+  border:1px solid var(--stroke);border-radius:999px;padding:3px 9px;
+}
+.status-badge{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--f-m);font-size:10.5px;letter-spacing:.14em;
+  color:var(--dim);text-transform:uppercase;
+  border:1px solid var(--stroke);border-radius:999px;
+  background:rgba(16,20,29,.6);backdrop-filter:blur(10px);
+  padding:7px 14px;
+}
+.status-badge .dot{
+  width:6px;height:6px;border-radius:50%;background:var(--ok);
+  box-shadow:0 0 0 0 rgba(16,185,129,.55);animation:live 2.4s ease-out infinite;
+}
+@keyframes live{0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}70%{box-shadow:0 0 0 7px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+.no-motion .status-badge .dot{animation:none}
+
+/* hero com radar holográfico 3D no lado direito */
+.hero-wrap{
+  display:grid;
+  grid-template-columns:minmax(0,1.22fr) minmax(260px,0.78fr);
+  gap:clamp(20px,3.5vw,44px);
+  align-items:center;
+  padding:clamp(28px,5vw,56px) 0 clamp(22px,3.5vw,36px);
+}
+.hero{max-width:none;padding:0}
+.hero h1{
+  font-size:clamp(28px,4.8vw,52px);line-height:1.06;font-weight:700;letter-spacing:-.02em;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(96deg,var(--flare),var(--orange) 55%,var(--amber));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p{color:var(--dim);font-size:clamp(14.5px,1.4vw,16.5px);margin-top:16px;max-width:66ch}
+.hero p + p{margin-top:10px}
+.hero code{
+  font-family:var(--f-m);font-size:.88em;color:var(--hi);
+  background:rgba(255,122,24,.1);border:1px solid rgba(255,122,24,.2);
+  border-radius:5px;padding:1px 6px;
+}
+
+/* contêiner e HUD do Núcleo Quântico 3D */
+.radar-hero-box{
+  position:relative;
+  width:100%;
+  max-width:370px;
+  aspect-ratio:1/1;
+  margin:0 auto;
+  border-radius:24px;
+  background:radial-gradient(circle at 50% 50%,rgba(255,122,24,.18) 0%,rgba(20,13,10,.75) 45%,rgba(6,7,10,.95) 90%);
+  border:1px solid rgba(255,122,24,.25);
+  box-shadow:0 30px 90px -20px rgba(0,0,0,.95),0 0 60px -10px rgba(255,122,24,.32),inset 0 0 40px rgba(255,122,24,.08);
+  overflow:hidden;
+  cursor:crosshair;
+  transition:border-color .35s var(--ease),box-shadow .35s var(--ease),transform .35s var(--ease);
+}
+.radar-hero-box:hover{
+  border-color:rgba(255,122,24,.58);
+  box-shadow:0 36px 110px -20px rgba(0,0,0,1),0 0 85px -5px rgba(255,122,24,.55),inset 0 0 50px rgba(255,122,24,.15);
+  transform:translateY(-2px);
+}
+.radar-hero-box::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,transparent 45%);
+  border-radius:24px;
+}
+#radarHeroCanvas{
+  position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;
+}
+.radar-hud{
+  position:absolute;inset:0;pointer-events:none;z-index:3;padding:16px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  font-family:var(--f-m);font-size:10px;letter-spacing:.1em;color:var(--dim);
+  text-transform:uppercase;user-select:none;
+}
+.hud-top,.hud-bottom{display:flex;justify-content:space-between;align-items:center}
+.hud-tag{display:inline-flex;align-items:center;gap:7px;color:var(--txt);font-weight:600}
+.hud-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--flare);animation:live 1.8s infinite}
+.hud-badge{
+  color:var(--flare);border:1px solid rgba(255,122,24,.4);background:rgba(255,122,24,.14);
+  padding:3px 9px;border-radius:5px;font-weight:700;letter-spacing:.12em;transition:all .25s var(--ease);
+}
+.hud-coords{color:var(--hi);font-variant-numeric:tabular-nums;font-weight:600}
+.hud-target{color:var(--flare);font-weight:600}
+
+@media (max-width:920px){
+  .hero-wrap{grid-template-columns:1fr;gap:26px}
+  .radar-hero-box{max-width:290px}
+}
+
+/* grid principal */
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+.grid>*{min-width:0}
+
+/* terminal */
+.term{
+  border:1px solid var(--stroke);border-radius:var(--r);
+  background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(243,245,250,.05);
+  overflow:hidden;
+}
+.term-bar{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-bottom:1px solid var(--stroke);
+  background:rgba(11,14,20,.6);
+}
+.term-bar .dots{display:flex;gap:6px;flex:none}
+.term-bar .dots i{width:9px;height:9px;border-radius:50%;background:rgba(243,245,250,.14);display:block}
+.term-bar .dots i:first-child{background:rgba(255,122,24,.55)}
+.term-bar .path{
+  font-family:var(--f-m);font-size:11.5px;color:var(--dim);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;
+}
+.term-bar .ver{
+  font-family:var(--f-m);font-size:10px;letter-spacing:.1em;color:var(--ok);flex:none;
+  border:1px solid rgba(16,185,129,.28);border-radius:999px;padding:2px 8px;
+  background:rgba(16,185,129,.07);
+}
+/* ligadura desligada: senão "--web" vira um traço longo e o leitor copia errado */
+#termBody,.term-input,.chip{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+#termBody{
+  font-family:var(--f-m);font-size:13px;line-height:1.75;
+  padding:16px 16px 8px;
+  height:clamp(268px,44vh,400px);
+  overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:rgba(255,122,24,.3) transparent;
+}
+#termBody::-webkit-scrollbar{width:7px}
+#termBody::-webkit-scrollbar-thumb{background:rgba(255,122,24,.28);border-radius:4px}
+.tline{color:var(--dim);white-space:pre-wrap;word-break:break-word}
+.tline.head{color:var(--txt);font-weight:500}
+.tline.echo{color:var(--hi)}
+.tline.echo b{color:var(--orange);font-weight:400}
+.tline.gap{height:8px}
+.tline .tag{color:var(--ok)}
+.tline .tag.info{color:var(--amber)}
+.tline .tag.err{color:#f0603c}
+.tline .k{color:var(--txt)}
+.tline .c{color:var(--hi)}
+.tline a{
+  color:var(--orange);text-decoration:none;
+  border-bottom:1px dashed rgba(255,122,24,.45);
+}
+.tline a:hover{color:var(--flare);border-bottom-style:solid}
+.term-input{
+  display:flex;align-items:center;gap:9px;
+  padding:12px 16px;border-top:1px solid var(--stroke);
+  background:rgba(11,14,20,.5);
+  font-family:var(--f-m);font-size:13px;
+}
+.term-input .ps1{color:var(--orange);flex:none}
+.term-input input{
+  flex:1;min-width:0;background:none;border:0;outline:none;
+  font:inherit;color:var(--txt);caret-color:var(--orange);
+}
+.term-input input::placeholder{color:var(--dim-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 14px;background:rgba(11,14,20,.5)}
+.chip{
+  font-family:var(--f-m);font-size:11.5px;color:var(--dim);
+  border:1px solid var(--stroke);border-radius:999px;padding:5px 12px;
+  transition:color .2s var(--ease),border-color .2s var(--ease),background .2s var(--ease),transform .2s var(--ease);
+}
+.chip:hover,.chip:focus-visible{
+  color:var(--hi);border-color:rgba(255,122,24,.4);
+  background:rgba(255,122,24,.09);transform:translateY(-1px);
+}
+
+/* cards de acesso rápido */
+.quick{display:flex;flex-direction:column;gap:12px}
+.quick .qh{
+  font-family:var(--f-m);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--dim-2);padding-left:2px;
+}
+.qcard{
+  position:relative;display:block;width:100%;text-align:left;text-decoration:none;
+  border:1px solid var(--stroke);border-radius:var(--r-sm);
+  background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  padding:15px 16px;
+  transition:border-color .3s var(--ease),transform .3s var(--ease),background .3s var(--ease),box-shadow .3s var(--ease);
+}
+.qcard:hover,.qcard:focus-visible{
+  border-color:rgba(255,122,24,.34);transform:translateY(-2px);
+  background:var(--glass-2);
+  box-shadow:0 16px 40px -24px rgba(255,122,24,.55);
+  outline:none;
+}
+.qcard .qtop{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.qcard .qi{font-family:var(--f-m);font-size:10.5px;color:var(--amber);letter-spacing:.1em}
+.qcard h3{font-size:15px;font-weight:600;letter-spacing:-.01em;flex:1;min-width:0}
+.qcard .arw{color:var(--dim-2);font-size:14px;transition:color .3s var(--ease),transform .3s var(--ease)}
+.qcard:hover .arw{color:var(--orange);transform:translateX(3px)}
+.qcard p{font-size:13px;color:var(--dim);line-height:1.5}
+
+/* rodapé */
+.foot{
+  margin-top:26px;padding-top:18px;border-top:1px solid var(--stroke);
+  font-family:var(--f-m);font-size:11px;letter-spacing:.06em;color:var(--dim-2);
+  display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;
+}
+.foot a{color:var(--dim);text-decoration:none;border-bottom:1px solid transparent}
+.foot a:hover{color:var(--hi);border-bottom-color:rgba(255,176,118,.4)}
+
+/* ============ RESPONSIVO ============ */
+@media (max-width:1040px){
+  .grid{grid-template-columns:1fr}
+  .quick{flex-direction:row;flex-wrap:wrap}
+  .quick .qh{flex-basis:100%}
+  .qcard{flex:1 1 240px}
+}
+@media (max-width:640px){
+  .topbar{padding-top:16px}
+  .brand .kernel{display:none}
+  .status-badge{font-size:9.5px;letter-spacing:.1em;padding:6px 11px}
+  #termBody{height:clamp(230px,40vh,330px);font-size:12.2px;padding:14px 13px 6px}
+  .term-input,.chips{padding-left:13px;padding-right:13px}
+  .quick{flex-direction:column}
+  .qcard{flex:1 1 auto}
+  .foot{font-size:10px}
+}
+</style>
+</head>
+<body class="loading">
+
+<canvas id="bg3d" aria-hidden="true"></canvas>
+
+<!-- ============ PRELOADER ============ -->
+<div id="preloader" role="status" aria-label="carregando o Builder Hub">
+  <span class="pre-tag">hunter-hub <b>·</b> núcleo v2.4</span>
+  <div id="preText" aria-hidden="true"></div>
+  <div class="pre-track" id="preTrack"><span class="pre-fill" id="preBar"></span></div>
+  <div class="pre-meta">
+    <span id="preStat">estabelecendo canal seguro</span>
+    <span id="prePct">000%</span>
+  </div>
+</div>
+
+<!-- ============ HUB ============ -->
+<div class="hub" id="hub">
+  <div class="shell">
+
+    <header class="topbar" data-e style="--d:.05s">
+      <div class="brand">
+        <span class="gem" aria-hidden="true"></span>
+        <strong>Hunter Hub</strong>
+        <span class="kernel">kernel v2.4-active</span>
+      </div>
+      <span class="status-badge"><span class="dot" aria-hidden="true"></span>[ sistema ativo // acesso autorizado ]</span>
+    </header>
+
+    <section class="hero-wrap">
+      <div class="hero">
+        <h1 data-e style="--d:.14s">O comando da <em>central</em> agora é seu.</h1>
+        <p data-e style="--d:.22s">O Hunter Hub concentra em uma tela o setup do agente, a execução da caçada e a leitura do resultado. Cada módulo liberado responde por um comando, e todo o processamento acontece na sua máquina, com a sua chave.</p>
+        <p data-e style="--d:.28s">O terminal abaixo aceita comandos diretos. Se preferir clicar, os atalhos ao lado abrem exatamente os mesmos módulos. Comece por <code>ajuda</code> para ver o que está disponível.</p>
+      </div>
+
+      <div class="radar-hero-box" data-e style="--d:.25s" id="radarHeroBox" title="Clique para travar a mira">
+        <canvas id="radarHeroCanvas"></canvas>
+        <div class="radar-hud">
+          <div class="hud-top">
+            <span class="hud-tag"><span class="hud-dot"></span>SYS // RADAR_CORE</span>
+            <span class="hud-badge" id="radarLockStatus">AUTO-SCAN</span>
+          </div>
+          <div class="hud-bottom">
+            <span class="hud-coords" id="radarCoords">AZ: 042° // EL: -12°</span>
+            <span class="hud-target">S-ELITE 94.8%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+
+      <!-- terminal -->
+      <section class="term" data-e style="--d:.34s" aria-label="terminal de comando">
+        <div class="term-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="path">hunter@hub:~/builder-core</span>
+          <span class="ver">v2.4-active</span>
+        </div>
+        <div id="termBody" role="log" aria-live="polite" aria-label="saída do terminal"></div>
+        <form class="term-input" id="cmdForm" autocomplete="off">
+          <span class="ps1" aria-hidden="true">hunter@hub:~$</span>
+          <input id="cmdInput" type="text" placeholder="digite ajuda e pressione enter" aria-label="linha de comando" spellcheck="false" />
+        </form>
+        <div class="chips" aria-label="atalhos de comando">
+          <button class="chip" data-run="ajuda" type="button">ajuda</button>
+          <button class="chip" data-run="executar-cacador" type="button">executar-cacador</button>
+          <button class="chip" data-run="agentes" type="button">agentes</button>
+          <button class="chip" data-run="docs" type="button">docs</button>
+          <button class="chip" data-run="status" type="button">status</button>
+          <button class="chip" data-run="limpar" type="button">limpar</button>
+        </div>
+      </section>
+
+      <!-- acesso rápido -->
+      <section class="quick" data-e style="--d:.42s" aria-label="acesso rápido aos módulos">
+        <span class="qh">acesso rápido</span>
+
+        <a class="qcard" href="index.html#leitor">
+          <div class="qtop"><span class="qi">01</span><h3>Caçador de Ofertas</h3><span class="arw" aria-hidden="true">→</span></div>
+          <p>Solte o CSV da caçada e leia tudo como painel, direto no navegador.</p>
+        </a>
+
+        <button class="qcard" type="button" data-run="agentes">
+          <div class="qtop"><span class="qi">02</span><h3>Agente Copy</h3><span class="arw" aria-hidden="true">→</span></div>
+          <p>Headline, e-mail e anúncio na estrutura de resposta direta.</p>
+        </button>
+
+        <button class="qcard" type="button" data-run="agentes">
+          <div class="qtop"><span class="qi">03</span><h3>Agente Páginas</h3><span class="arw" aria-hidden="true">→</span></div>
+          <p>A página da sua oferta montada bloco a bloco.</p>
+        </button>
+
+        <a class="qcard" href="index.html#setup">
+          <div class="qtop"><span class="qi">04</span><h3>Documentação</h3><span class="arw" aria-hidden="true">→</span></div>
+          <p>Setup em 4 passos, leitura do resultado e dúvidas frequentes.</p>
+        </a>
+      </section>
+
+    </div>
+
+    <footer class="foot" data-e style="--d:.5s">
+      <span>hunter@hub · sessão local · nenhum dado sai do seu navegador</span>
+      <span><a href="index.html">voltar ao hub completo</a></span>
+    </footer>
+
+  </div>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+var REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+if (REDUCED) document.documentElement.classList.add("no-motion");
+
+var hub = document.getElementById("hub");
+var pre = document.getElementById("preloader");
+var track = document.getElementById("preTrack");
+var bar = document.getElementById("preBar");
+var pctEl = document.getElementById("prePct");
+var statEl = document.getElementById("preStat");
+var textEl = document.getElementById("preText");
+
+/* ============ 1 · PRELOADER: SCRAMBLE + BARRA ÁGIL ============ */
+var TARGET = "CARREGANDO BUILDER HUB...";
+var GLYPH = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#$%&/\\<>*+=-_[]{}";
+var DUR = 1400;
+
+var chars = [];
+(function buildScramble(){
+  for (var i = 0; i < TARGET.length; i++){
+    var s = document.createElement("span");
+    var real = TARGET.charAt(i);
+    s.className = "ch" + (real === " " ? " sp" : " scrambling");
+    s.textContent = real === " " ? " " : GLYPH.charAt(Math.floor(Math.random() * GLYPH.length));
+    textEl.appendChild(s);
+    chars.push({ el:s, real:real, lockAt: real === " " ? 0 : (i / TARGET.length) * .68 + Math.random() * .12, locked: real === " " });
+  }
+})();
+
+var STATUS = [
+  [0,   "estabelecendo canal seguro"],
+  [.24, "carregando núcleo do hub"],
+  [.48, "montando índice de módulos"],
+  [.72, "sincronizando agentes de ia"],
+  [.94, "liberando acesso"]
+];
+var statIdx = -1;
+
+function pad3(n){ n = String(n); while (n.length < 3) n = "0" + n; return n; }
+
+function paint(p){
+  bar.style.width = (p * 100).toFixed(2) + "%";
+  pctEl.textContent = pad3(Math.round(p * 100)) + "%";
+  track.classList.toggle("p2", p >= .4 && p < .8);
+  track.classList.toggle("p3", p >= .8);
+  for (var s = STATUS.length - 1; s >= 0; s--){
+    if (p >= STATUS[s][0]){
+      if (statIdx !== s){ statIdx = s; statEl.textContent = STATUS[s][1]; }
+      break;
+    }
+  }
+  var frame = 0;
+  for (var i = 0; i < chars.length; i++){
+    var c = chars[i];
+    if (c.locked) continue;
+    if (p >= c.lockAt){
+      c.locked = true; c.el.textContent = c.real; c.el.classList.remove("scrambling");
+    } else if ((frame = Math.random()) > .55){
+      c.el.textContent = GLYPH.charAt(Math.floor(Math.random() * GLYPH.length));
+    }
+  }
+}
+
+var revealed = false;
+function revealHub(){
+  if (revealed) return;
+  revealed = true;
+  document.body.classList.remove("loading");
+  hub.classList.add("in");
+  if (pre) {
+    pre.classList.add("gone");
+    setTimeout(function(){ if (pre.parentNode) pre.parentNode.removeChild(pre); }, 600);
+  }
+  bootTerminal();
+}
+
+if (REDUCED){
+  paint(1);
+  if (pre && pre.parentNode) pre.parentNode.removeChild(pre);
+  setTimeout(revealHub, 0);
+} else {
+  var t0 = 0;
+  requestAnimationFrame(function step(ts){
+    if (!t0) t0 = ts;
+    var p = Math.min(1, (ts - t0) / DUR);
+    paint(p);
+    if (p < 1) { requestAnimationFrame(step); return; }
+    revealHub();
+  });
+  // Fallback de segurança garantido: revela em no máximo 1.8s se o RAF atrasar
+  setTimeout(revealHub, 1800);
+}
+
+/* ============ 2 · TERMINAL ============ */
+var body = document.getElementById("termBody");
+var form = document.getElementById("cmdForm");
+var input = document.getElementById("cmdInput");
+var history = [];
+var hIdx = -1;
+
+/* em tela estreita o placeholder longo fica cortado */
+if (window.innerWidth < 640) input.placeholder = "digite ajuda";
+
+function print(html, cls){
+  var d = document.createElement("div");
+  d.className = "tline" + (cls ? " " + cls : "");
+  d.innerHTML = html;
+  body.appendChild(d);
+  body.scrollTop = body.scrollHeight;
+  return d;
+}
+function gap(){ print("", "gap"); }
+function ok(txt){ return '<span class="tag">[  OK  ]</span> ' + txt; }
+function info(txt){ return '<span class="tag info">[ INFO ]</span> ' + txt; }
+function err(txt){ return '<span class="tag err">[ ERRO ]</span> ' + txt; }
+
+function printSeq(lines, done){
+  if (REDUCED){
+    lines.forEach(function(l){ typeof l === "string" ? print(l) : print(l[0], l[1]); });
+    if (done) done();
+    return;
+  }
+  var i = 0;
+  (function next(){
+    if (i >= lines.length){ if (done) done(); return; }
+    var l = lines[i++];
+    typeof l === "string" ? print(l) : print(l[0], l[1]);
+    setTimeout(next, 46);
+  })();
+}
+
+var BOOT = [
+  [ok('núcleo do hub inicializado <span class="c">·</span> kernel v2.4')],
+  [ok("banco de dados local conectado")],
+  [ok('caçador de ofertas pronto <span class="c">·</span> 18 queries <span class="c">·</span> janela 7d')],
+  [ok('agentes de ia carregados <span class="c">·</span> 4 módulos')],
+  ["", "gap"],
+  [info('digite <span class="k">ajuda</span> ou clique em um atalho para começar')]
+];
+
+/* preventScroll: dar foco à linha de comando não pode arrastar a página pra baixo */
+function focusInput(){
+  try { input.focus({ preventScroll:true }); } catch (e){ input.focus(); }
+}
+
+function bootTerminal(){
+  if (body.childNodes.length) return;
+  printSeq(BOOT, function(){ if (!REDUCED && window.innerWidth > 1040) focusInput(); });
+}
+
+var COMMANDS = {
+  "ajuda": function(){
+    return [
+      ["comandos disponíveis", "head"],
+      ['  <span class="k">ajuda</span>              esta lista'],
+      ['  <span class="k">executar-cacador</span>   como disparar a caçada e onde ler o csv'],
+      ['  <span class="k">agentes</span>            módulos de ia liberados na sua conta'],
+      ['  <span class="k">docs</span>               guias de setup, leitura e dúvidas'],
+      ['  <span class="k">status</span>             estado atual dos motores'],
+      ['  <span class="k">limpar</span>             limpa o terminal'],
+      ["", "gap"],
+      [info("as setas ↑ ↓ recuperam os comandos já digitados")]
+    ];
+  },
+  "executar-cacador": function(){
+    return [
+      [info("o navegador não executa python, então a caçada roda no próprio agente")],
+      ["", "gap"],
+      ['  <span class="c">1 ·</span> abra o terminal na pasta do agente e rode <span class="k">python cacador_ofertas.py</span>'],
+      ['  <span class="c">2 ·</span> dentro dele, digite <span class="k">/cacar</span> <span class="c">·</span> a caçada leva de 3 a 5 minutos'],
+      ['  <span class="c">3 ·</span> o resultado sai em <span class="k">_INFOPRODUTOS_BR.csv</span>, dentro de cacada_ofertas/'],
+      ["", "gap"],
+      [info('painel local opcional: <span class="k">python cacador_ofertas.py --web</span> sobe o servidor em 127.0.0.1:8765')],
+      ['  <a href="index.html#leitor">abrir o leitor de csv</a> <span class="c">·</span> <a href="index.html#painel-local">como ligar o painel local</a>']
+    ];
+  },
+  "agentes": function(){
+    return [
+      ["módulos de ia liberados · 4", "head"],
+      ['  <span class="k">AGENTE-PAGINA</span>     estrutura e escreve a página da sua oferta'],
+      ['  <span class="k">AGENTE-COPY</span>       headlines, e-mails e anúncios de resposta direta'],
+      ['  <span class="k">AGENTE-ENTREGAS</span>   desenha o que entra no produto e como ele é entregue'],
+      ['  <span class="k">AGENTE-QUIZ</span>       monta o quiz de diagnóstico que qualifica o lead'],
+      ["", "gap"],
+      [info("cada agente é um prompt pronto do kit: cole no seu assistente e responda as perguntas")]
+    ];
+  },
+  "docs": function(){
+    return [
+      ["guias disponíveis", "head"],
+      ['  <span class="c">→</span> <a href="index.html#setup">setup em 4 passos</a>'],
+      ['  <span class="c">→</span> <a href="index.html#como-ler">como ler o resultado da caçada</a>'],
+      ['  <span class="c">→</span> <a href="index.html#garimpo">garimpo manual, quando a lista pedir</a>'],
+      ['  <span class="c">→</span> <a href="index.html#faq">perguntas frequentes</a>']
+    ];
+  },
+  "status": function(){
+    return [
+      ["estado dos motores", "head"],
+      ['  núcleo do hub    <span class="tag">ativo</span> <span class="c">·</span> v2.4-active'],
+      ['  caçador          <span class="tag">pronto</span> <span class="c">·</span> 18 queries <span class="c">·</span> janela 7d <span class="c">·</span> pt/es'],
+      ['  agentes de ia    <span class="tag">4 carregados</span>'],
+      ['  painel local     <span class="k">sob demanda</span> <span class="c">·</span> ligue com --web'],
+      ["", "gap"],
+      [info("a sessão é local: nada do que você digita aqui sai do navegador")]
+    ];
+  }
+};
+
+function run(raw){
+  var typed = (raw || "").trim();
+  if (!typed) return;
+  var cmd = typed.toLowerCase();
+
+  print('<b>hunter@hub:~$</b> ' + typed.replace(/</g, "&lt;"), "echo");
+  history.push(typed); hIdx = history.length;
+
+  if (cmd === "limpar" || cmd === "clear"){ body.innerHTML = ""; return; }
+
+  var fn = COMMANDS[cmd];
+  if (!fn){
+    gap();
+    printSeq([
+      [err('comando não reconhecido: <span class="k">' + cmd.replace(/</g, "&lt;") + "</span>")],
+      [info('digite <span class="k">ajuda</span> para ver a lista completa')],
+      ["", "gap"]
+    ]);
+    return;
+  }
+  gap();
+  printSeq(fn(), function(){ gap(); });
+}
+
+form.addEventListener("submit", function(e){
+  e.preventDefault();
+  run(input.value);
+  input.value = "";
+});
+
+input.addEventListener("keydown", function(e){
+  if (e.key === "ArrowUp"){
+    if (!history.length) return;
+    e.preventDefault();
+    hIdx = Math.max(0, hIdx - 1);
+    input.value = history[hIdx];
+  } else if (e.key === "ArrowDown"){
+    if (!history.length) return;
+    e.preventDefault();
+    hIdx = Math.min(history.length, hIdx + 1);
+    input.value = hIdx === history.length ? "" : history[hIdx];
+  }
+});
+
+/* clicar no corpo do terminal devolve o foco pra linha de comando */
+body.addEventListener("click", function(){
+  var sel = window.getSelection && window.getSelection().toString();
+  if (sel) return;
+  focusInput();
+});
+
+/* chips e cards que disparam comandos */
+document.querySelectorAll("[data-run]").forEach(function(el){
+  el.addEventListener("click", function(){
+    var c = el.getAttribute("data-run");
+    run(c);
+    if (el.classList.contains("qcard")){
+      body.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "center" });
+    }
+    if (window.innerWidth > 1040) focusInput();
+  });
+});
+
+/* ============ 3 · CAMPO DE PARTÍCULAS (three.js local) ============ */
+(function(){
+  var canvas = document.getElementById("bg3d");
+  if (REDUCED || !window.THREE || !canvas) return;
+
+  var w = window.innerWidth, h = window.innerHeight;
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false, alpha: true, powerPreference: "high-performance" });
+  } catch (e){ return; }
+
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(w, h, false);
+
+  var scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x06070a, .0145);
+
+  var camera = new THREE.PerspectiveCamera(62, w / h, .1, 400);
+  camera.position.set(0, 0, 48);
+
+  /* sprite circular gerado em runtime, nenhum asset externo */
+  function sprite(){
+    var c = document.createElement("canvas"); c.width = c.height = 64;
+    var g = c.getContext("2d");
+    var grd = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, "rgba(255,255,255,1)");
+    grd.addColorStop(.22, "rgba(255,190,140,.6)");
+    grd.addColorStop(1, "rgba(255,122,24,0)");
+    g.fillStyle = grd; g.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  }
+
+  var COUNT = w < 760 ? 900 : 2200;
+  var pos = new Float32Array(COUNT * 3);
+  var col = new Float32Array(COUNT * 3);
+  var spd = new Float32Array(COUNT);
+  var cDim = new THREE.Color(0x6f7b91), cEmber = new THREE.Color(0xff7a18), cHi = new THREE.Color(0xffb076);
+
+  for (var i = 0; i < COUNT; i++){
+    pos[i * 3]     = (Math.random() - .5) * 150;
+    pos[i * 3 + 1] = (Math.random() - .5) * 96;
+    pos[i * 3 + 2] = -110 + Math.random() * 150;
+    var r = Math.random();
+    var c = r > .93 ? cHi : (r > .8 ? cEmber : cDim);
+    var f = .35 + Math.random() * .65;
+    col[i * 3] = c.r * f; col[i * 3 + 1] = c.g * f; col[i * 3 + 2] = c.b * f;
+    spd[i] = .3 + Math.random() * .9;
+  }
+
+  var geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+
+  var points = new THREE.Points(geo, new THREE.PointsMaterial({
+    size: 1.05, map: sprite(), vertexColors: true,
+    transparent: true, depthWrite: false, opacity: .95,
+    blending: THREE.AdditiveBlending, sizeAttenuation: true, fog: true
+  }));
+  scene.add(points);
+
+  /* malha geométrica sutil ao fundo */
+  var grid = new THREE.Mesh(
+    new THREE.PlaneGeometry(300, 300, 26, 26),
+    new THREE.MeshBasicMaterial({ color: 0x1b2434, wireframe: true, transparent: true, opacity: .3, fog: true })
+  );
+  grid.rotation.x = -Math.PI / 2.08;
+  grid.position.set(0, -30, -50);
+  scene.add(grid);
+
+  var mx = 0, my = 0, cx = 0, cy = 0;
+  window.addEventListener("pointermove", function(e){
+    mx = (e.clientX / window.innerWidth - .5) * 2;
+    my = (e.clientY / window.innerHeight - .5) * 2;
+  }, { passive: true });
+
+  window.addEventListener("resize", function(){
+    w = window.innerWidth; h = window.innerHeight;
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(w, h, false);
+  });
+
+  /* guarda de performance: se a máquina não sustentar ~60fps, o campo perde
+     resolução e depois congela, em vez de deixar a página travada */
+  var tier = 0, fCount = 0, fStart = 0, warm = 0;
+  function degrade(){
+    tier++;
+    if (tier === 1){
+      grid.visible = false;
+      points.material.size = .85;
+      renderer.setPixelRatio(.75);
+      renderer.setSize(w, h, false);
+    } else {
+      cancelAnimationFrame(raf); running = false;
+    }
+  }
+
+  var raf = 0, clock = new THREE.Clock(), running = true;
+  function frame(){
+    raf = requestAnimationFrame(frame);
+    var t = clock.getElapsedTime();
+
+    if (warm < 40){ warm++; }
+    else if (tier < 2){
+      if (!fStart) fStart = performance.now();
+      if (++fCount === 60){
+        var fps = 60000 / (performance.now() - fStart);
+        fCount = 0; fStart = 0;
+        if (fps < 45) degrade();
+      }
+    }
+
+    cx += (mx * 5 - cx) * .035;
+    cy += (-my * 3.2 - cy) * .035;
+    camera.position.x = cx;
+    camera.position.y = cy;
+    camera.lookAt(0, 0, -20);
+
+    points.rotation.y = t * .014;
+    points.rotation.x = Math.sin(t * .12) * .028;
+
+    grid.position.z = -50 + ((t * 1.6) % 11.5);
+    grid.material.opacity = .18 + Math.sin(t * .5) * .07;
+
+    renderer.render(scene, camera);
+  }
+  frame();
+
+  document.addEventListener("visibilitychange", function(){
+    if (document.hidden && running){ cancelAnimationFrame(raf); running = false; }
+    else if (!document.hidden && !running){ running = true; clock.getDelta(); frame(); }
+  });
+})();
+
+/* ============ 4 · NÚCLEO QUÂNTICO & SCANNER TÁTICO 3D (THREE.JS CINEMATIC) ============ */
+(function(){
+  var canvas = document.getElementById('radarHeroCanvas');
+  var container = document.getElementById('radarHeroBox');
+  if (REDUCED || !window.THREE || !canvas || !container) return;
+
+  var width = container.clientWidth || 370;
+  var height = container.clientHeight || 370;
+
+  // 1. Cena, Câmera e Renderizador Cinemático HDR
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 1000);
+  camera.position.set(0, 0, 14.5);
+
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      alpha: true,
+      antialias: true,
+      powerPreference: 'high-performance'
+    });
+  } catch (e) { return; }
+
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.9;
+
+  // 2. Sistema de Iluminação Volumétrica Dinâmica
+  var ambientLight = new THREE.AmbientLight(0x22130c, 2.2);
+  scene.add(ambientLight);
+
+  var coreLight = new THREE.PointLight(0xff7a18, 5.0, 35);
+  coreLight.position.set(0, 0, 0);
+  scene.add(coreLight);
+
+  var orbitLight = new THREE.PointLight(0xffb076, 4.0, 30);
+  orbitLight.position.set(4, 3, 5);
+  scene.add(orbitLight);
+
+  var rimLight = new THREE.DirectionalLight(0xff9a3c, 1.8);
+  rimLight.position.set(-5, 6, 4);
+  scene.add(rimLight);
+
+  // Grupo Mestre com Rotação Inercial
+  var masterGroup = new THREE.Group();
+  scene.add(masterGroup);
+
+  // ════════════ 3. GRADE HOLOGRÁFICA TÁTICA EM PROFUNDIDADE (Z = -3.5) ════════════
+  var gridPlaneGeo = new THREE.PlaneGeometry(14, 14, 18, 18);
+  var gridPlaneMat = new THREE.MeshBasicMaterial({
+    color: 0xff6a2b,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.14
+  });
+  var gridPlane = new THREE.Mesh(gridPlaneGeo, gridPlaneMat);
+  gridPlane.position.z = -3.5;
+  masterGroup.add(gridPlane);
+
+  // ════════════ 4. ANÉIS GIROSCÓPICOS 3D TUBULARES COM ESPESSURA ════════════
+  // Anel 1 (Externo com material metálico escovado)
+  var ring1Geo = new THREE.TorusGeometry(4.4, 0.055, 16, 80);
+  var ring1Mat = new THREE.MeshStandardMaterial({
+    color: 0x1a0f0a,
+    metalness: 0.92,
+    roughness: 0.18,
+    emissive: 0x331206
+  });
+  var ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+  masterGroup.add(ring1);
+
+  // Graduações Táticas no Anel Externo (Ticks 3D)
+  var tickCount = 64;
+  var tickPos = [];
+  for (var i = 0; i < tickCount; i++) {
+    var ang = (i / tickCount) * Math.PI * 2;
+    var len = (i % 4 === 0) ? 0.38 : (i % 2 === 0 ? 0.22 : 0.12);
+    var r1 = 4.35, r2 = r1 - len;
+    tickPos.push(
+      Math.cos(ang) * r1, Math.sin(ang) * r1, 0,
+      Math.cos(ang) * r2, Math.sin(ang) * r2, 0
+    );
+  }
+  var ticksGeo = new THREE.BufferGeometry();
+  ticksGeo.setAttribute('position', new THREE.Float32BufferAttribute(tickPos, 3));
+  var ticksMesh = new THREE.LineSegments(ticksGeo, new THREE.LineBasicMaterial({
+    color: 0xff9a3c,
+    transparent: true,
+    opacity: 0.75
+  }));
+  masterGroup.add(ticksMesh);
+
+  // Anel 2 (Giroscópio Médio Inclinado em Cobre/Ouro)
+  var ring2Geo = new THREE.TorusGeometry(3.35, 0.05, 16, 64);
+  var ring2Mat = new THREE.MeshStandardMaterial({
+    color: 0xff7a18,
+    metalness: 0.85,
+    roughness: 0.25,
+    emissive: 0x662208
+  });
+  var ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+  masterGroup.add(ring2);
+
+  // Anel 3 (Giroscópio Interno de Alta Velocidade)
+  var ring3Geo = new THREE.TorusGeometry(2.3, 0.045, 16, 64);
+  var ring3Mat = new THREE.MeshStandardMaterial({
+    color: 0xffb076,
+    metalness: 0.95,
+    roughness: 0.15,
+    emissive: 0x441505
+  });
+  var ring3 = new THREE.Mesh(ring3Geo, ring3Mat);
+  masterGroup.add(ring3);
+
+  // ════════════ 5. ACELERADOR MAGNÉTICO DE NÓS QUÂNTICOS (12 CUBOS 3D) ════════════
+  var nodesGroup = new THREE.Group();
+  masterGroup.add(nodesGroup);
+  var nodeCount = 12;
+  var nodeMeshes = [];
+  var nodeCubeGeo = new THREE.BoxGeometry(0.24, 0.24, 0.36);
+  var nodeCubeMat = new THREE.MeshStandardMaterial({
+    color: 0xff9a3c,
+    metalness: 0.9,
+    roughness: 0.1,
+    emissive: 0x331005
+  });
+
+  for (var n = 0; n < nodeCount; n++) {
+    var cube = new THREE.Mesh(nodeCubeGeo, nodeCubeMat);
+    nodesGroup.add(cube);
+    nodeMeshes.push(cube);
+  }
+
+  // ════════════ 6. NÚCLEO QUÂNTICO DE CRISTAL & PLASMA ════════════
+  var coreGroup = new THREE.Group();
+  masterGroup.add(coreGroup);
+
+  // A. Cristal Obsidiana Externo (Icosaedro com bordas de neon âmbar)
+  var icosaGeo = new THREE.IcosahedronGeometry(1.25, 0);
+  var icosaMat = new THREE.MeshStandardMaterial({
+    color: 0x120a06,
+    metalness: 0.85,
+    roughness: 0.12,
+    emissive: 0x220c04,
+    transparent: true,
+    opacity: 0.82
+  });
+  var icosaMesh = new THREE.Mesh(icosaGeo, icosaMat);
+  coreGroup.add(icosaMesh);
+
+  var icosaEdges = new THREE.LineSegments(
+    new THREE.EdgesGeometry(icosaGeo),
+    new THREE.LineBasicMaterial({ color: 0xff9a3c, transparent: true, opacity: 0.95 })
+  );
+  coreGroup.add(icosaEdges);
+
+  // B. Câmara de Vórtice Interna (Octaedro Incandescente)
+  var octaGeo = new THREE.OctahedronGeometry(0.78, 0);
+  var octaMat = new THREE.MeshStandardMaterial({
+    color: 0xff7a18,
+    wireframe: true,
+    emissive: 0xff6a00,
+    emissiveIntensity: 1.4
+  });
+  var octaMesh = new THREE.Mesh(octaGeo, octaMat);
+  coreGroup.add(octaMesh);
+
+  // C. Singularidade Central de Luz Pura (Esfera Branca/Ouro)
+  var coreSphereGeo = new THREE.SphereGeometry(0.38, 32, 32);
+  var coreSphereMat = new THREE.MeshBasicMaterial({
+    color: 0xfff2e6,
+    transparent: true,
+    opacity: 0.98
+  });
+  var coreSphere = new THREE.Mesh(coreSphereGeo, coreSphereMat);
+  coreGroup.add(coreSphere);
+
+  // ════════════ 7. FEIXE LASER & MIRA MILITAR MILIMÉTRICA ════════════
+  var sweepGeo = new THREE.RingGeometry(0.15, 4.3, 32, 1, 0, Math.PI / 3.5);
+  var sweepMat = new THREE.MeshBasicMaterial({
+    color: 0xff7a18,
+    transparent: true,
+    opacity: 0.22,
+    side: THREE.DoubleSide
+  });
+  var sweepMesh = new THREE.Mesh(sweepGeo, sweepMat);
+  masterGroup.add(sweepMesh);
+
+  // Retícula e Colchetes
+  var reticleGroup = new THREE.Group();
+  masterGroup.add(reticleGroup);
+  var reticleLinesPos = [
+    -2.2, 0, 0, -0.65, 0, 0,  0.65, 0, 0, 2.2, 0, 0,
+     0, -2.2, 0, 0, -0.65, 0,  0, 0.65, 0, 0, 2.2, 0
+  ];
+  var reticleGeo = new THREE.BufferGeometry();
+  reticleGeo.setAttribute('position', new THREE.Float32BufferAttribute(reticleLinesPos, 3));
+  reticleGroup.add(new THREE.LineSegments(reticleGeo, new THREE.LineBasicMaterial({ color: 0xff9a3c, transparent: true, opacity: 0.85 })));
+
+  var bO = 1.35, bS = 0.32;
+  var bCornerPos = [
+    -bO, bO - bS, 0, -bO, bO, 0, -bO, bO, 0, -bO + bS, bO, 0,
+     bO - bS, bO, 0,  bO, bO, 0,  bO, bO, 0,  bO, bO - bS, 0,
+    -bO, -bO + bS, 0, -bO, -bO, 0, -bO, -bO, 0, -bO + bS, -bO, 0,
+     bO - bS, -bO, 0,  bO, -bO, 0,  bO, -bO, 0,  bO, -bO + bS, 0
+  ];
+  var bCornerGeo = new THREE.BufferGeometry();
+  bCornerGeo.setAttribute('position', new THREE.Float32BufferAttribute(bCornerPos, 3));
+  reticleGroup.add(new THREE.LineSegments(bCornerGeo, new THREE.LineBasicMaterial({ color: 0xffb076, transparent: true, opacity: 0.95 })));
+
+  // ════════════ 8. NUVEM DE FAGULHAS / VÓRTICE QUÂNTICO (220 PARTÍCULAS) ════════════
+  function makeGlowSprite() {
+    var c = document.createElement('canvas'); c.width = c.height = 64;
+    var ctx = c.getContext('2d');
+    var g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    g.addColorStop(0.25, 'rgba(255, 154, 60, 0.8)');
+    g.addColorStop(0.65, 'rgba(255, 122, 24, 0.25)');
+    g.addColorStop(1, 'rgba(255, 122, 24, 0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  }
+
+  var sparkCount = 220;
+  var sparkPos = new Float32Array(sparkCount * 3);
+  var sparkSpeeds = new Float32Array(sparkCount);
+  var sparkRadii = new Float32Array(sparkCount);
+  var sparkAngles = new Float32Array(sparkCount);
+  var sparkHeights = new Float32Array(sparkCount);
+
+  for (var p = 0; p < sparkCount; p++) {
+    sparkRadii[p] = 0.8 + Math.pow(Math.random(), 1.6) * 4.2;
+    sparkAngles[p] = Math.random() * Math.PI * 2;
+    sparkHeights[p] = (Math.random() - 0.5) * 2.8;
+    sparkSpeeds[p] = 0.4 + Math.random() * 1.2;
+
+    sparkPos[p * 3]     = Math.cos(sparkAngles[p]) * sparkRadii[p];
+    sparkPos[p * 3 + 1] = Math.sin(sparkAngles[p]) * sparkRadii[p];
+    sparkPos[p * 3 + 2] = sparkHeights[p];
+  }
+
+  var sparksGeo = new THREE.BufferGeometry();
+  sparksGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+  var sparksMat = new THREE.PointsMaterial({
+    size: 0.32,
+    map: makeGlowSprite(),
+    transparent: true,
+    depthWrite: false,
+    opacity: 0.85,
+    blending: THREE.AdditiveBlending
+  });
+  var sparksMesh = new THREE.Points(sparksGeo, sparksMat);
+  masterGroup.add(sparksMesh);
+
+  // ════════════ 9. ONDAS DE CHOQUE VOLUMÉTRICAS (QUANTUM SURGE) ════════════
+  var pulseRings = [];
+  for (var pr = 0; pr < 3; pr++) {
+    var pGeo = new THREE.RingGeometry(0.2, 0.36, 64);
+    var pMat = new THREE.MeshBasicMaterial({ color: 0xffb076, transparent: true, opacity: 0, side: THREE.DoubleSide });
+    var pMesh = new THREE.Mesh(pGeo, pMat);
+    masterGroup.add(pMesh);
+    pulseRings.push({ mesh: pMesh, mat: pMat, scale: 1, opacity: 0, delay: pr * 0.12 });
+  }
+
+  // ════════════ 10. FÍSICA INERCIAL, MOUSE & INTERAÇÕES ════════════
+  var mouseX = 0, mouseY = 0;
+  var targetRotX = 0, targetRotY = 0;
+  var isSurge = false;
+  var surgeTime = 0;
+
+  container.addEventListener('pointermove', function(e){
+    var rect = container.getBoundingClientRect();
+    mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+    targetRotY = mouseX * 0.52;
+    targetRotX = -mouseY * 0.52;
+
+    // Atualiza luz orbital para criar reflexo metálico dinâmico
+    orbitLight.position.x = mouseX * 6;
+    orbitLight.position.y = -mouseY * 6 + 2;
+
+    var coords = document.getElementById('radarCoords');
+    if (coords) coords.textContent = 'AZ: ' + String(Math.round((mouseX + 1) * 180)).padStart(3, '0') + '° // EL: ' + Math.round(-mouseY * 45) + '°';
+  }, { passive: true });
+
+  container.addEventListener('pointerleave', function(){
+    targetRotX = 0; targetRotY = 0;
+  });
+
+  // Disparo Quântico ao Clicar
+  function triggerQuantumSurge() {
+    isSurge = true;
+    surgeTime = 0;
+
+    pulseRings.forEach(function(pr, idx){
+      pr.scale = 0.6;
+      pr.opacity = 1.0;
+    });
+
+    var status = document.getElementById('radarLockStatus');
+    if (status) {
+      status.textContent = 'LOCKED // S-ELITE';
+      status.style.borderColor = '#ff7a18';
+      status.style.background = 'rgba(255, 122, 24, 0.4)';
+      status.style.boxShadow = '0 0 20px rgba(255, 122, 24, 0.8)';
+    }
+
+    setTimeout(function(){
+      isSurge = false;
+      if (status) {
+        status.textContent = 'AUTO-SCAN';
+        status.style.borderColor = 'rgba(255, 122, 24, 0.4)';
+        status.style.background = 'rgba(255, 122, 24, 0.14)';
+        status.style.boxShadow = 'none';
+      }
+    }, 2400);
+  }
+
+  container.addEventListener('click', triggerQuantumSurge);
+
+  // ════════════ 11. LOOP DE RENDERIZAÇÃO CINEMÁTICO ════════════
+  var clock = new THREE.Clock();
+  var isRadarRunning = true;
+
+  function animRadar(){
+    if (!isRadarRunning) return;
+    requestAnimationFrame(animRadar);
+
+    var dt = clock.getDelta();
+    var t = clock.getElapsedTime();
+
+    // Rotações contra-inerciais dos anéis giroscópicos
+    ring1.rotation.z -= dt * 0.18;
+    ticksMesh.rotation.z -= dt * 0.18;
+    ring2.rotation.x = Math.sin(t * 0.9) * 0.75;
+    ring2.rotation.y = Math.cos(t * 0.7) * 0.75;
+    ring3.rotation.y = Math.sin(t * 1.3) * 0.85;
+    ring3.rotation.x = Math.cos(t * 1.1) * 0.85;
+
+    // Acelerador de 12 nós quânticos orbitais
+    var nodeSpeed = t * 1.1;
+    for (var k = 0; k < nodeCount; k++) {
+      var nAngle = nodeSpeed + (k / nodeCount) * Math.PI * 2;
+      var nx = Math.cos(nAngle) * 3.35;
+      var ny = Math.sin(nAngle) * 3.35;
+      var nz = Math.sin(nAngle * 2 + t) * 0.45;
+      nodeMeshes[k].position.set(nx, ny, nz);
+      nodeMeshes[k].rotation.x += dt * 2.0;
+      nodeMeshes[k].rotation.y += dt * 2.5;
+    }
+
+    // Núcleo Quântico: Spin e Deformação de Luz
+    icosaMesh.rotation.x += dt * 0.9;
+    icosaMesh.rotation.y += dt * 1.2;
+    icosaEdges.rotation.x = icosaMesh.rotation.x;
+    icosaEdges.rotation.y = icosaMesh.rotation.y;
+
+    octaMesh.rotation.x -= dt * 1.8;
+    octaMesh.rotation.z += dt * 2.2;
+
+    var pulseMod = 1.0 + Math.sin(t * 5.0) * 0.09;
+    coreSphere.scale.set(pulseMod, pulseMod, pulseMod);
+    coreLight.intensity = 4.5 + Math.sin(t * 6.0) * 1.5;
+
+    // Feixe Laser Sweep
+    sweepMesh.rotation.z += dt * 1.5;
+
+    // Fagulhas / Vórtice Quântico
+    var posAttr = sparksGeo.attributes.position.array;
+    for (var sp = 0; sp < sparkCount; sp++) {
+      sparkAngles[sp] += dt * sparkSpeeds[sp] * 0.8;
+      var currentRad = sparkRadii[sp] + Math.sin(t * 2 + sp) * 0.15;
+      posAttr[sp * 3]     = Math.cos(sparkAngles[sp]) * currentRad;
+      posAttr[sp * 3 + 1] = Math.sin(sparkAngles[sp]) * currentRad;
+    }
+    sparksGeo.attributes.position.needsUpdate = true;
+
+    // Ondas de Choque ao Clicar (Surge Effect)
+    if (isSurge) {
+      surgeTime += dt;
+      pulseRings.forEach(function(pr, idx){
+        if (surgeTime > pr.delay) {
+          pr.scale += dt * 8.0;
+          pr.opacity -= dt * 1.4;
+          pr.mesh.scale.set(pr.scale, pr.scale, 1);
+          pr.mat.opacity = Math.max(0, pr.opacity);
+        }
+      });
+    }
+
+    // Interpolação elástica do mouse (Inércia 3D Suave)
+    masterGroup.rotation.y += (targetRotY - masterGroup.rotation.y) * 0.085;
+    masterGroup.rotation.x += (targetRotX - masterGroup.rotation.x) * 0.085;
+
+    renderer.render(scene, camera);
+  }
+  animRadar();
+
+  window.addEventListener('resize', function(){
+    if (!container.clientWidth) return;
+    width = container.clientWidth;
+    height = container.clientHeight;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) {
+      isRadarRunning = false;
+    } else {
+      isRadarRunning = true;
+      clock.getDelta();
+      animRadar();
+    }
+  });
+})();
+
+})();
+</script>
+<script>
+document.addEventListener('contextmenu', (e) => e.preventDefault());
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'F12') { e.preventDefault(); return; }
+  const ctrl = e.ctrlKey || e.metaKey;
+  if (ctrl && ['u','U','s','S','c','C','a','A'].includes(e.key)) { e.preventDefault(); return; }
+  if (ctrl && e.shiftKey && ['i','I','j','J','c','C'].includes(e.key)) { e.preventDefault(); }
+});
+</script>
+</body>
+</html>

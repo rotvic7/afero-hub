@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Demonstração fictícia de um plano de conteúdo com progresso local.">
+  <title>Plano de Conteúdo em 7 Dias · Demonstração</title>
+  <link rel="stylesheet" href="visual-demonstrativo.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+
+  <header class="topbar">
+    <a class="brand" href="#conteudo" aria-label="Plano 07, início">
+      <span class="brand-stamp" aria-hidden="true">07</span>
+      <span>
+        <strong>Plano de Conteúdo</strong>
+        <small>caderno de execução</small>
+      </span>
+    </a>
+    <span class="edition">edição demonstrativa · offline</span>
+  </header>
+
+  <main id="conteudo" class="page-shell">
+    <section class="intro" aria-labelledby="titulo-programa">
+      <div class="intro-copy">
+        <p class="kicker">uma semana · uma mensagem por dia</p>
+        <h1 id="titulo-programa">Transforme ideias soltas em uma semana publicável.</h1>
+        <p class="lede">Sete decisões curtas para organizar pauta, argumento e chamada para ação. Seu avanço fica salvo somente neste navegador.</p>
+      </div>
+
+      <aside class="week-note" aria-label="Como usar este plano">
+        <span class="note-number">01</span>
+        <p>Abra uma ficha por dia, execute a ação e marque quando o conteúdo estiver pronto para publicar.</p>
+        <span class="scribble" aria-hidden="true">comece pequeno</span>
+      </aside>
+    </section>
+
+    <div class="workspace">
+      <section class="progress-panel" aria-labelledby="titulo-progresso">
+        <div class="section-heading">
+          <div>
+            <p class="section-index">progresso</p>
+            <h2 id="titulo-progresso">Sua semana editorial</h2>
+          </div>
+          <span class="progress-fraction" id="progressFraction" aria-hidden="true">0/7</span>
+        </div>
+
+        <progress id="progressValue" max="7" value="0">0 de 7</progress>
+        <p id="progressLabel" class="progress-label" aria-live="polite">0 de 7 etapas concluídas</p>
+
+        <div class="week-grid" aria-hidden="true">
+          <span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span><span>D</span>
+        </div>
+
+        <button id="resetProgress" class="reset-button" type="button">Recomeçar progresso</button>
+        <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="lessons-panel" aria-labelledby="titulo-etapas">
+        <div class="section-heading section-heading-lessons">
+          <div>
+            <p class="section-index">roteiro de campo</p>
+            <h2 id="titulo-etapas">As sete fichas</h2>
+          </div>
+          <p class="section-hint">Marque ao concluir</p>
+        </div>
+        <div id="lessonList" class="lesson-list"></div>
+        <noscript>
+          <p class="noscript-message">Ative o JavaScript para marcar as etapas e salvar seu progresso.</p>
+        </noscript>
+      </section>
+    </div>
+
+    <footer class="page-footer">
+      <p>Produto fictício criado para demonstrar uma experiência local.</p>
+      <span aria-hidden="true">PLANO · 07 · LOCAL</span>
+    </footer>
+  </main>
+
+  <script src="experiencia-demonstrativa.js" defer></script>
+</body>
+</html>

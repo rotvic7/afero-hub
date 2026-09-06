@@ -1,0 +1,10 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 1000, "title": "Hub premium · clicável", "is_interactive": true },
+    { "file": "Icones.dc.html", "x": 1560, "y": 0, "w": 900, "h": 660, "title": "Sistema de ícones" }
+  ],
+  "annotations": [
+    { "id": "como-usar", "x": 0, "y": -150, "w": 620, "text": "Protótipo clicável. Troque de aba no menu do topo, clique num card do catálogo ou numa linha do feed para abrir o raio-x, e use os filtros de tier na barra de ferramentas.\nO chip de cor acima do artboard troca o acento do sistema inteiro." }
+  ],
+  "launch": { "view": "canvas" }
+}

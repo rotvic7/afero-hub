@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="dark">
+<title>Hunter Hub · Bônus · Agente Copywriter</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* tokens espelhados do hunter-hub.html (Core) */
+:root{
+  --void:#080605;
+  --bg:#0c0908;
+  --surface:rgba(24,17,16,.75);
+  --surface-solid:#141010;
+  --stroke:rgba(255,236,224,.09);
+  --stroke-strong:rgba(255,236,224,.16);
+  --stroke-hot:rgba(255,138,74,.36);
+
+  --text:#f2ebe5;
+  --muted:#b5a69b;
+  --dim:#7d6c62;
+  --faint:#574c47;
+
+  --ember:#e0703c;
+  --ember-hot:#ff8a4a;
+  --ember-deep:#a34a22;
+  --ember-soft:rgba(224,112,60,.13);
+  --blood:#7d1d14;
+  --bone:#d9cbbd;
+  --green:#6bca9f;
+
+  --f-display:"Unbounded",system-ui,sans-serif;
+  --f-body:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+
+  --ease:cubic-bezier(.22,1,.36,1);
+  --r:12px;
+  --r-sm:8px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--f-body);font-size:15px;line-height:1.6;
+  min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(900px 600px at 78% -10%, rgba(125,29,20,.26), transparent 60%),
+    radial-gradient(900px 520px at 12% -6%, rgba(224,112,60,.10), transparent 62%),
+    radial-gradient(1100px 700px at 50% 108%, rgba(224,112,60,.06), transparent 60%);
+}
+.dots{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(rgba(255,236,224,.07) 1px,transparent 1px);
+  background-size:26px 26px;
+  -webkit-mask-image:radial-gradient(ellipse 75% 60% at 50% 18%,#000 20%,transparent 72%);
+  mask-image:radial-gradient(ellipse 75% 60% at 50% 18%,#000 20%,transparent 72%);
+}
+.grain{
+  position:fixed;inset:-40px;z-index:130;pointer-events:none;
+  opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit}
+::selection{background:rgba(255,138,74,.28)}
+
+.wrap{width:min(1080px,100%);margin:0 auto;padding:0 22px;position:relative;z-index:2}
+
+/* topbar */
+.topbar{
+  position:sticky;top:0;z-index:60;height:56px;
+  background:rgba(12,9,8,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--stroke);
+}
+.topbar-in{height:100%;display:flex;align-items:center;gap:18px}
+.brand{
+  display:flex;align-items:center;gap:9px;
+  font-family:var(--f-mono);font-size:12px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
+}
+.brand .mark{
+  width:22px;height:22px;flex:none;border-radius:6px;
+  border:1px solid var(--stroke-hot);
+  background:linear-gradient(150deg,rgba(255,138,74,.24),rgba(163,74,34,.06));
+  display:grid;place-items:center;color:var(--ember-hot);font-size:11px;
+}
+.brand .sep{color:var(--faint);font-weight:400}
+.brand .ver{color:var(--dim);font-weight:500}
+.back{
+  margin-left:auto;
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;color:var(--muted);
+  border:1px solid var(--stroke);border-radius:99px;padding:6px 13px;
+  text-decoration:none;transition:.18s var(--ease);white-space:nowrap;
+}
+.back:hover{border-color:var(--stroke-hot);color:var(--ember-hot)}
+
+/* reveals */
+[data-rev]{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+[data-rev].in{opacity:1;transform:none}
+
+.stage{padding:34px 0 90px}
+
+/* hero do bônus */
+.bhero{
+  display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);
+  gap:26px;align-items:center;
+  border:1px solid var(--stroke-hot);border-radius:16px;
+  background:linear-gradient(130deg,rgba(224,112,60,.08),rgba(125,29,20,.06) 55%,transparent);
+  padding:clamp(20px,3vw,32px);
+  position:relative;overflow:hidden;
+}
+.bhero::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:46%;
+  background:radial-gradient(62% 100% at 50% 100%,rgba(74,15,10,.14),transparent 72%);
+  pointer-events:none;
+}
+.bshot{
+  position:relative;border-radius:var(--r);overflow:hidden;
+  border:1px solid var(--stroke-strong);aspect-ratio:16/12;
+}
+.bshot img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.92);transition:transform .5s var(--ease)}
+.bhero:hover .bshot img{transform:scale(1.05)}
+.bshot::before{
+  content:"";position:absolute;top:-30%;bottom:-30%;left:-52%;width:34%;z-index:2;
+  background:linear-gradient(100deg,transparent,rgba(255,236,224,.16) 48%,transparent);
+  transform:skewX(-14deg);pointer-events:none;
+}
+.bhero:hover .bshot::before{animation:scan 1.3s var(--ease) forwards}
+@keyframes scan{to{left:130%}}
+.bshot .num{
+  position:absolute;top:9px;left:9px;z-index:3;
+  font-family:var(--f-mono);font-size:9.5px;letter-spacing:.08em;color:var(--bone);
+  background:rgba(8,6,5,.72);border:1px solid var(--stroke-strong);
+  border-radius:6px;padding:2px 8px;backdrop-filter:blur(6px);
+}
+.btag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--bone);border:1px solid rgba(217,203,189,.32);border-radius:99px;
+  background:rgba(217,203,189,.07);padding:5px 13px;margin-bottom:14px;
+}
+.btag .dt{width:6px;height:6px;border-radius:99px;background:var(--ember-hot);animation:beat 2.2s infinite}
+@keyframes beat{0%,100%{opacity:1}50%{opacity:.35}}
+.bhero h1{
+  font-family:var(--f-display);font-size:clamp(19px,2.6vw,27px);font-weight:700;
+  letter-spacing:-.015em;margin:0 0 10px;line-height:1.22;
+}
+.bhero h1 em{font-style:normal;color:var(--ember-hot)}
+.bhero p{margin:0 0 8px;color:var(--muted);font-size:14px;max-width:62ch}
+.bhero p b{color:var(--text);font-weight:600}
+.bhero .z{position:relative;z-index:1}
+
+/* títulos de bloco */
+.blocktitle{display:flex;align-items:center;gap:13px;margin:52px 0 18px}
+.blocktitle .idx{font-family:var(--f-mono);font-size:10.5px;color:var(--ember);letter-spacing:.1em}
+.blocktitle h2{
+  font-family:var(--f-display);font-size:clamp(16px,2vw,20px);font-weight:700;
+  margin:0;letter-spacing:-.015em;
+}
+.blocktitle .rule{flex:1;height:1px;background:var(--stroke)}
+
+/* passos de uso */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:14px}
+.step{
+  border:1px solid var(--stroke);border-radius:var(--r);
+  background:var(--surface);backdrop-filter:blur(14px);
+  padding:16px;
+}
+.step .n{
+  font-family:"Space Grotesk",sans-serif;font-size:11px;font-weight:700;color:var(--ember);
+  letter-spacing:.08em;margin-bottom:9px;
+}
+.step h3{font-size:13.5px;font-weight:700;margin:0 0 6px}
+.step p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.55}
+.step p code{font-family:var(--f-mono);font-size:11px;color:var(--ember);background:rgba(224,112,60,.08);padding:1px 5px;border-radius:4px}
+
+/* o que ele devolve */
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:12px}
+.outcard{
+  border:1px solid var(--stroke);border-radius:var(--r-sm);
+  background:var(--surface);backdrop-filter:blur(12px);
+  padding:14px 15px;
+}
+.outcard .oi{
+  font-family:var(--f-mono);font-size:9.5px;color:var(--faint);letter-spacing:.12em;
+  display:block;margin-bottom:6px;text-transform:uppercase;
+}
+.outcard h3{font-size:13px;font-weight:700;margin:0 0 5px}
+.outcard p{margin:0;font-size:12.3px;color:var(--muted);line-height:1.5}
+
+/* dica de integração com o core */
+.tip{
+  margin-top:14px;
+  display:flex;gap:12px;align-items:flex-start;
+  border:1px dashed var(--stroke-hot);border-radius:var(--r);
+  background:rgba(224,112,60,.05);padding:14px 16px;
+  font-size:13px;color:var(--muted);line-height:1.6;
+}
+.tip .ic{
+  flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
+  background:var(--ember-soft);color:var(--ember-hot);font-family:var(--f-mono);font-size:12px;
+}
+.tip b{color:var(--text);font-weight:600}
+.tip code{font-family:var(--f-mono);font-size:11px;color:var(--ember)}
+
+/* janela do prompt */
+.promptwin{
+  border:1px solid var(--stroke);border-radius:var(--r);
+  background:var(--void);overflow:hidden;
+}
+.promptbar{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border-bottom:1px solid var(--stroke);
+  background:rgba(255,255,255,.018);
+}
+.promptbar .lights{display:flex;gap:5px}
+.promptbar .lights i{width:9px;height:9px;border-radius:99px;background:#2a2220;display:block}
+.promptbar .lights i:first-child{background:rgba(224,112,60,.5)}
+.promptbar .ttl{font-family:var(--f-mono);font-size:10.5px;color:var(--faint);letter-spacing:.06em;margin-left:6px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.copybtn{
+  flex:none;display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.05em;
+  padding:6px 13px;border-radius:99px;
+  background:linear-gradient(135deg,var(--ember-hot),var(--ember-deep));
+  color:#150c06;font-weight:700;
+  box-shadow:0 6px 20px -10px rgba(255,138,74,.6);
+  transition:.18s var(--ease);
+}
+.copybtn:hover{filter:brightness(1.08)}
+.copybtn.done{background:rgba(107,202,159,.16);color:var(--green);box-shadow:none;border:1px solid rgba(107,202,159,.4)}
+.promptbody{
+  max-height:480px;overflow-y:auto;padding:18px;
+  font-family:var(--f-mono);font-size:11.5px;line-height:1.75;color:var(--muted);
+  white-space:pre-wrap;word-break:break-word;
+  font-variant-ligatures:none;
+}
+.promptbody::-webkit-scrollbar{width:9px}
+.promptbody::-webkit-scrollbar-thumb{background:#241b18;border-radius:20px}
+
+.footnote{
+  margin-top:56px;padding-top:20px;border-top:1px solid var(--stroke);
+  font-family:var(--f-mono);font-size:10.5px;color:var(--faint);
+  display:flex;gap:16px;flex-wrap:wrap;letter-spacing:.04em;
+}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;bottom:26px;z-index:140;
+  transform:translate(-50%,22px);opacity:0;pointer-events:none;
+  display:flex;align-items:center;gap:10px;
+  padding:11px 18px;border-radius:99px;
+  background:#161110;border:1px solid var(--stroke-hot);
+  box-shadow:0 18px 44px -20px rgba(0,0,0,.9);
+  font-family:var(--f-mono);font-size:11.5px;letter-spacing:.03em;
+  transition:.28s var(--ease);max-width:calc(100vw - 40px);
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast .dt{width:7px;height:7px;border-radius:99px;background:var(--green);flex:none}
+
+@media (max-width:760px){
+  .bhero{grid-template-columns:1fr}
+  .bshot{max-width:340px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  [data-rev]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="dots" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <div class="brand">
+      <span class="mark">◆</span>
+      <span>HUNTER HUB</span>
+      <span class="sep">//</span>
+      <span class="ver">BÔNUS 03</span>
+    </div>
+    <a class="back" href="../hunter-hub.html">← voltar ao core</a>
+  </div>
+</header>
+
+<main class="wrap stage">
+
+  <!-- hero -->
+  <section class="bhero" data-rev>
+    <div class="bshot">
+      <span class="num">AGENTE 03 · CONEXÕES</span>
+      <img src="fotos-agentes/agente-copy.webp" alt="Agente Copywriter" decoding="async">
+    </div>
+    <div class="z">
+      <span class="btag"><span class="dt" aria-hidden="true"></span>bônus de lançamento · incluso no seu acesso</span>
+      <h1>Agente Copywriter de <em>Alta Conversão</em></h1>
+      <p>Você garimpou a oferta validada. O passo seguinte é escrever a sua versão, e é exatamente esse serviço pesado que este agente faz: <b>headline, corpo de copy, oferta, CTA e P.S.</b>, na estrutura de resposta direta, prontos pra colar na sua página.</p>
+      <p>Ele funciona em qualquer assistente de IA que você já use. Copie o prompt abaixo uma vez, cole na conversa e responda três perguntas. O resto é entrega.</p>
+    </div>
+  </section>
+
+  <!-- como usar -->
+  <div class="blocktitle" data-rev>
+    <span class="idx">01</span>
+    <h2>Como usar em três passos</h2>
+    <span class="rule"></span>
+  </div>
+  <div class="steps">
+    <div class="step" data-rev>
+      <div class="n">PASSO 1</div>
+      <h3>Copie o prompt completo</h3>
+      <p>O botão <code>copiar prompt</code> na janela abaixo leva o agente inteiro pra sua área de transferência. Uma vez só, ele não muda.</p>
+    </div>
+    <div class="step" data-rev>
+      <div class="n">PASSO 2</div>
+      <h3>Cole no seu assistente</h3>
+      <p>Claude, ChatGPT, Gemini: qualquer um serve. Cole numa conversa nova pra ele assumir a identidade sem ruído de contexto anterior.</p>
+    </div>
+    <div class="step" data-rev>
+      <div class="n">PASSO 3</div>
+      <h3>Responda as três perguntas</h3>
+      <p>Produto, público e formato desejado. Com isso ele devolve a copy completa dentro dos marcadores <code>[INÍCIO/FIM DA COPY GERADA]</code>.</p>
+    </div>
+  </div>
+
+  <div class="tip" data-rev>
+    <span class="ic">↯</span>
+    <span><b>Atalho com o catálogo:</b> em qualquer card do Core, o botão de copiar leva o <b>contexto estruturado da oferta</b> (título, nicho, score, sinais). Cole esse contexto na mesma conversa, logo depois do prompt, e o agente escreve a copy já mirando a oferta que você garimpou, sem você digitar briefing nenhum.</span>
+  </div>
+
+  <!-- o que ele devolve -->
+  <div class="blocktitle" data-rev>
+    <span class="idx">02</span>
+    <h2>O que ele devolve, sempre nesta ordem</h2>
+    <span class="rule"></span>
+  </div>
+  <div class="out">
+    <div class="outcard" data-rev><span class="oi">bloco 1</span><h3>Big Idea</h3><p>O conceito central e a promessa única da peça, em uma frase.</p></div>
+    <div class="outcard" data-rev><span class="oi">bloco 2</span><h3>3 headlines alternativas</h3><p>Uma por ângulo: dor, desejo e curiosidade. Você escolhe ou testa as três.</p></div>
+    <div class="outcard" data-rev><span class="oi">bloco 3</span><h3>Corpo da copy</h3><p>Texto completo em PAS ou AIDA, com bullets de benefício e transições.</p></div>
+    <div class="outcard" data-rev><span class="oi">bloco 4</span><h3>Oferta e empacotamento</h3><p>Como descrever o produto, os bônus que matam objeção e a garantia.</p></div>
+    <div class="outcard" data-rev><span class="oi">bloco 5</span><h3>CTA e fechamento</h3><p>O comando de ação com motivo real de urgência, focado no botão.</p></div>
+    <div class="outcard" data-rev><span class="oi">bloco 6</span><h3>P.S. final</h3><p>O último gatilho: a dor de ficar parado contra o alívio de agir agora.</p></div>
+  </div>
+
+  <!-- o prompt -->
+  <div class="blocktitle" data-rev>
+    <span class="idx">03</span>
+    <h2>O prompt do agente</h2>
+    <span class="rule"></span>
+  </div>
+  <div class="promptwin" data-rev>
+    <div class="promptbar">
+      <span class="lights"><i></i><i></i><i></i></span>
+      <span class="ttl">agente-copywriter.md · v1.0</span>
+      <button class="copybtn" id="copyprompt" type="button">copiar prompt</button>
+    </div>
+    <div class="promptbody" id="promptbody"># Role: Copywriter Sênior, Especialista em Resposta Direta &amp; Neuro-Copywriting
+
+## Objetivo
+Você é um Copywriter Sênior de Resposta Direta e Especialista em Comportamento Humano. Sua função é receber ideias brutas de produtos, ofertas vagas, rascunhos de páginas de vendas ou briefings de anúncios e transformá-los em copys de altíssima conversão, magnéticas e emocionalmente profundas, prontas para vender. Você domina a arte de tocar nas dores latentes, agitar as frustrações corretas e apresentar soluções como a única saída lógica para o cliente ideal.
+
+## Diretrizes de Ação (Como você deve pensar)
+1. **Mapeamento de Avatar Profundo (O "Subconsciente" do Cliente):**
+   - Não fique na superfície (idade, gênero, classe). Vá nos medos reais, desejos ocultos e frustrações diárias.
+   - Identifique os inimigos comuns e as falsas soluções que o avatar já tentou.
+2. **Seleção de Framework Persuasivo:**
+   - Escolha ativamente a melhor estrutura para o formato solicitado:
+     * **AIDA (Atenção, Interesse, Desejo, Ação):** Perfeito para anúncios e páginas curtas.
+     * **PAS (Problema, Agitação, Solução):** O motor de conversão mais poderoso para capturar leads qualificados.
+     * **Rule of One:** Focar em uma única grande promessa, uma única grande dor, uma única grande ideia central por peça de copy.
+     * **16-Word Sales Letter:** Focar na fórmula definitiva de promessa, credibilidade e risco zero.
+3. **Escrita Magnética &amp; Ritmo de Leitura (Flow):**
+   - Use ganchos (hooks) brutais e quebras de padrão (pattern interrupts) nas primeiras linhas.
+   - Aplique frases curtas, variação de ritmo, ritmo de conversação e termos de alta carga sensorial.
+   - Escreva como quem conversa no WhatsApp com um amigo de longa data, mas mantendo a autoridade de um mentor.
+
+## Estrutura Obrigatória da Sua Resposta
+Sua resposta final deve ser apresentada em blocos limpos, organizados e prontos para uso/cópia, seguindo a estrutura abaixo de acordo com o pedido do usuário:
+
+---
+[INÍCIO DA COPY GERADA]
+
+**1. A Grande Ideia &amp; Promessa Central (Big Idea):**
+[Descreva em uma frase simples e impactante qual é o conceito central, a promessa única e o ângulo de atração principal da peça.]
+
+**2. Ganchos &amp; Headlines Alternativas (Hooks):**
+- **Opção 1 (Apelo de Dor):** [Headline curta e cortante focada na dor]
+- **Opção 2 (Apelo de Desejo/Ganho):** [Headline focada na transformação e futuro brilhante]
+- **Opção 3 (Apelo de Curiosidade/Padrão Quebrado):** [Headline enigmática que força o clique]
+
+**3. O Corpo da Copy (Body Copy):**
+[Insira o texto completo da copy estruturado no framework ideal (ex: PAS ou AIDA), com parágrafos curtos, bullets persuasivos de benefícios e transições suaves.]
+
+**4. Oferta Irrecusável &amp; Empacotamento de Valor:**
+- **O Produto:** [Como descrever o produto como a única solução definitiva]
+- **Bônus Anestesiadores de Objeção:** [Bônus estratégicos que matam desculpas comuns (ex: falta de tempo, falta de apoio)]
+- **Garantia Incondicional:** [Termos de garantia que removem todo o risco das costas do cliente]
+
+**5. Call to Action (CTA) &amp; Fechamento:**
+[O comando de ação final claro, direto e focado no botão de compra, acompanhado de um motivo forte de urgência/escassez real.]
+
+**6. P.S. (Post Scriptum - O Pulo do Gato):**
+[Um último lembrete curto agitando a dor de continuar onde está vs. o alívio de agir agora.]
+
+[FIM DA COPY GERADA]
+---
+
+## Instrução Inicial
+Aguarde o primeiro input do usuário. Peça para ele descrever brevemente:
+1. Qual é o produto/oferta (ou a ideia central).
+2. Quem é o público-alvo (avatar) e a dor principal dele.
+3. Qual é o formato desejado (Página de Vendas, Carrossel de Instagram, Anúncio de Facebook Ads, Sequência de E-mails ou VSL).
+Assim que receber essas informações, gere a copy ideal de resposta direta.</div>
+  </div>
+
+  <div class="footnote">
+    <span>hunter hub · bônus 03 · agente copywriter</span>
+    <span>·</span>
+    <span>funciona em qualquer assistente de ia</span>
+    <span>·</span>
+    <span><a href="../hunter-hub.html" style="color:var(--muted)">voltar ao core</a></span>
+  </div>
+</main>
+
+<div class="toast" id="toast"><span class="dt"></span><span id="toast-msg"></span></div>
+
+<script>
+(function(){
+"use strict";
+
+var REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+/* reveal no scroll */
+(function(){
+  var els = document.querySelectorAll("[data-rev]");
+  if(REDUCED || !("IntersectionObserver" in window)){
+    Array.prototype.forEach.call(els, function(e){ e.classList.add("in"); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
+    });
+  }, { rootMargin:"0px 0px -8% 0px", threshold:.12 });
+  Array.prototype.forEach.call(els, function(e){ io.observe(e); });
+})();
+
+/* copiar o prompt */
+var toastT = null;
+function toast(msg){
+  var t = document.getElementById("toast");
+  document.getElementById("toast-msg").textContent = msg;
+  t.classList.add("on");
+  clearTimeout(toastT);
+  toastT = setTimeout(function(){ t.classList.remove("on"); }, 2600);
+}
+
+document.getElementById("copyprompt").addEventListener("click", function(){
+  var btn = this;
+  var txt = document.getElementById("promptbody").textContent;
+  function ok(){
+    btn.textContent = "copiado ✓";
+    btn.classList.add("done");
+    toast("Prompt completo na área de transferência. Cole no seu assistente.");
+    setTimeout(function(){ btn.textContent = "copiar prompt"; btn.classList.remove("done"); }, 2600);
+  }
+  function fallback(){
+    var ta = document.createElement("textarea");
+    ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); ok(); }catch(e){ toast("Não consegui copiar. Selecione o texto manualmente."); }
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(ok, fallback);
+  }else{ fallback(); }
+});
+
+})();
+</script>
+<script>
+/* deterrente cosmético · Ctrl+C e Ctrl+A livres: copiar o prompt é a função da página */
+document.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+document.addEventListener("keydown", function(e){
+  var k = (e.key || "").toLowerCase();
+  if(k === "f12"){ e.preventDefault(); return; }
+  if(e.ctrlKey && e.shiftKey && (k === "i" || k === "j" || k === "c")){ e.preventDefault(); return; }
+  if(e.ctrlKey && (k === "u" || k === "s")){ e.preventDefault(); return; }
+});
+</script>
+</body>
+</html>

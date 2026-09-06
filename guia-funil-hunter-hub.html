@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Guia operacional do funil local do Hunter Hub, da oferta caçada à página pronta para revisão.">
+  <title>Guia do Funil · Hunter Hub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Unbounded:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-0: #080605;
+      --bg-1: #100b09;
+      --bg-2: #18100d;
+      --bg-3: #211510;
+      --glass: rgba(24, 17, 16, 0.76);
+      --hairline: rgba(255, 236, 224, 0.10);
+      --hairline-strong: rgba(255, 236, 224, 0.18);
+      --hairline-hot: rgba(255, 138, 74, 0.38);
+      --txt-0: #f4eae2;
+      --txt-1: #c7b9ae;
+      --txt-2: #88776d;
+      --ember: #e0703c;
+      --flare: #ff8a4a;
+      --amber: #f59e0b;
+      --clay: #b98b6a;
+      --rubi: #c8402a;
+      --green: #78b39c;
+      --glow: 0 0 42px rgba(224, 112, 60, 0.28);
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+      --font-brand: "Unbounded", "Bricolage Grotesque", sans-serif;
+      --font-display: "Bricolage Grotesque", "Hanken Grotesk", sans-serif;
+      --font-body: "Hanken Grotesk", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", "Courier New", monospace;
+      --maxw: 900px;
+      --radius: 20px;
+      --radius-sm: 13px;
+      --pill: 999px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--txt-0);
+      background:
+        radial-gradient(circle at 50% -14%, rgba(224, 112, 60, 0.18), transparent 34rem),
+        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 34rem, #050403 100%);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.55;
+      background-image:
+        linear-gradient(rgba(224, 112, 60, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(224, 112, 60, 0.045) 1px, transparent 1px);
+      background-size: 58px 58px;
+      mask-image: linear-gradient(to bottom, black, transparent 78%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0.055;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.45'/%3E%3C/svg%3E");
+    }
+
+    a { color: inherit; }
+    button { font: inherit; }
+    code, pre { font-family: var(--font-mono); }
+    code {
+      color: var(--flare);
+      font-size: 0.9em;
+      overflow-wrap: anywhere;
+    }
+
+    .wrap {
+      width: min(calc(100% - 40px), var(--maxw));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 66px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--txt-2);
+    }
+
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--txt-1);
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--hairline-hot);
+      border-radius: 8px;
+      color: var(--flare);
+      background: rgba(224, 112, 60, 0.10);
+      box-shadow: var(--glow);
+      font-family: var(--font-brand);
+      font-size: 9px;
+    }
+
+    .topbar a.back {
+      padding: 7px 12px;
+      border: 1px solid var(--hairline);
+      border-radius: var(--pill);
+      color: var(--txt-2);
+      text-decoration: none;
+      transition: 180ms ease;
+    }
+    .topbar a.back:hover,
+    .topbar a.back:focus-visible {
+      color: var(--flare);
+      border-color: var(--hairline-hot);
+      background: rgba(224, 112, 60, 0.10);
+      outline: none;
+    }
+
+    .hero { margin-bottom: 46px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 18px;
+      color: var(--flare);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--flare);
+      box-shadow: 0 0 14px var(--flare);
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 780px;
+      margin-bottom: 20px;
+      font-family: var(--font-display);
+      font-size: clamp(38px, 7vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.055em;
+      line-height: 0.98;
+    }
+    h1 em {
+      color: var(--flare);
+      font-style: normal;
+    }
+    .hero-lead {
+      max-width: 680px;
+      margin-bottom: 28px;
+      color: var(--txt-1);
+      font-size: clamp(17px, 2.2vw, 20px);
+      line-height: 1.55;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .meta-chip {
+      padding: 7px 11px;
+      border: 1px solid var(--hairline);
+      border-radius: var(--pill);
+      color: var(--txt-2);
+      background: rgba(255, 236, 224, 0.035);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .meta-chip.hot {
+      color: var(--flare);
+      border-color: var(--hairline-hot);
+      background: rgba(224, 112, 60, 0.10);
+    }
+
+    .section {
+      position: relative;
+      margin: 22px 0;
+      padding: clamp(24px, 4vw, 38px);
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      background: var(--glass);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .section::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 28px;
+      right: 28px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--hairline-hot), transparent);
+    }
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+    .section-index {
+      flex: none;
+      color: var(--ember);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    h2 {
+      margin-bottom: 9px;
+      font-family: var(--font-display);
+      font-size: clamp(24px, 4vw, 34px);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+    }
+    .section-intro {
+      max-width: 670px;
+      margin-bottom: 0;
+      color: var(--txt-1);
+      font-size: 16px;
+    }
+
+    .scope-grid,
+    .field-grid,
+    .tool-grid,
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .scope-card,
+    .field-card,
+    .tool-card,
+    .project-card {
+      padding: 17px 18px;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-sm);
+      background: rgba(8, 6, 5, 0.40);
+    }
+    .scope-card h3,
+    .field-card h3,
+    .tool-card h3,
+    .project-card h3 {
+      margin-bottom: 7px;
+      color: var(--txt-0);
+      font-family: var(--font-display);
+      font-size: 16px;
+      line-height: 1.25;
+    }
+    .scope-card p,
+    .field-card p,
+    .tool-card p,
+    .project-card p {
+      margin-bottom: 0;
+      color: var(--txt-2);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .scope-card.in { border-color: rgba(120, 179, 156, 0.30); }
+    .scope-card.in h3 { color: var(--green); }
+    .scope-card.out { border-color: rgba(255, 236, 224, 0.08); }
+    .scope-card.out h3 { color: var(--txt-2); }
+
+    .pipeline {
+      display: grid;
+      gap: 0;
+      position: relative;
+    }
+    .pipeline::before {
+      content: "";
+      position: absolute;
+      top: 23px;
+      bottom: 23px;
+      left: 18px;
+      width: 1px;
+      background: linear-gradient(var(--flare), rgba(255, 138, 74, 0.08));
+    }
+    .stage {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 15px;
+      position: relative;
+      padding: 12px 0 18px;
+    }
+    .stage:last-child { padding-bottom: 0; }
+    .stage-num {
+      display: grid;
+      place-items: center;
+      z-index: 1;
+      width: 37px;
+      height: 37px;
+      border: 1px solid var(--hairline-hot);
+      border-radius: 12px;
+      color: var(--flare);
+      background: var(--bg-2);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .stage-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 4px;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .stage-title small {
+      color: var(--txt-2);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+    .stage p { margin-bottom: 0; color: var(--txt-1); font-size: 14px; }
+    .handoff {
+      display: inline-flex;
+      margin-top: 9px;
+      padding: 4px 8px;
+      border: 1px solid var(--hairline);
+      border-radius: 6px;
+      color: var(--txt-2);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+
+    .field-card strong,
+    .project-card strong,
+    .callout strong { color: var(--txt-0); }
+    .field-card .label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--flare);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+    .field-card.user .label { color: var(--amber); }
+
+    .callout {
+      margin-top: 22px;
+      padding: 15px 17px;
+      border: 1px solid var(--hairline-hot);
+      border-left: 3px solid var(--flare);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      background: rgba(224, 112, 60, 0.08);
+    }
+    .callout p { margin: 0; color: var(--txt-1); font-size: 14px; }
+
+    .export-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.9fr);
+      gap: 18px;
+      align-items: stretch;
+      min-width: 0;
+    }
+    .tree,
+    .terminal {
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius-sm);
+      background: rgba(5, 4, 3, 0.78);
+    }
+    .tree-head,
+    .terminal-head {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--hairline);
+      color: var(--txt-2);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .tree pre,
+    .terminal pre {
+      margin: 0;
+      padding: 18px;
+      overflow-x: auto;
+      color: var(--txt-1);
+      font-size: 11px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .tree .folder { color: var(--flare); }
+    .tree .file { color: var(--txt-1); }
+    .tree .hint { color: var(--txt-2); }
+    .terminal + .terminal { margin-top: 12px; }
+    .terminal pre { color: #e8c6ae; }
+    .command {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--hairline);
+    }
+    .command code { color: var(--flare); font-size: 11px; white-space: nowrap; overflow-x: auto; }
+    .command code { min-width: 0; }
+    .copy-btn {
+      flex: none;
+      padding: 6px 9px;
+      border: 1px solid var(--hairline-strong);
+      border-radius: 7px;
+      color: var(--txt-1);
+      background: rgba(255, 236, 224, 0.05);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      transition: 180ms ease;
+    }
+    .copy-btn:hover,
+    .copy-btn:focus-visible {
+      border-color: var(--flare);
+      color: var(--bg-0);
+      background: var(--flare);
+      outline: none;
+    }
+
+    .tool-card { position: relative; padding-left: 48px; }
+    .tool-card::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      width: 17px;
+      height: 17px;
+      border: 1px solid var(--hairline-hot);
+      border-radius: 5px;
+      background: rgba(224, 112, 60, 0.14);
+    }
+    .tool-card:nth-child(2)::before { border-color: rgba(245, 158, 11, 0.40); background: rgba(245, 158, 11, 0.13); }
+    .tool-card:nth-child(3)::before { border-color: rgba(120, 179, 156, 0.40); background: rgba(120, 179, 156, 0.13); }
+    .tool-card:nth-child(4)::before { border-color: rgba(185, 139, 106, 0.45); background: rgba(185, 139, 106, 0.13); }
+
+    .project-card { border-color: rgba(255, 138, 74, 0.22); }
+    .project-card .value {
+      display: block;
+      margin-top: 5px;
+      color: var(--flare);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .project-note {
+      margin-top: 17px;
+      padding: 13px 15px;
+      border-radius: 10px;
+      color: var(--txt-1);
+      background: rgba(120, 179, 156, 0.08);
+      font-size: 13px;
+    }
+
+    .states {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .state {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 9px;
+      border: 1px solid var(--hairline);
+      border-radius: 7px;
+      color: var(--txt-1);
+      background: rgba(8, 6, 5, 0.38);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+    .state::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--txt-2); }
+    .state.active { border-color: var(--hairline-hot); color: var(--flare); }
+    .state.active::before { background: var(--flare); box-shadow: 0 0 9px var(--flare); }
+    .state.gate { color: var(--amber); border-color: rgba(245, 158, 11, 0.25); }
+    .state.gate::before { background: var(--amber); }
+
+    .checklist {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .checklist li {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--txt-1);
+      font-size: 14px;
+    }
+    .checklist li::before {
+      content: "✓";
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border: 1px solid rgba(120, 179, 156, 0.35);
+      border-radius: 7px;
+      color: var(--green);
+      background: rgba(120, 179, 156, 0.09);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    footer {
+      padding: 25px 0 0;
+      color: var(--txt-2);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+    footer span { color: var(--ember); }
+
+    .reveal { opacity: 0; transform: translateY(14px); animation: reveal 700ms var(--ease) forwards; }
+    .reveal:nth-of-type(2) { animation-delay: 70ms; }
+    .reveal:nth-of-type(3) { animation-delay: 120ms; }
+    @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 700px) {
+      .wrap { width: min(calc(100% - 28px), var(--maxw)); padding-top: 18px; }
+      .topbar { margin-bottom: 45px; }
+      .scope-grid, .field-grid, .tool-grid, .project-grid, .export-grid { grid-template-columns: 1fr; }
+      .section { padding: 24px 18px; border-radius: 16px; }
+      .section-head { display: block; }
+      .section-index { display: block; margin-bottom: 12px; }
+      .pipeline::before { left: 17px; }
+      .stage { grid-template-columns: 36px 1fr; gap: 12px; }
+      .stage-num { width: 35px; height: 35px; }
+      .command code { max-width: calc(100% - 70px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <nav class="topbar" aria-label="Navegação do guia">
+      <a class="brand-lockup" href="index.html">
+        <span class="brand-mark" aria-hidden="true">H</span>
+        <span>Hunter Hub · operação local</span>
+      </a>
+      <a class="back" href="index.html">← voltar ao catálogo</a>
+    </nav>
+
+    <header class="hero reveal">
+      <span class="eyebrow">guia operacional · v1</span>
+      <h1>Da oferta caçada ao <em>funil pronto</em> no computador.</h1>
+      <p class="hero-lead">Este documento define como o Hunter Hub organiza uma oferta de alto potencial, transforma suas decisões em arquivos de projeto e entrega o contexto certo para o Codex ou o Claude Code executarem a Copy e a Página.</p>
+      <div class="hero-meta" aria-label="Características do processo">
+        <span class="meta-chip hot">local-first</span>
+        <span class="meta-chip">3 agentes</span>
+        <span class="meta-chip">aprovação por etapa</span>
+        <span class="meta-chip">checkout em aberto</span>
+      </div>
+    </header>
+
+    <section class="section reveal" id="escopo">
+      <div class="section-head">
+        <div>
+          <span class="section-index">01 · escopo</span>
+          <h2>O que vive no Hunter Hub</h2>
+          <p class="section-intro">O Hub funciona como cockpit do projeto. Ele registra a oferta, coleta a direção e organiza os arquivos. A execução criativa acontece no computador do usuário.</p>
+        </div>
+      </div>
+      <div class="scope-grid">
+        <article class="scope-card in"><h3>Caçador de Ofertas</h3><p>Pesquisa, classifica e registra a oferta escolhida, com evidências da página e dos sinais capturados.</p></article>
+        <article class="scope-card in"><h3>Agente de Copy</h3><p>Recebe o briefing exportado e escreve a mensagem de venda para revisão antes da Página.</p></article>
+        <article class="scope-card in"><h3>Agente de Páginas</h3><p>Transforma a copy aprovada em HTML, preserva o vídeo autorizado e mantém os links de checkout vazios.</p></article>
+        <article class="scope-card out"><h3>Fora da primeira versão</h3><p>Entregáveis, Quiz, backend remoto, cobrança, publicação automática e execução direta de comandos pelo navegador.</p></article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="funil">
+      <div class="section-head">
+        <div>
+          <span class="section-index">02 · sequência</span>
+          <h2>O funil em cinco movimentos</h2>
+          <p class="section-intro">Cada passagem gera um arquivo e uma decisão clara. O próximo agente só recebe o material depois da revisão da etapa anterior.</p>
+        </div>
+      </div>
+      <div class="pipeline">
+        <article class="stage">
+          <span class="stage-num">01</span>
+          <div><div class="stage-title">Caçador de Ofertas <small>entrada</small></div><p>O usuário escolhe uma oferta do catálogo ou informa uma URL. O Hub congela o diagnóstico e as evidências para o projeto.</p><span class="handoff">oferta-original.md · diagnostico.json</span></div>
+        </article>
+        <article class="stage">
+          <span class="stage-num">02</span>
+          <div><div class="stage-title">Direcionamento no Hub <small>decisão</small></div><p>O formulário reúne produto, público, promessa, ângulo, tom, vídeo, referências e regras de checkout.</p><span class="handoff">briefing.md · projeto.json</span></div>
+        </article>
+        <article class="stage">
+          <span class="stage-num">03</span>
+          <div><div class="stage-title">Agente de Copy <small>Codex ou Claude Code</small></div><p>O agente lê o briefing e as instruções versionadas, cria a copy e salva uma versão para aprovação humana.</p><span class="handoff">resultados/copy/copy-v1.md</span></div>
+        </article>
+        <article class="stage">
+          <span class="stage-num">04</span>
+          <div><div class="stage-title">Revisão da Copy <small>gate humano</small></div><p>O usuário aprova, pede ajustes ou gera uma nova versão. A Página só começa com uma copy aprovada.</p><span class="handoff">copy-aprovada.json</span></div>
+        </article>
+        <article class="stage">
+          <span class="stage-num">05</span>
+          <div><div class="stage-title">Agente de Páginas <small>saída</small></div><p>O agente monta o HTML, valida a navegação e salva o preview local para conferência no navegador.</p><span class="handoff">resultados/pagina/index.html</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="formulario">
+      <div class="section-head">
+        <div>
+          <span class="section-index">03 · formulário</span>
+          <h2>Como o projeto é preenchido no Hub</h2>
+          <p class="section-intro">A tela separa fatos detectados pelo Caçador das decisões que só o dono do projeto pode tomar.</p>
+        </div>
+      </div>
+      <div class="field-grid">
+        <article class="field-card"><span class="label">preenchido automaticamente</span><h3>Contexto da oferta</h3><p><strong>URL, título, score, gateway, rastreador, screenshots, copy capturada, vídeo e data da captura.</strong></p></article>
+        <article class="field-card user"><span class="label">preenchido pelo usuário</span><h3>Direção estratégica</h3><p><strong>Produto, público, problema, promessa, ângulo original ou adaptado, faixa de preço e objetivo da página.</strong></p></article>
+        <article class="field-card user"><span class="label">preenchido pelo usuário</span><h3>Direção da mensagem</h3><p><strong>Tom, mecanismo, benefícios, objeções, garantia, CTA e seções obrigatórias.</strong></p></article>
+        <article class="field-card user"><span class="label">regra de ativos</span><h3>Vídeo e checkout</h3><p><strong>Vídeo preservado quando autorizado. Checkout principal e secundário ficam vazios até serem criados.</strong></p></article>
+      </div>
+      <div class="callout"><p><strong>Antes de exportar:</strong> o Hub mostra um resumo do projeto. O usuário confirma a direção e só então a pasta local é criada.</p></div>
+    </section>
+
+    <section class="section reveal" id="exportacao">
+      <div class="section-head">
+        <div>
+          <span class="section-index">04 · exportação</span>
+          <h2>O que sai do Hub para o computador</h2>
+          <p class="section-intro">O launcher local abre o painel em <code>localhost</code>, grava os arquivos em <code>hunter-hub/projetos/</code> e prepara os dois adaptadores de ferramenta.</p>
+        </div>
+      </div>
+      <div class="export-grid">
+        <div class="tree" aria-label="Estrutura da pasta exportada">
+          <div class="tree-head">projeto exportado</div>
+          <pre><span class="folder">projetos/</span>
+└── <span class="folder">corpo-conectado/</span>
+    ├── <span class="file">AGENTS.md</span>
+    ├── <span class="file">CLAUDE.md</span>
+    ├── <span class="file">INICIAR.md</span>
+    ├── <span class="file">projeto.json</span>
+    ├── <span class="folder">contexto/</span>
+    │   ├── <span class="file">briefing.md</span>
+    │   ├── <span class="file">oferta-original.md</span>
+    │   ├── <span class="file">diagnostico.json</span>
+    │   └── <span class="file">video.json</span>
+    ├── <span class="folder">workflow/</span>
+    │   ├── <span class="file">PROCESSO.md</span>
+    │   ├── <span class="file">AGENTE-COPY.md</span>
+    │   └── <span class="file">AGENTE-PAGINA.md</span>
+    └── <span class="folder">resultados/</span>
+        ├── <span class="folder">copy/</span>
+        └── <span class="folder">pagina/</span></pre>
+        </div>
+        <div>
+          <div class="terminal">
+            <div class="terminal-head">Codex · abrir projeto</div>
+            <pre>Leia AGENTS.md e execute apenas a próxima etapa autorizada.</pre>
+            <div class="command"><code>cd "...\projetos\corpo-conectado"</code><button class="copy-btn" type="button" data-copy="cd &quot;...\projetos\corpo-conectado&quot;">copiar</button></div>
+          </div>
+          <div class="terminal">
+            <div class="terminal-head">Claude Code · abrir projeto</div>
+            <pre>Leia CLAUDE.md e execute apenas a próxima etapa autorizada.</pre>
+            <div class="command"><code>cd "...\projetos\corpo-conectado"</code><button class="copy-btn" type="button" data-copy="cd &quot;...\projetos\corpo-conectado&quot;">copiar</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout"><p><strong>O mesmo processo, duas ferramentas:</strong> <code>AGENTS.md</code> e <code>CLAUDE.md</code> apontam para as mesmas regras centrais. O Hub não coloca chave de API no navegador e não publica o resultado.</p></div>
+    </section>
+
+    <section class="section reveal" id="arquivos">
+      <div class="section-head">
+        <div>
+          <span class="section-index">05 · contratos</span>
+          <h2>Arquivos que mantêm o trabalho alinhado</h2>
+          <p class="section-intro">Cada arquivo tem uma função curta. Isso mantém o contexto verificável quando o projeto troca de agente ou de ferramenta.</p>
+        </div>
+      </div>
+      <div class="tool-grid">
+        <article class="tool-card"><h3><code>projeto.json</code></h3><p>Estado, slug, etapa atual, aprovações, referências e caminhos dos artefatos.</p></article>
+        <article class="tool-card"><h3><code>briefing.md</code></h3><p>Decisões humanas preenchidas no Hub, em linguagem legível para revisão.</p></article>
+        <article class="tool-card"><h3><code>AGENTS.md</code></h3><p>Adaptador de instruções para o Codex seguir o processo local.</p></article>
+        <article class="tool-card"><h3><code>CLAUDE.md</code></h3><p>Adaptador equivalente para o Claude Code, sem mudar o conteúdo do fluxo.</p></article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="projeto-atual">
+      <div class="section-head">
+        <div>
+          <span class="section-index">06 · primeiro projeto</span>
+          <h2>Configuração de Corpo Conectado</h2>
+          <p class="section-intro">A oferta escolhida pelo Caçador já define os primeiros valores de referência para a remodelação.</p>
+        </div>
+      </div>
+      <div class="project-grid">
+        <article class="project-card"><h3>Prioridade</h3><span class="value">A Top · score 7</span></article>
+        <article class="project-card"><h3>Gateway e rastreador</h3><span class="value">Hotmart · UTMify</span></article>
+        <article class="project-card"><h3>Vídeo</h3><span class="value">Preservar referência autorizada</span></article>
+        <article class="project-card"><h3>Checkout</h3><span class="value">Principal: vazio · secundário: vazio</span></article>
+      </div>
+      <div class="project-note">O vídeo desta oferta foi informado como criado por IA. O projeto registra sua referência para continuidade visual e mantém a decisão de uso dentro do contexto autorizado.</div>
+    </section>
+
+    <section class="section reveal" id="estados">
+      <div class="section-head">
+        <div>
+          <span class="section-index">07 · controle</span>
+          <h2>Estados e travas do projeto</h2>
+          <p class="section-intro">O arquivo de estado impede que o agente pule uma aprovação ou sobrescreva uma versão sem histórico.</p>
+        </div>
+      </div>
+      <div class="states" aria-label="Estados do projeto">
+        <span class="state active">oferta-selecionada</span>
+        <span class="state active">aguardando-direcao</span>
+        <span class="state gate">copy-em-revisao</span>
+        <span class="state gate">copy-aprovada</span>
+        <span class="state">pagina-em-execucao</span>
+        <span class="state">pagina-em-revisao</span>
+        <span class="state">pronto-para-exportar</span>
+      </div>
+      <div class="callout"><p><strong>Regra de aprovação:</strong> Copy aprovada libera Página. Página validada libera a exportação final. O deploy continua sendo uma decisão posterior do usuário.</p></div>
+    </section>
+
+    <section class="section reveal" id="checklist">
+      <div class="section-head">
+        <div>
+          <span class="section-index">08 · antes de rodar</span>
+          <h2>Checklist rápido</h2>
+          <p class="section-intro">Use esta conferência sempre que iniciar uma nova remodelação.</p>
+        </div>
+      </div>
+      <ul class="checklist">
+        <li>Oferta escolhida e evidências salvas no projeto.</li>
+        <li>Promessa, público e ângulo definidos no formulário.</li>
+        <li>Direito de uso do vídeo e das referências confirmado.</li>
+        <li>Links de checkout mantidos vazios até a criação.</li>
+        <li>Copy revisada antes de chamar o Agente de Páginas.</li>
+        <li>Preview aberto em navegador real antes de qualquer publicação.</li>
+      </ul>
+    </section>
+
+    <footer>Hunter Hub <span>·</span> guia do funil local <span>·</span> 2026</footer>
+  </main>
+
+  <script>
+    (function protectShortcuts() {
+      document.addEventListener('contextmenu', function (event) { event.preventDefault(); });
+      document.addEventListener('keydown', function (event) {
+        var key = String(event.key || '').toLowerCase();
+        var blocked = key === 'f12' || (event.ctrlKey && ['u', 's', 'c', 'a'].indexOf(key) !== -1) || (event.ctrlKey && event.shiftKey && ['i', 'j', 'c'].indexOf(key) !== -1);
+        if (blocked) event.preventDefault();
+      });
+    }());
+
+    function copyText(value) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(value);
+      }
+      return new Promise(function (resolve, reject) {
+        var area = document.createElement('textarea');
+        area.value = value;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.opacity = '0';
+        document.body.appendChild(area);
+        area.select();
+        var copied = false;
+        try { copied = document.execCommand('copy'); } catch (error) { copied = false; }
+        area.remove();
+        if (copied) resolve(); else reject(new Error('clipboard indisponível'));
+      });
+    }
+
+    document.querySelectorAll('[data-copy]').forEach(function (button) {
+      button.addEventListener('click', async function () {
+        var value = button.getAttribute('data-copy') || '';
+        try {
+          await copyText(value);
+          var original = button.textContent;
+          button.textContent = 'copiado';
+          window.setTimeout(function () { button.textContent = original; }, 1500);
+        } catch (error) {
+          button.textContent = 'indisponível';
+          window.setTimeout(function () { button.textContent = 'copiar'; }, 1500);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

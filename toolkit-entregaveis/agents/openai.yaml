@@ -1,0 +1,4 @@
+interface:
+  display_name: "Toolkit de Entregáveis"
+  short_description: "Planeja e valida entregáveis digitais"
+  default_prompt: "Use $toolkit-entregaveis para diagnosticar este produto e recomendar a experiência de entrega adequada."

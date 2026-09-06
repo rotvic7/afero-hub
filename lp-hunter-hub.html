@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Hunter Hub · Mineração de Ofertas Validadas BR &amp; LATAM</title>
+  <meta name="description"
+    content="O Caçador varre o registro público do urlscan.io com 18 buscas cruzadas, confirma gateway de pagamento e pixel ativos e entrega as ofertas validadas antes de saturarem.">
+  <meta name="theme-color" content="#080605">
+  <meta property="og:title" content="Hunter Hub · Mineração de Ofertas Validadas BR &amp; LATAM">
+  <meta property="og:description"
+    content="Substitua dias de garimpo manual por uma varredura automatizada de minutos. Ofertas com tráfego ativo, pontuadas e verificadas.">
+  <meta property="og:type" content="website">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23e0703c' stroke-width='2.2'/%3E%3Cpath d='M16 2v7M16 23v7M2 16h7M23 16h7' stroke='%23e0703c' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
+
+  <!-- Tema antes do primeiro paint, para não piscar branco no dark -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('hunter_theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) { }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap">
+
+  <!--
+    NOTA TÉCNICA (não remover): gsap e ScrollTrigger vêm de ./vendor/, nunca de CDN.
+    A CSP deste site é script-src 'self' 'unsafe-inline' e qualquer script externo é bloqueado.
+    TODO(Victor): trocar os href="#" dos botões [data-checkout] pela URL real do checkout.
+  -->
+
+  <style>
+    /* ════════════════════════════════════════════════════════════════
+       HUNTER HUB · LANDING DE VENDAS · "Ember & Void Luxury"
+       Dark "Ember & Void" (padrão) + Light "Bone & Ember"
+       Arquitetura espelhada da landing-v4 do nebula stats.
+       ════════════════════════════════════════════════════════════════ */
+    :root {
+      --radius: 20px;
+      --radius-sm: 13px;
+      --font-display: 'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif;
+      --font-brand: 'Unbounded', 'Bricolage Grotesque', system-ui, sans-serif;
+      --font-body: 'Hanken Grotesk', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --header-h: 64px;
+      --header-h-shrink: 52px;
+    }
+
+    html[data-theme="dark"] {
+      --bg-0: #080605;
+      --bg-1: #100a08;
+      --bg-2: #181110;
+      --glass: rgba(24, 17, 16, 0.72);
+      --glass-2: rgba(29, 21, 19, 0.86);
+      --hairline: rgba(255, 236, 224, 0.09);
+      --hairline-strong: rgba(255, 236, 224, 0.18);
+      --txt-0: #f2ebe5;
+      --txt-1: #b5a69b;
+      --txt-2: #7d6c62;
+      --ember: #e0703c;
+      --flare: #ff8a4a;
+      --amber: #a34a22;
+      --clay: #b98b6a;
+      --bone: #d9cbbd;
+      --rubi: #c8402a;
+      --glow: 0 0 40px rgba(224, 112, 60, 0.38);
+      --header-bg: rgba(8, 6, 5, 0.82);
+      --chrome-bg: rgba(5, 4, 3, 0.9);
+      --grid-line: rgba(224, 112, 60, 0.055);
+      --card-img-bg: #0b0807;
+      --shadow-card: 0 30px 80px rgba(0, 0, 0, 0.55);
+    }
+
+    html[data-theme="light"] {
+      --bg-0: #fbf5ef;
+      --bg-1: #f3eae0;
+      --bg-2: #ebdccf;
+      --glass: rgba(255, 250, 245, 0.78);
+      --glass-2: rgba(255, 250, 245, 0.62);
+      --hairline: rgba(120, 60, 30, 0.14);
+      --hairline-strong: rgba(120, 60, 30, 0.30);
+      --txt-0: #26160e;
+      --txt-1: #5c4334;
+      --txt-2: #8c6f5d;
+      --ember: #c2551f;
+      --flare: #e0703c;
+      --amber: #8f3f1b;
+      --clay: #9a6c4c;
+      --bone: #6b5344;
+      --rubi: #a8331f;
+      --glow: 0 0 40px rgba(194, 85, 31, 0.22);
+      --header-bg: rgba(251, 245, 239, 0.86);
+      --chrome-bg: rgba(235, 220, 207, 0.92);
+      --grid-line: rgba(120, 60, 30, 0.05);
+      --card-img-bg: #17100d;
+      --shadow-card: 0 30px 80px rgba(120, 60, 30, 0.16);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* overflow-x: clip no html + hidden no body: a dupla que impede o glow de
+       fundo (100vw dentro de container centralizado) de gerar scroll lateral. */
+    html { scroll-behavior: smooth; overflow-x: clip; }
+
+    body {
+      background: var(--bg-0);
+      color: var(--txt-0);
+      font-family: var(--font-body);
+      letter-spacing: -0.01em;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    ::selection { background: rgba(224, 112, 60, 0.35); color: var(--txt-0); }
+
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--bg-0); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-2); border-radius: 5px; border: 2px solid var(--bg-0); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--hairline-strong); }
+
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+    :focus-visible { outline: 2px solid var(--ember); outline-offset: 3px; border-radius: 4px; }
+
+    /* ── Atmosfera: grid técnico com máscara radial ── */
+    .atmosphere {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 80%);
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ════════════════ HEADER: Shrinking Sticky ════════════════ */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--header-h);
+      display: flex; align-items: center;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s ease,
+        border-color 0.35s ease, backdrop-filter 0.35s ease;
+    }
+
+    .site-header.is-scrolled {
+      height: var(--header-h-shrink);
+      background: var(--header-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom-color: var(--hairline);
+    }
+
+    .header-inner {
+      width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .brand-mark { width: 26px; height: 26px; color: var(--ember); flex-shrink: 0; }
+    .brand-mark svg { width: 100%; height: 100%; display: block; }
+
+    .wordmark {
+      font-family: var(--font-brand); font-weight: 700; font-size: 16px;
+      letter-spacing: -0.01em; color: var(--txt-0); white-space: nowrap;
+    }
+    .wordmark em { font-style: normal; color: var(--ember); }
+
+    .header-nav { display: flex; align-items: center; gap: 26px; }
+    .header-nav a {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.08em; color: var(--txt-1); text-transform: uppercase;
+      transition: color 0.2s ease; position: relative; padding: 4px 0;
+    }
+    .header-nav a::after {
+      content: ''; position: absolute; left: 0; right: 100%; bottom: 0;
+      height: 1px; background: var(--ember); transition: right 0.25s ease;
+    }
+    .header-nav a:hover { color: var(--txt-0); }
+    .header-nav a:hover::after { right: 0; }
+
+    .header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .theme-toggle {
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      border: 1px solid var(--hairline); background: var(--glass);
+      display: grid; place-items: center; color: var(--txt-1);
+      transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .theme-toggle:hover { border-color: var(--hairline-strong); color: var(--txt-0); transform: translateY(-1px); }
+    .theme-toggle svg { width: 17px; height: 17px; }
+    html[data-theme="dark"] .icon-sun { display: block; }
+    html[data-theme="dark"] .icon-moon { display: none; }
+    html[data-theme="light"] .icon-sun { display: none; }
+    html[data-theme="light"] .icon-moon { display: block; }
+
+    /* ── Botões ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; border-radius: var(--radius-sm);
+      transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.25s ease,
+        border-color 0.25s ease, filter 0.25s ease;
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--flare) 0%, var(--ember) 55%, var(--amber) 100%);
+      color: #fff6ef; box-shadow: var(--glow);
+      border: 1px solid rgba(255, 138, 74, 0.5);
+    }
+    .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 0 56px rgba(224, 112, 60, 0.55); }
+
+    .btn-ghost {
+      background: var(--glass); border: 1px solid var(--hairline);
+      color: var(--txt-0); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    }
+    .btn-ghost:hover { border-color: var(--hairline-strong); transform: translateY(-2px); }
+
+    .btn-sm { font-size: 11px; padding: 10px 18px; }
+    .btn-lg { font-size: 13px; padding: 17px 30px; }
+
+    /* Pulso contínuo do CTA de compra. A media query de reduced-motion no fim
+       do arquivo zera a duração de toda animação, então isto para sozinho. */
+    @keyframes emberPulse {
+      0%, 100% { box-shadow: 0 0 26px rgba(224, 112, 60, 0.34); }
+      50% { box-shadow: 0 0 52px rgba(224, 112, 60, 0.62); }
+    }
+    .btn-pulse { animation: emberPulse 2.6s ease-in-out infinite; }
+
+    /* ════════════════ SEÇÃO 1: HERO ════════════════ */
+    .hero {
+      min-height: 92vh; display: flex; align-items: center;
+      padding: calc(var(--header-h) + 72px) 0 80px; position: relative;
+    }
+
+    .hero::before {
+      content: ''; position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+      width: 100vw; height: 90vh; z-index: -1; pointer-events: none;
+      background: radial-gradient(ellipse 50% 60% at 50% 30%, rgba(224, 112, 60, 0.16), transparent 70%);
+    }
+
+    .hero-inner { text-align: center; max-width: 1000px; margin: 0 auto; }
+
+    .kicker {
+      display: inline-block; font-family: var(--font-mono); font-size: 11.5px;
+      font-weight: 500; letter-spacing: 0.13em; color: var(--clay);
+      border: 1px solid var(--hairline); border-radius: 999px;
+      padding: 9px 20px; background: var(--glass);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      margin-bottom: 34px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(34px, 4.9vw, 70px); line-height: 1.04; letter-spacing: -0.03em;
+      margin-bottom: 28px;
+    }
+    .hero h1 .accent {
+      /* Termina em flare de novo, não em clay: quando a frase quebra em duas
+         linhas, um fim bege deixava a última palavra mais fraca que a primeira. */
+      background: linear-gradient(100deg, var(--flare), var(--ember) 55%, var(--flare));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      padding-right: 0.06em;
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 1.6vw, 19px); color: var(--txt-1);
+      max-width: 720px; margin: 0 auto 42px;
+    }
+    .hero-sub strong { color: var(--txt-0); font-weight: 600; }
+
+    .hero-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 72px; }
+
+    .play-ico {
+      width: 26px; height: 26px; border-radius: 50%;
+      border: 1px solid var(--hairline-strong); display: grid; place-items: center; flex-shrink: 0;
+    }
+    .play-ico svg { width: 9px; height: 9px; margin-left: 1px; }
+
+    .hero-specs {
+      display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
+      gap: 12px 0; border-top: 1px solid var(--hairline); padding-top: 30px;
+    }
+    .hero-specs span {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.10em; color: var(--txt-2); padding: 0 20px; position: relative;
+    }
+    .hero-specs span + span::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 4px; height: 4px; border-radius: 50%; background: var(--ember); opacity: 0.6;
+    }
+
+    /* ════════════════ SEÇÕES: cabeçalho padrão ════════════════ */
+    /* scroll-margin-top garante que a âncora não pare embaixo do header fixo. */
+    section { padding: 130px 0; position: relative; scroll-margin-top: var(--header-h); }
+
+    .sec-head { max-width: 780px; margin-bottom: 64px; }
+    .sec-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+
+    .sec-tag {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.16em; color: var(--ember); text-transform: uppercase;
+      display: block; margin-bottom: 18px;
+    }
+
+    .sec-title {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(28px, 3.6vw, 46px); line-height: 1.1; letter-spacing: -0.025em;
+      margin-bottom: 18px;
+    }
+    .sec-title .accent { color: var(--ember); }
+
+    .sec-sub { color: var(--txt-1); font-size: 16px; }
+
+    /* ════════════════ SEÇÃO 2: A Central · Dual Device + Carrossel ════════════════ */
+    .section-showcase { overflow: hidden; }
+
+    .bg-watermark {
+      position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
+      font-family: var(--font-brand); font-weight: 800;
+      font-size: clamp(52px, 9vw, 140px); letter-spacing: 0.02em;
+      color: var(--txt-0); opacity: 0.05; white-space: nowrap;
+      pointer-events: none; user-select: none; z-index: 0;
+    }
+
+    .carousel { position: relative; z-index: 1; }
+    .carousel-viewport { overflow: hidden; border-radius: var(--radius); touch-action: pan-y; }
+
+    .carousel-track {
+      display: flex; transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+      will-change: transform;
+    }
+    .carousel-track.is-dragging { transition: none; }
+
+    .slide { min-width: 100%; padding: 8px; }
+    .slide-grid { display: grid; grid-template-columns: 1fr 300px; gap: 26px; align-items: end; }
+
+    .device-card {
+      background: var(--glass); border: 1px solid var(--hairline);
+      border-radius: var(--radius); overflow: hidden;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .device-chrome {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px; background: var(--chrome-bg);
+      border-bottom: 1px solid var(--hairline);
+    }
+    .device-chrome i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+    .device-chrome i:nth-child(1) { background: var(--rubi); }
+    .device-chrome i:nth-child(2) { background: var(--ember); }
+    .device-chrome i:nth-child(3) { background: var(--clay); }
+    .device-chrome .url {
+      margin-left: 12px; flex: 1; text-align: center;
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
+      color: var(--txt-2); background: var(--glass-2);
+      border: 1px solid var(--hairline); border-radius: 7px; padding: 4px 12px;
+      max-width: 280px;
+    }
+
+    /* 16:10 é a proporção nativa dos prints (2360x1475), então não há corte. */
+    .device-card img {
+      width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top;
+      background: var(--card-img-bg);
+    }
+
+    .phone-card {
+      border-radius: 30px; border: 1px solid var(--hairline-strong);
+      background: var(--chrome-bg); padding: 9px; overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transform: translateY(26px);
+    }
+    /* 860/1800 é a proporção nativa dos prints mobile, também sem corte. */
+    .phone-card img {
+      border-radius: 22px; width: 100%; aspect-ratio: 860 / 1800;
+      object-fit: cover; object-position: top; background: var(--card-img-bg);
+    }
+
+    .carousel-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 46px; gap: 20px; flex-wrap: wrap;
+    }
+
+    .slide-meta h3 {
+      font-family: var(--font-display); font-weight: 700; font-size: 22px;
+      letter-spacing: -0.02em; margin-bottom: 4px;
+    }
+    .slide-meta p { color: var(--txt-2); font-size: 14px; max-width: 560px; }
+
+    .carousel-controls { display: flex; align-items: center; gap: 18px; }
+
+    .car-btn {
+      width: 46px; height: 46px; border-radius: var(--radius-sm);
+      border: 1px solid var(--hairline); background: var(--glass);
+      color: var(--txt-0); font-size: 18px; display: grid; place-items: center;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+    }
+    .car-btn:hover { border-color: var(--ember); transform: translateY(-2px); }
+
+    .car-page {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+      letter-spacing: 0.12em; color: var(--txt-1); min-width: 72px; text-align: center;
+    }
+    .car-page b { color: var(--ember); font-weight: 600; }
+
+    /* ════════════════ SEÇÃO 3: 6 Módulos ════════════════ */
+    .advanced-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+    .advanced-card {
+      background: var(--glass); border: 1px solid var(--hairline);
+      border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      position: relative; overflow: hidden;
+    }
+    .advanced-card::before {
+      content: ''; position: absolute; top: 0; left: 20px; right: 20px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--hairline-strong), transparent);
+    }
+    .advanced-card:hover {
+      transform: translateY(-6px); border-color: var(--hairline-strong);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34), 0 0 40px rgba(224, 112, 60, 0.09);
+    }
+
+    .adv-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .adv-cat {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.16em; color: var(--ember); text-transform: uppercase;
+    }
+    .adv-mod {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em;
+      color: var(--txt-2); border: 1px solid var(--hairline); border-radius: 999px;
+      padding: 4px 12px;
+    }
+
+    .adv-shot {
+      border-radius: var(--radius-sm); border: 1px solid var(--hairline);
+      overflow: hidden; margin-bottom: 20px; background: var(--card-img-bg);
+      transform: perspective(900px) rotateX(1.5deg);
+      transition: transform 0.35s ease;
+    }
+    .advanced-card:hover .adv-shot { transform: perspective(900px) rotateX(0deg) scale(1.02); }
+    .adv-shot img { width: 100%; height: 160px; object-fit: cover; object-position: top; }
+
+    /* mod-filtros (4.6:1) e mod-console (3.8:1) são faixas muito largas: cortadas
+       pelo topo virariam uma tira ilegível. Ancorando à esquerda, o corte mostra a
+       coluna de rótulos e os primeiros chips em escala legível. */
+    .adv-shot.strip img { object-position: left center; }
+
+    /* Os prints de tela cheia (2360px de largura) entrariam num box de ~370px, ou
+       seja 16% do tamanho: o texto vira textura e o card não comunica nada. Aqui a
+       imagem é ampliada e deslocada para enquadrar a região que prova o módulo, em
+       vez de mostrar a página inteira ilegível. --zx/--zy fazem a panorâmica. */
+    .adv-shot.zoom { height: 160px; overflow: hidden; position: relative; }
+    .adv-shot.zoom img {
+      width: 250%; max-width: none; height: auto;
+      transform: translate(var(--zx, -4%), var(--zy, -14%));
+    }
+
+    .advanced-card h3 {
+      font-family: var(--font-display); font-weight: 700; font-size: 19px;
+      letter-spacing: -0.02em; margin-bottom: 8px;
+    }
+    .advanced-card p { color: var(--txt-1); font-size: 14px; flex: 1; margin-bottom: 20px; }
+
+    .adv-pill {
+      align-self: flex-start; font-family: var(--font-mono); font-size: 10px;
+      font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase;
+      border-radius: 999px; padding: 6px 14px;
+      background: rgba(224, 112, 60, 0.10); color: var(--ember);
+      border: 1px solid rgba(224, 112, 60, 0.26);
+    }
+    .adv-pill.clay { background: rgba(185, 139, 106, 0.10); color: var(--clay); border-color: rgba(185, 139, 106, 0.28); }
+
+    /* ════════════════ SEÇÃO 4: O Mecanismo ════════════════ */
+    .section-mechanism::before {
+      content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+      background: radial-gradient(ellipse 55% 50% at 50% 45%, rgba(224, 112, 60, 0.12), transparent 70%);
+    }
+
+    .mech-mark {
+      width: 72px; height: 72px; border-radius: 50%; flex-shrink: 0;
+      display: grid; place-items: center; margin-bottom: 26px;
+      border: 1px solid var(--hairline-strong); background: var(--glass);
+      box-shadow: var(--glow); color: var(--ember);
+    }
+    .mech-mark svg { width: 32px; height: 32px; }
+
+    .alert-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; margin-bottom: 34px; }
+
+    .alert-card {
+      border-radius: var(--radius); padding: 26px 28px;
+      background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--hairline);
+      position: relative; overflow: hidden;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .alert-card:hover { transform: translateY(-4px); }
+    .alert-card::after {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    }
+
+    .alert-signal { border-color: rgba(224, 112, 60, 0.34); }
+    .alert-signal::after { background: linear-gradient(180deg, var(--flare), var(--ember)); }
+    .alert-signal:hover { border-color: rgba(224, 112, 60, 0.55); }
+
+    .alert-dead { border-color: rgba(200, 64, 42, 0.30); }
+    .alert-dead::after { background: linear-gradient(180deg, var(--rubi), var(--amber)); }
+    .alert-dead:hover { border-color: rgba(200, 64, 42, 0.5); }
+
+    .alert-head {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+      font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .alert-signal .alert-head { color: var(--ember); }
+    .alert-dead .alert-head { color: var(--rubi); }
+
+    .alert-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    @keyframes dotPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.82); } }
+    .alert-dot { animation: dotPulse 1.8s ease-in-out infinite; }
+
+    .alert-card p { font-size: 15px; color: var(--txt-1); }
+    .alert-card p b { color: var(--txt-0); font-weight: 600; }
+
+    .edu-module {
+      border-radius: var(--radius); border: 1px solid var(--hairline);
+      background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      padding: 36px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+    }
+
+    .edu-item { border-left: 1px solid var(--hairline-strong); padding-left: 22px; }
+    .edu-item .num {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.12em; color: var(--ember); display: block; margin-bottom: 10px;
+    }
+    .edu-item h4 {
+      font-family: var(--font-display); font-weight: 700; font-size: 17px;
+      letter-spacing: -0.02em; margin-bottom: 8px;
+    }
+    .edu-item p { font-size: 14px; color: var(--txt-1); }
+    .edu-item p b { color: var(--txt-0); font-weight: 600; }
+
+    /* ════════════════ SEÇÃO 5: Arsenal de Agentes ════════════════ */
+    .agent-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+    .agent-card {
+      background: var(--glass); border: 1px solid var(--hairline);
+      border-radius: var(--radius); overflow: hidden;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      display: flex; flex-direction: column;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .agent-card:hover {
+      transform: translateY(-6px); border-color: var(--hairline-strong);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34), 0 0 40px rgba(224, 112, 60, 0.09);
+    }
+
+    .agent-art { position: relative; overflow: hidden; background: var(--card-img-bg); }
+    .agent-art img {
+      width: 100%; aspect-ratio: 1200 / 896; object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .agent-card:hover .agent-art img { transform: scale(1.05); }
+    .agent-art::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(180deg, transparent 55%, rgba(8, 6, 5, 0.85));
+    }
+
+    .agent-num {
+      position: absolute; top: 14px; left: 14px; z-index: 2;
+      font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--bone); background: rgba(8, 6, 5, 0.72);
+      border: 1px solid rgba(255, 236, 224, 0.16); border-radius: 999px; padding: 5px 12px;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+
+    .agent-body { padding: 20px 22px 24px; display: flex; flex-direction: column; flex: 1; }
+    .agent-role {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt-2);
+      margin-bottom: 8px;
+    }
+    .agent-body h3 {
+      font-family: var(--font-display); font-weight: 700; font-size: 19px;
+      letter-spacing: -0.02em; margin-bottom: 8px;
+    }
+    .agent-body p { font-size: 14px; color: var(--txt-1); flex: 1; margin-bottom: 18px; }
+
+    .agent-tag {
+      align-self: flex-start; font-family: var(--font-mono); font-size: 10px;
+      font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase;
+      border-radius: 999px; padding: 6px 14px;
+      background: rgba(224, 112, 60, 0.12); color: var(--ember);
+      border: 1px solid rgba(224, 112, 60, 0.28);
+    }
+    .agent-tag.locked {
+      background: var(--glass-2); color: var(--txt-2); border-color: var(--hairline);
+    }
+
+    /* ════════════════ SEÇÃO 6: Acesso ════════════════ */
+    .section-access > .container { max-width: 1340px; }
+    .access-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
+
+    .ac-card {
+      background: var(--glass); border: 1px solid var(--hairline);
+      border-radius: 20px; padding: 30px 28px;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      display: flex; flex-direction: column; position: relative;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .ac-card:hover { transform: translateY(-3px); border-color: var(--hairline-strong); }
+
+    /* Card central: o único comprável. Ganha borda quente, elevação e o glow. */
+    .ac-card.featured {
+      border-color: rgba(224, 112, 60, 0.42);
+      box-shadow: 0 0 0 1px rgba(224, 112, 60, 0.12), 0 30px 70px rgba(0, 0, 0, 0.45), var(--glow);
+      transform: translateY(-16px);
+    }
+    .ac-card.featured:hover { transform: translateY(-20px); }
+
+    .ac-header {
+      display: flex; flex-direction: column; gap: 16px;
+      padding-bottom: 22px; margin-bottom: 22px; border-bottom: 1px solid var(--hairline);
+    }
+    .ac-plan { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .ac-planname {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.08em; color: var(--txt-2); text-transform: uppercase;
+    }
+    .ac-icon {
+      width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
+      display: grid; place-items: center;
+      background: var(--glass-2); border: 1px solid var(--hairline); color: var(--ember);
+    }
+    .ac-icon svg { width: 15px; height: 15px; }
+
+    .ac-badge {
+      font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
+      background: linear-gradient(100deg, var(--flare), var(--ember));
+      color: #1a0d06; border-radius: 999px; padding: 5px 12px;
+      box-shadow: 0 4px 16px rgba(224, 112, 60, 0.38);
+    }
+
+    .ac-name {
+      font-family: var(--font-display); font-weight: 800; font-size: 23px;
+      letter-spacing: -0.025em; line-height: 1.2;
+    }
+
+    .ac-anchor {
+      font-family: var(--font-display); font-weight: 700; font-size: 21px;
+      letter-spacing: -0.02em; line-height: 1.25; color: var(--txt-0);
+    }
+    .ac-anchor em { font-style: italic; color: var(--ember); }
+
+    .ac-card .btn { width: 100%; padding: 15px 20px; font-size: 12px; margin-top: 2px; }
+
+    .ac-body { display: flex; flex-direction: column; flex: 1; }
+    .ac-desc { font-size: 13.5px; color: var(--txt-2); line-height: 1.6; margin-bottom: 18px; }
+    .ac-desc b { color: var(--txt-1); font-weight: 600; }
+
+    .ac-list { list-style: none; flex: 1; margin-bottom: 22px; display: flex; flex-direction: column; gap: 13px; }
+    .ac-list li { display: flex; gap: 11px; font-size: 13.5px; line-height: 1.5; color: var(--txt-1); align-items: flex-start; }
+    .ac-list li b { color: var(--txt-0); font-weight: 600; }
+    .ac-list li svg { width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px; color: var(--ember); }
+    /* Coluna do garimpo manual: os itens são limitações, não benefícios. */
+    .ac-list.negative li svg { color: var(--txt-2); }
+    .ac-list.negative li { color: var(--txt-2); }
+
+    /* Flex em vez de texto corrido: com separadores no meio da frase, a quebra
+       natural jogava o "·" para o começo da linha de baixo. */
+    .ac-micro {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px;
+      font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.05em;
+      color: var(--txt-2); line-height: 1.7; margin-top: 14px;
+    }
+    .ac-micro span { white-space: nowrap; }
+    .ac-micro b { color: var(--ember); }
+
+    .ac-seal {
+      width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+      border: 1px solid var(--hairline-strong); background: var(--glass-2);
+      color: var(--ember); margin-bottom: 18px;
+    }
+    .ac-seal svg { width: 26px; height: 26px; }
+
+    /* ════════════════ SEÇÃO 7: FAQ ════════════════ */
+    .faq-list { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+
+    .faq-item {
+      border: 1px solid var(--hairline); border-radius: var(--radius-sm);
+      background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      overflow: hidden; transition: border-color 0.25s ease;
+    }
+    .faq-item.is-open { border-color: var(--hairline-strong); }
+
+    .faq-q {
+      width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between;
+      gap: 18px; padding: 20px 24px; font-family: var(--font-display);
+      font-weight: 600; font-size: 16.5px; letter-spacing: -0.015em; color: var(--txt-0);
+    }
+    .faq-q .pm {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+      border: 1px solid var(--hairline); display: grid; place-items: center;
+      font-family: var(--font-mono); font-size: 15px; color: var(--ember); line-height: 1;
+      transition: transform 0.3s ease, border-color 0.25s ease;
+    }
+    .faq-item.is-open .faq-q .pm { transform: rotate(45deg); border-color: var(--ember); }
+
+    .faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.32s cubic-bezier(0.4, 0, 0.2, 1); }
+    .faq-item.is-open .faq-a { grid-template-rows: 1fr; }
+    .faq-a > div { overflow: hidden; }
+    .faq-a p { padding: 0 24px 22px; font-size: 14.5px; color: var(--txt-1); }
+    .faq-a p b { color: var(--txt-0); font-weight: 600; }
+    .faq-a code {
+      font-family: var(--font-mono); font-size: 13px; color: var(--ember);
+      background: var(--glass-2); border: 1px solid var(--hairline);
+      border-radius: 6px; padding: 2px 7px;
+    }
+
+    /* ════════════════ FOOTER ════════════════ */
+    .site-footer { border-top: 1px solid var(--hairline); padding: 44px 0 54px; }
+    .footer-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .footer-brand span { font-family: var(--font-brand); font-weight: 700; font-size: 14px; }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-links a {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+      color: var(--txt-2); text-transform: uppercase; transition: color 0.2s ease;
+    }
+    .footer-links a:hover { color: var(--txt-0); }
+    .footer-note { width: 100%; font-size: 12px; color: var(--txt-2); line-height: 1.7; }
+
+    /* ════════════════ RESPONSIVO ════════════════ */
+    @media (max-width: 1100px) {
+      .header-nav { display: none; }
+      .advanced-grid, .agent-grid { grid-template-columns: repeat(2, 1fr); }
+      .access-grid { gap: 16px; }
+      .ac-card { padding: 24px 20px; }
+      .ac-name { font-size: 20px; }
+      .ac-anchor { font-size: 18px; }
+      .ac-list li { font-size: 12.5px; }
+      .ac-list { gap: 10px; }
+    }
+
+    @media (max-width: 900px) {
+      section { padding: 90px 0; }
+      .slide-grid { grid-template-columns: 1fr; align-items: start; }
+      .phone-card { transform: none; max-width: 260px; margin: 0 auto; }
+      .alert-grid { grid-template-columns: 1fr; }
+      .edu-module { grid-template-columns: 1fr; padding: 28px; gap: 26px; }
+      .carousel-footer { flex-direction: column; align-items: flex-start; }
+      .bg-watermark { font-size: clamp(40px, 12vw, 84px); top: 20px; }
+
+      /* Coluna única: a oferta abre, o garimpo manual (contexto) vem depois e a
+         garantia fecha. Empilhado, quem decide vê primeiro o que está comprando.
+         O DOM segue Manual / Oferta / Garantia por leitura semântica. */
+      .access-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; gap: 18px; }
+      .access-grid > :nth-child(1) { order: 2; }
+      .access-grid > :nth-child(2) { order: 1; }
+      .access-grid > :nth-child(3) { order: 3; }
+      .ac-card.featured { transform: none; }
+      .ac-card.featured:hover { transform: translateY(-4px); }
+      .ac-card { padding: 26px 24px; }
+      .ac-name { font-size: 23px; }
+      .ac-anchor { font-size: 21px; }
+      .ac-list li { font-size: 13.5px; }
+    }
+
+    @media (max-width: 640px) {
+      .advanced-grid, .agent-grid { grid-template-columns: 1fr; }
+      .hero { padding-top: calc(var(--header-h) + 40px); min-height: auto; }
+      .hero-ctas .btn { width: 100%; }
+      .hero-specs span { padding: 0 12px; font-size: 10px; }
+      .btn-lg { font-size: 12px; padding: 15px 22px; }
+      .header-right .btn span.cta-full { display: none; }
+      .header-right .btn span.cta-short { display: inline; }
+      .faq-q { font-size: 15px; padding: 18px 18px; }
+      .faq-a p { padding: 0 18px 20px; }
+      .alert-card { padding: 22px 20px; }
+    }
+
+    .cta-short { display: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+
+  <!-- ════════════════ HEADER ════════════════ -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="#topo" class="brand" aria-label="Hunter Hub">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">
+            <circle cx="16" cy="16" r="10" />
+            <circle cx="16" cy="16" r="4.2" stroke-width="1.6" opacity="0.55" />
+            <path d="M16 2v7M16 23v7M2 16h7M23 16h7" />
+          </svg>
+        </span>
+        <span class="wordmark">hunter <em>hub</em></span>
+      </a>
+
+      <nav class="header-nav" aria-label="Navegação principal">
+        <a href="#central">A Central</a>
+        <a href="#modulos">6 Módulos</a>
+        <a href="#mecanismo">O Mecanismo</a>
+        <a href="#arsenal">Arsenal</a>
+        <a href="#acesso">Acesso</a>
+      </nav>
+
+      <div class="header-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema claro e escuro">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+          </svg>
+        </button>
+        <!-- Este CTA é âncora de propósito: leva à seção de acesso, onde a
+             oferta é apresentada antes do checkout. Não trocar por URL de compra. -->
+        <a class="btn btn-primary btn-sm" href="#acesso">
+          <span class="cta-full">Liberar acesso</span>
+          <span class="cta-short">Acesso</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="topo">
+
+    <!-- ════════════════ SEÇÃO 1: HERO ════════════════ -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <span class="kicker" data-anim="hero">[ ARSENAL PRIVADO // MINERAÇÃO DE OFERTAS BR &amp; LATAM ]</span>
+        <h1 data-anim="hero">Você garimpa oferta no escuro.<br>
+          Quem está escalando <span class="accent">caça com radar.</span>
+        </h1>
+        <p class="hero-sub" data-anim="hero">O Caçador varre o registro público do urlscan com 18 buscas cruzadas,
+          confirma gateway de pagamento e pixel ativos e entrega as ofertas validadas antes de saturarem.
+          <strong>Sem rolar feed. Sem adivinhar.</strong></p>
+        <div class="hero-ctas" data-anim="hero">
+          <!-- TODO(Victor): trocar href="#" pela URL real do checkout -->
+          <a class="btn btn-primary btn-lg btn-pulse" href="#" data-checkout>Ativar meu Caçador agora</a>
+          <a class="btn btn-ghost btn-lg" href="#central">
+            <span class="play-ico">
+              <svg viewBox="0 0 10 12" fill="currentColor">
+                <path d="M0 0 L10 6 L0 12 Z" />
+              </svg>
+            </span>
+            Ver Central ao vivo
+          </a>
+        </div>
+        <div class="hero-specs" data-anim="hero">
+          <span>18 QUERIES CRUZADAS</span>
+          <span>CONFIRMAÇÃO DE SINAL DUPLO</span>
+          <span>VERIFICAÇÃO DE LINKS VIVOS</span>
+          <span>SCORE PREDITIVO S/A/B</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO 2: A CENTRAL · DUAL DEVICE + CARROSSEL ════════════════ -->
+    <section class="section-showcase" id="central">
+      <div class="bg-watermark" aria-hidden="true">MINERAÇÃO DE OFERTAS</div>
+      <div class="container">
+        <div class="sec-head center">
+          <span class="sec-tag">[ 01 · A Central ]</span>
+          <h2 class="sec-title">Sua caçada inteira em <span class="accent">uma tela de comando</span></h2>
+          <p class="sec-sub">O CSV entra e o catálogo monta sozinho. Arraste ou navegue pelos três módulos da Central.
+          </p>
+        </div>
+
+        <div class="carousel" id="carousel" tabindex="0" role="region" aria-roledescription="carrossel"
+          aria-label="Telas da Central Hunter Hub. Use as setas do teclado para navegar.">
+          <div class="carousel-viewport" id="carViewport">
+            <div class="carousel-track" id="carTrack">
+
+              <!-- Slide 1: Catálogo Visual & Grade -->
+              <div class="slide" role="group" aria-label="1 de 3: Catálogo Visual de Ofertas">
+                <div class="slide-grid">
+                  <div class="device-card">
+                    <div class="device-chrome"><i></i><i></i><i></i><span class="url">hunter hub · core v2.4</span>
+                    </div>
+                    <img src="prints/hub-grade.webp"
+                      alt="Catálogo do Hunter Hub com 116 ofertas, cada uma com captura real da página, faixa de prioridade e checkout detectado"
+                      loading="lazy">
+                  </div>
+                  <div class="phone-card">
+                    <img src="prints/hub-mobile-grade.webp" alt="Catálogo de ofertas do Hunter Hub no celular"
+                      loading="lazy">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 2: Terminal & Console de Caçada -->
+              <div class="slide" role="group" aria-label="2 de 3: Console de Comando e Filtros Rápidos">
+                <div class="slide-grid">
+                  <div class="device-card">
+                    <div class="device-chrome"><i></i><i></i><i></i><span class="url">hunter hub · terminal</span>
+                    </div>
+                    <img src="prints/hub-terminal.webp"
+                      alt="Console de comando do Hunter Hub com filtros por digitação e resumo da rodada" loading="lazy">
+                  </div>
+                  <div class="phone-card">
+                    <img src="prints/hub-mobile.webp" alt="Central Hunter Hub no celular" loading="lazy">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 3: Raio-X de Pontuação -->
+              <div class="slide" role="group" aria-label="3 de 3: Auditoria de Nota e Sinal Duplo">
+                <div class="slide-grid">
+                  <div class="device-card">
+                    <div class="device-chrome"><i></i><i></i><i></i><span class="url">hunter hub · raio-x</span>
+                    </div>
+                    <img src="prints/hub-raiox.webp"
+                      alt="Raio-X da nota de uma oferta, com a decomposição do score e a captura da página ao lado"
+                      loading="lazy">
+                  </div>
+                  <div class="phone-card">
+                    <img src="prints/hub-mobile.webp" alt="Raio-X da nota no celular" loading="lazy">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="carousel-footer">
+            <div class="slide-meta" aria-live="polite">
+              <h3 id="slideTitle">Catálogo Visual de Ofertas</h3>
+              <p id="slideDesc">Cada oferta organizada com print real da página, faixa de prioridade e checkout
+                detectado.</p>
+            </div>
+            <div class="carousel-controls">
+              <button class="car-btn" id="carPrev" aria-label="Slide anterior">&#8592;</button>
+              <span class="car-page"><b id="carCur">01</b> / 03</span>
+              <button class="car-btn" id="carNext" aria-label="Próximo slide">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO 3: 6 MÓDULOS ════════════════ -->
+    <section class="section-advanced" id="modulos">
+      <div class="container">
+        <div class="sec-head center">
+          <span class="sec-tag">[ 02 · Análise Avançada ]</span>
+          <h2 class="sec-title" id="advTitle">Inteligência de mercado para cada
+            <span class="accent">dimensão da oferta</span>
+          </h2>
+          <p class="sec-sub">Seis módulos de leitura cirúrgica. Cada tela responde uma pergunta que o garimpo manual
+            nunca respondeu.</p>
+        </div>
+
+        <div class="advanced-grid">
+
+          <article class="advanced-card">
+            <div class="adv-top"><span class="adv-cat">Triagem</span><span class="adv-mod">Módulo 01</span></div>
+            <div class="adv-shot strip"><img src="prints/mod-filtros.webp"
+                alt="Painel de filtros cruzados por faixa, checkout, rastreador, construtor e nicho" loading="lazy">
+            </div>
+            <h3>Filtros Cruzados por Origem</h3>
+            <p>Sete checkouts, três rastreadores e dois construtores em faixas separadas, cada um com a contagem da
+              rodada. Checkout zerado também aparece, porque zero é informação.</p>
+            <span class="adv-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="advanced-card">
+            <div class="adv-top"><span class="adv-cat">Auditoria</span><span class="adv-mod">Módulo 02</span></div>
+            <div class="adv-shot"><img src="prints/mod-raiox.webp"
+                alt="Raio-X da nota mostrando a decomposição do score em parcelas" loading="lazy"></div>
+            <h3>Raio-X da Nota</h3>
+            <p>A nota abre em parcelas na sua frente: <b>+4</b> por sinal duplo, <b>+2</b> por vocabulário de oferta
+              direta, <b>+1</b> por idioma confirmado. Você audita a conta inteira.</p>
+            <span class="adv-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="advanced-card">
+            <div class="adv-top"><span class="adv-cat">Operação</span><span class="adv-mod">Módulo 03</span></div>
+            <div class="adv-shot strip"><img src="prints/mod-console.webp"
+                alt="Console de comando com a lista de comandos disponíveis e o status da rodada" loading="lazy"></div>
+            <h3>Console de Comando</h3>
+            <p>Um terminal de verdade dentro da Central. <b>duplo</b>, <b>top 10</b>, <b>abrir 3</b>, <b>exportar</b>:
+              você filtra por digitação, sem tirar a mão do teclado.</p>
+            <span class="adv-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="advanced-card">
+            <div class="adv-top"><span class="adv-cat">Validação</span><span class="adv-mod">Módulo 04</span></div>
+            <div class="adv-shot zoom" style="--zy:-66%"><img src="prints/hub-catalogo.webp"
+                alt="Catálogo do Hunter Hub após a limpeza de páginas fora do ar" loading="lazy"></div>
+            <h3>Filtro de Links Vivos</h3>
+            <p>Página que caiu ou foi pausada some da fila antes de chegar até você. A eliminação acontece na varredura,
+              não depois que você perdeu tempo abrindo aba morta.</p>
+            <span class="adv-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="advanced-card">
+            <div class="adv-top"><span class="adv-cat">Consistência</span><span class="adv-mod">Módulo 05</span></div>
+            <div class="adv-shot zoom" style="--zy:-16%"><img src="prints/hub-grade.webp"
+                alt="Grade de ofertas destacando reincidentes e tempo no ar" loading="lazy"></div>
+            <h3>Histórico &amp; Reincidência</h3>
+            <p>Quantas caçadas diferentes já acharam a mesma oferta. <b>1x é estreia. 3x ou mais</b> é produtor bancando
+              tráfego há semanas, a pista mais forte de oferta que vende.</p>
+            <span class="adv-pill">Incluso no acesso</span>
+          </article>
+
+          <article class="advanced-card">
+            <div class="adv-top"><span class="adv-cat">Integração</span><span class="adv-mod">Módulo 06</span></div>
+            <div class="adv-shot zoom" style="--zy:-4%"><img src="prints/hub-terminal.webp"
+                alt="Leitor de CSV local do Hunter Hub rodando no navegador" loading="lazy"></div>
+            <h3>Leitor Local Zero-Config</h3>
+            <p>Arraste o CSV e visualize tudo no navegador. <b>Nada sai da sua máquina</b>, não há upload, conta em
+              servidor nem dependência de plataforma alheia.</p>
+            <span class="adv-pill clay">Roda local</span>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO 4: O MECANISMO ════════════════ -->
+    <section class="section-mechanism" id="mecanismo">
+      <div class="container">
+        <div data-anim="mech">
+          <div class="mech-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="24" cy="24" r="16" />
+              <circle cx="24" cy="24" r="7" />
+              <path d="M24 4v8M24 36v8M4 24h8M36 24h8" />
+            </svg>
+          </div>
+          <div class="sec-head">
+            <span class="sec-tag">[ 03 · O Mecanismo ]</span>
+            <h2 class="sec-title">A consciência do <span class="accent">Minerador.</span></h2>
+            <p class="sec-sub">O Caçador não devolve uma lista crua. Ele confirma o que está vendendo agora, descarta o
+              que morreu no caminho e te entrega só o que merece virar fila de modelagem.</p>
+          </div>
+        </div>
+
+        <div class="alert-grid">
+          <article class="alert-card alert-signal" data-anim="mech">
+            <div class="alert-head"><span class="alert-dot" aria-hidden="true"></span>[ Alerta · Sinal duplo confirmado ]
+            </div>
+            <p>Oferta detectada com <b>gateway de pagamento e pixel de rastreamento carregando simultaneamente</b>. Prova
+              matemática de tráfego pago ativo.</p>
+          </article>
+
+          <article class="alert-card alert-dead" data-anim="mech">
+            <div class="alert-head"><span class="alert-dot" aria-hidden="true"></span>[ Alerta · Página offline eliminada
+              ]</div>
+            <p>Oferta caiu ou foi pausada pelo produtor. <b>Removida automaticamente da fila de modelagem</b> para poupar
+              o seu tempo.</p>
+          </article>
+        </div>
+
+        <div class="edu-module" data-anim="mech">
+          <div class="edu-item">
+            <span class="num">[ REGRA 01 ]</span>
+            <h4>Sinal duplo é fato, não suposição</h4>
+            <p>Gateway <b>mais</b> rastreador na mesma página significa operação rodando com dinheiro em cima. Não é
+              leitura de tendência, é evidência carregada no HTML.</p>
+          </div>
+          <div class="edu-item">
+            <span class="num">[ REGRA 02 ]</span>
+            <h4>Reincidência comprova escala</h4>
+            <p>Quem aparece em <b>3 caçadas ou mais</b> está bancando tráfego há semanas. Ninguém paga mídia por tanto
+              tempo em oferta que não devolve.</p>
+          </div>
+          <div class="edu-item">
+            <span class="num">[ REGRA 03 ]</span>
+            <h4>Modelagem ágil</h4>
+            <p>Minere em <b>4 minutos</b> e estruture no mesmo dia. A vantagem não está em achar antes, está em colocar
+              no ar enquanto a oferta ainda não saturou.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO 5: ARSENAL DE AGENTES ════════════════ -->
+    <section class="section-arsenal" id="arsenal">
+      <div class="container">
+        <div class="sec-head center">
+          <span class="sec-tag">[ 04 · Arsenal ]</span>
+          <h2 class="sec-title">O arsenal inteiro. <span class="accent">Seis especialistas.</span></h2>
+          <p class="sec-sub">Dois entram no seu acesso hoje: o Caçador, que é o produto, e o Copywriter, que é o bônus
+            do lote. Os outros quatro ficam à vista dentro do Hub e você libera quando a sua operação pedir.</p>
+        </div>
+
+        <div class="agent-grid">
+
+          <article class="agent-card">
+            <div class="agent-art">
+              <span class="agent-num">Agente 00 · Core</span>
+              <img src="fotos-agentes/agente-cacadordeofertas.webp" alt="Arte do agente Caçador de Ofertas"
+                loading="lazy">
+            </div>
+            <div class="agent-body">
+              <span class="agent-role">Pesquisa</span>
+              <h3>Caçador de Ofertas</h3>
+              <p>Varre o urlscan e devolve as ofertas concorrentes que já estão rodando tráfego agora.</p>
+              <span class="agent-tag">Produto principal</span>
+            </div>
+          </article>
+
+          <article class="agent-card">
+            <div class="agent-art">
+              <span class="agent-num">Agente 03 · Bônus</span>
+              <img src="fotos-agentes/agente-copy.webp" alt="Arte do agente Copywriter de resposta direta"
+                loading="lazy">
+            </div>
+            <div class="agent-body">
+              <span class="agent-role">Conexões</span>
+              <h3>Copywriter</h3>
+              <p>Pega a oferta que você achou e escreve a sua versão: headline, bullets e argumento de venda.</p>
+              <span class="agent-tag">Bônus · incluso hoje</span>
+            </div>
+          </article>
+
+          <article class="agent-card">
+            <div class="agent-art">
+              <span class="agent-num">Agente 02</span>
+              <img src="fotos-agentes/agente-pagina.webp" alt="Arte do agente Landing Page Builder" loading="lazy">
+            </div>
+            <div class="agent-body">
+              <span class="agent-role">Design</span>
+              <h3>Landing Page Builder</h3>
+              <p>Monta a página de vendas e o checkout, responsivos, bloco a bloco.</p>
+              <span class="agent-tag locked">Na Suíte</span>
+            </div>
+          </article>
+
+          <article class="agent-card">
+            <div class="agent-art">
+              <span class="agent-num">Agente 01</span>
+              <img src="fotos-agentes/agente-briefing.webp" alt="Arte do agente Briefing de Funil" loading="lazy">
+            </div>
+            <div class="agent-body">
+              <span class="agent-role">Estrutura</span>
+              <h3>Briefing de Funil</h3>
+              <p>Modela público, dores, faixa de preço e a escada de upsell da sua oferta.</p>
+              <span class="agent-tag locked">Na Suíte</span>
+            </div>
+          </article>
+
+          <article class="agent-card">
+            <div class="agent-art">
+              <span class="agent-num">Agente 04</span>
+              <img src="fotos-agentes/agente-entregas.webp" alt="Arte do agente de Conteúdo Completo e Entregáveis"
+                loading="lazy">
+            </div>
+            <div class="agent-body">
+              <span class="agent-role">Inteligência</span>
+              <h3>Conteúdo Completo</h3>
+              <p>Cria o que vai dentro do produto: e-book, roteiro de aula e os entregáveis.</p>
+              <span class="agent-tag locked">Na Suíte</span>
+            </div>
+          </article>
+
+          <article class="agent-card">
+            <div class="agent-art">
+              <span class="agent-num">Bônus 05</span>
+              <img src="fotos-agentes/agente-quiz.webp" alt="Arte do agente de Quiz e Qualificação de Leads"
+                loading="lazy">
+            </div>
+            <div class="agent-body">
+              <span class="agent-role">Automações</span>
+              <h3>Quiz &amp; Qualificação</h3>
+              <p>Filtra o lead antes do checkout e derruba a objeção de preço no caminho.</p>
+              <span class="agent-tag locked">Na Suíte</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO 6: ACESSO ════════════════ -->
+    <section class="section-access" id="acesso">
+      <div class="container">
+        <div class="sec-head center">
+          <span class="sec-tag">[ 05 · Acesso ]</span>
+          <h2 class="sec-title">Lote de entrada, <span class="accent">acesso vitalício</span></h2>
+          <p class="sec-sub">Pagamento único. Sem mensalidade, sem gotejamento e sem limite de caçadas.</p>
+        </div>
+
+        <div class="access-grid">
+
+          <!-- 1 · Garimpo manual (âncora de contraste, não é um plano à venda) -->
+          <div class="ac-card" data-anim="price">
+            <div class="ac-header">
+              <div class="ac-plan">
+                <span class="ac-planname">
+                  <span class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="7" />
+                      <path d="m20 20-3.5-3.5" />
+                    </svg></span>
+                  Hoje
+                </span>
+              </div>
+              <div class="ac-name">Setup Essencial</div>
+              <div class="ac-anchor">O garimpo <em>manual</em>.</div>
+            </div>
+            <div class="ac-body">
+              <p class="ac-desc">O método que você já usa: abrir aba, rolar feed, salvar print e torcer para a oferta
+                ainda estar no ar amanhã.</p>
+              <ul class="ac-list negative">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Horas por semana rolando feed e biblioteca de anúncios</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Nenhuma confirmação de que existe tráfego pago rodando</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Página que já caiu continua na sua lista</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Sem histórico: você não sabe quem já estava lá semana passada</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6M9 9l6 6" />
+                  </svg><span>Decisão no achismo, com a oferta já saturada quando você entra</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 2 · A oferta (único card comprável) -->
+          <div class="ac-card featured" data-anim="price">
+            <div class="ac-header">
+              <div class="ac-plan">
+                <span class="ac-planname">
+                  <span class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="9" />
+                      <circle cx="12" cy="12" r="3.4" />
+                      <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
+                    </svg></span>
+                  Lote 01
+                </span>
+                <span class="ac-badge">Acesso vitalício &amp; bônus</span>
+              </div>
+              <div class="ac-name">Hunter Hub + Caçador</div>
+              <div class="ac-anchor">Custa menos que a <em>pizza do fim de semana</em>.</div>
+              <!-- TODO(Victor): trocar href="#" pela URL real do checkout -->
+              <a class="btn btn-primary btn-lg btn-pulse" href="#" data-checkout>Liberar meu acesso vitalício</a>
+            </div>
+            <div class="ac-body">
+              <p class="ac-desc">Com uma diferença: a pizza acaba no domingo. <b>A primeira oferta certa que você
+                  modelar paga esse acesso muitas vezes</b>, e o Caçador continua caçando toda semana.</p>
+              <ul class="ac-list">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Caçador Python com <b>18 queries</b> no urlscan.io, janela de 7 dias, BR e LATAM</span>
+                </li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span><b>Central Hunter Hub completa</b>: catálogo, filtros, raio-X e console</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Leitor de CSV <b>local</b>, sem upload e sem conta em servidor</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span><b>Agente Copywriter incluso de bônus</b>, vendido à parte depois do lote</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Setup guiado em 4 passos e <b>atualizações contínuas</b> do Caçador</span></li>
+              </ul>
+              <p class="ac-micro">
+                <span><b>&#10003;</b> pagamento único</span>
+                <span><b>&#10003;</b> entrega imediata por e-mail</span>
+                <span><b>&#10003;</b> sem mensalidade</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- 3 · Garantia (reversão de risco) -->
+          <div class="ac-card" data-anim="price">
+            <div class="ac-header">
+              <div class="ac-plan">
+                <span class="ac-planname">
+                  <span class="ac-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3l7 3v5c0 4.4-3 8.2-7 9.5C8 19.2 5 15.4 5 11V6l7-3z" />
+                    </svg></span>
+                  Risco zero
+                </span>
+              </div>
+              <div class="ac-name">Garantia Blindada</div>
+              <div class="ac-anchor">7 dias, <em>incondicional</em>.</div>
+            </div>
+            <div class="ac-body">
+              <div class="ac-seal" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M12 3l7 3v5c0 4.4-3 8.2-7 9.5C8 19.2 5 15.4 5 11V6l7-3z" />
+                  <path d="M9 12l2 2 4-4" />
+                </svg>
+              </div>
+              <p class="ac-desc">Rode a primeira caçada por nossa conta. <b>Se não encontrar ofertas reais validadas no
+                  ar, devolvemos 100% do valor.</b></p>
+              <ul class="ac-list">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>7 dias para instalar, disparar o <b>/cacar</b> e abrir o CSV</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Um único e-mail resolve. <b>Sem formulário, sem retenção</b></span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>Reembolso integral, sem pergunta nem justificativa</span></li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg><span>O risco da decisão fica todo do lado de cá</span></li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════ SEÇÃO 7: FAQ ════════════════ -->
+    <section class="section-faq" id="faq">
+      <div class="container">
+        <div class="sec-head center">
+          <span class="sec-tag">[ 06 · Perguntas frequentes ]</span>
+          <h2 class="sec-title">O que todo mundo pergunta <span class="accent">antes de entrar</span></h2>
+        </div>
+
+        <div class="faq-list">
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">Preciso saber programar?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Não. O Caçador dispara com <b>um comando</b>: <code>python cacador_ofertas.py</code>. Dentro dele,
+                  você digita <code>/cacar</code> e espera de 3 a 5 minutos. A Central tem o setup guiado em 4 passos
+                  com cada tela do processo.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">O que preciso ter na máquina?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Qualquer computador com <b>Python 3</b> instalado: Windows, Mac ou Linux. Não exige placa de vídeo
+                  nem máquina potente, porque o trabalho pesado é consulta de rede, não processamento local.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">Preciso pagar alguma API?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Não. O Caçador usa o <b>urlscan.io</b>, que oferece chave gratuita suficiente para as 18 queries de
+                  cada varredura. O passo a passo para gerar a sua chave em 2 minutos está no setup da Central.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">O que chega depois da compra?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Acesso imediato por e-mail à <b>Central Hunter Hub</b>: o download do Caçador, o setup guiado, o
+                  leitor de CSV no navegador e o bônus do Agente Copywriter. Tudo liberado de uma vez, sem gotejamento.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">Quantas vezes posso rodar a caçada?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p><b>Sem limite.</b> Cada varredura cobre uma janela de 7 dias, então rodar toda semana mantém o seu
+                  radar sempre com o mercado da semana corrente. O pagamento é único, sem mensalidade.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" type="button" aria-expanded="false">E se não funcionar para mim?<span class="pm"
+                aria-hidden="true">+</span></button>
+            <div class="faq-a">
+              <div>
+                <p>Você tem <b>7 dias de garantia incondicional</b>. Instale, rode, abra o CSV. Se não fizer sentido
+                  para a sua operação, um e-mail resolve e o reembolso é integral.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ════════════════ FOOTER ════════════════ -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">
+            <circle cx="16" cy="16" r="10" />
+            <path d="M16 2v7M16 23v7M2 16h7M23 16h7" />
+          </svg>
+        </span>
+        <span>hunter hub</span>
+      </div>
+      <nav class="footer-links" aria-label="Navegação do rodapé">
+        <a href="#central">A Central</a>
+        <a href="#modulos">Módulos</a>
+        <a href="#arsenal">Arsenal</a>
+        <a href="#acesso">Acesso</a>
+        <a href="#faq">FAQ</a>
+        <a href="hub-terminal.html">Já é aluno? Entrar</a>
+      </nav>
+      <p class="footer-note">Hunter Hub · inteligência de mercado BR &amp; LATAM. O Caçador lê apenas registros
+        públicos do urlscan.io e roda na sua máquina, com a sua chave. Nenhum dado de navegação é coletado por nós.
+        Ferramenta de pesquisa competitiva: os resultados dependem do mercado, da execução e do trabalho de quem usa.
+      </p>
+    </div>
+  </footer>
+
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      /* ══════════════ Tema claro/escuro ══════════════ */
+      (function () {
+        var toggle = document.getElementById('themeToggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function () {
+          var next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+          document.documentElement.dataset.theme = next;
+          try { localStorage.setItem('hunter_theme', next); } catch (e) { }
+        });
+      })();
+
+      /* ══════════════ Shrinking Sticky Header ══════════════ */
+      (function () {
+        var header = document.getElementById('siteHeader');
+        if (!header) return;
+        var ticking = false;
+        function update() {
+          header.classList.toggle('is-scrolled', window.scrollY > 30);
+          ticking = false;
+        }
+        window.addEventListener('scroll', function () {
+          if (!ticking) { requestAnimationFrame(update); ticking = true; }
+        }, { passive: true });
+        update();
+      })();
+
+      /* ══════════════ Carrossel: setas, teclado e arraste ══════════════ */
+      (function () {
+        var root = document.getElementById('carousel');
+        var track = document.getElementById('carTrack');
+        var viewport = document.getElementById('carViewport');
+        var cur = document.getElementById('carCur');
+        var title = document.getElementById('slideTitle');
+        var desc = document.getElementById('slideDesc');
+        if (!root || !track || !viewport) return;
+
+        var META = [
+          {
+            t: 'Catálogo Visual de Ofertas',
+            d: 'Cada oferta organizada com print real da página, faixa de prioridade e checkout detectado.'
+          },
+          {
+            t: 'Console de Comando & Filtros Rápidos',
+            d: 'Digite comandos de terminal para filtrar ofertas S-Elite, exportar ou abrir links sem tirar a mão do teclado.'
+          },
+          {
+            t: 'Auditoria de Nota & Sinal Duplo',
+            d: 'Decomposição exata do score com verificação de checkout (Hotmart, Kiwify, Cakto) e tracking ativo (Utmify).'
+          }
+        ];
+        var TOTAL = META.length;
+        var idx = 0;
+
+        function goTo(i) {
+          idx = (i + TOTAL) % TOTAL;
+          track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+          cur.textContent = '0' + (idx + 1);
+          title.textContent = META[idx].t;
+          desc.textContent = META[idx].d;
+        }
+
+        document.getElementById('carPrev').addEventListener('click', function () { goTo(idx - 1); });
+        document.getElementById('carNext').addEventListener('click', function () { goTo(idx + 1); });
+
+        /* Teclado: só quando o carrossel tem foco, para não sequestrar o scroll da página. */
+        root.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(idx - 1); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); goTo(idx + 1); }
+        });
+
+        /* Arraste por ponteiro (mouse e toque). */
+        var startX = 0, dragging = false, delta = 0;
+        viewport.addEventListener('pointerdown', function (e) {
+          dragging = true; startX = e.clientX; delta = 0;
+          track.classList.add('is-dragging');
+          viewport.setPointerCapture(e.pointerId);
+        });
+        viewport.addEventListener('pointermove', function (e) {
+          if (!dragging) return;
+          delta = e.clientX - startX;
+          track.style.transform = 'translateX(calc(-' + (idx * 100) + '% + ' + delta + 'px))';
+        });
+        function endDrag() {
+          if (!dragging) return;
+          dragging = false;
+          track.classList.remove('is-dragging');
+          if (Math.abs(delta) > 60) goTo(delta < 0 ? idx + 1 : idx - 1);
+          else goTo(idx);
+        }
+        viewport.addEventListener('pointerup', endDrag);
+        viewport.addEventListener('pointercancel', endDrag);
+        viewport.addEventListener('dragstart', function (e) { e.preventDefault(); });
+      })();
+
+      /* ══════════════ FAQ accordion ══════════════ */
+      (function () {
+        var items = document.querySelectorAll('.faq-item');
+        Array.prototype.forEach.call(items, function (item) {
+          var q = item.querySelector('.faq-q');
+          if (!q) return;
+          q.addEventListener('click', function () {
+            var open = item.classList.toggle('is-open');
+            q.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+        });
+      })();
+
+      /* ══════════════ GSAP Motion Engine ══════════════ */
+      window.addEventListener('DOMContentLoaded', function () {
+        /* Sem GSAP (vendor ausente ou CSP), a página fica 100% estática e legível:
+           nada aqui é o que torna o conteúdo visível, todo tween é .from(). */
+        if (!window.gsap || !window.ScrollTrigger) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        /* clearProps:'transform' em todo .from() que anima "y": sem isso o GSAP
+           deixa um transform inline após a animação, que vence qualquer transform
+           do CSS (:hover, ou o translateY(-16px) do card em destaque) e trava o
+           elemento na posição final para sempre. */
+
+        gsap.from('[data-anim="hero"]', {
+          y: 34, opacity: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out', delay: 0.15,
+          clearProps: 'transform'
+        });
+
+        /* Watermark MINERAÇÃO DE OFERTAS: sobe e expande o letter-spacing no scroll */
+        gsap.fromTo('.bg-watermark',
+          { y: 100, opacity: 0, letterSpacing: '0.02em' },
+          {
+            y: 0, opacity: 0.08, letterSpacing: '0.12em', ease: 'none',
+            scrollTrigger: { trigger: '.section-showcase', start: 'top 85%', end: 'top 25%', scrub: 1 }
+          });
+
+        gsap.from('.carousel', {
+          y: 60, opacity: 0, duration: 1, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '.section-showcase', start: 'top 70%' }
+        });
+
+        /* Título dos módulos: queda escalonada, palavra por palavra */
+        var advTitle = document.getElementById('advTitle');
+        if (advTitle) {
+          var walker = document.createTreeWalker(advTitle, NodeFilter.SHOW_TEXT);
+          var textNodes = [];
+          while (walker.nextNode()) textNodes.push(walker.currentNode);
+          textNodes.forEach(function (node) {
+            var frag = document.createDocumentFragment();
+            node.textContent.split(/(\s+)/).forEach(function (part) {
+              if (/^\s+$/.test(part) || part === '') { frag.appendChild(document.createTextNode(part)); return; }
+              var s = document.createElement('span');
+              s.textContent = part;
+              s.style.display = 'inline-block';
+              s.className = 'adv-word';
+              frag.appendChild(s);
+            });
+            node.parentNode.replaceChild(frag, node);
+          });
+          gsap.from('.adv-word', {
+            y: -42, opacity: 0, duration: 0.7, stagger: 0.06, ease: 'power3.out', clearProps: 'transform',
+            scrollTrigger: { trigger: '.section-advanced', start: 'top 78%' }
+          });
+        }
+
+        gsap.from('.advanced-card', {
+          y: 60, opacity: 0, stagger: 0.12, duration: 0.8, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '.section-advanced', start: 'top 75%' }
+        });
+
+        gsap.from('[data-anim="mech"]', {
+          y: 50, opacity: 0, stagger: 0.15, duration: 0.85, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '.section-mechanism', start: 'top 72%' }
+        });
+
+        gsap.from('.agent-card', {
+          y: 60, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '.section-arsenal', start: 'top 75%' }
+        });
+
+        /* Acesso: clearProps é essencial aqui, senão o card em destaque nunca
+           reassenta no translateY(-16px) que o eleva sobre os vizinhos. */
+        gsap.from('[data-anim="price"]', {
+          y: 60, opacity: 0, stagger: 0.12, duration: 0.85, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '.section-access', start: 'top 72%' }
+        });
+
+        gsap.from('.faq-item', {
+          y: 30, opacity: 0, stagger: 0.07, duration: 0.6, ease: 'power3.out', clearProps: 'transform',
+          scrollTrigger: { trigger: '.section-faq', start: 'top 80%' }
+        });
+      });
+    })();
+  </script>
+</body>
+
+</html>
