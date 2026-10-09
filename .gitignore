@@ -13,6 +13,10 @@ debug.log
 .vercel/
 playwright-report/
 test-results/
+dist/
+public-site-index/
+public-site-index.afero-public-build
+*.afero-public-build
 
 # Operating-system and editor files
 .DS_Store

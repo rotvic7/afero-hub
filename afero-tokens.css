@@ -1,0 +1,11 @@
+/* AFERO HUB · TOKENS CANÔNICOS */
+:root {
+  --paper: #F7F6F1; --canvas: #EFEEE6; --ink: #21342C; --palmeira: #8A9C7B; --alcaparra: #56603F; --mamao: #2F654D; --floresta: #24696A; --muted: #66736D; --soft: #8B968F; --danger: #9B413F;
+  --sf-0: #F7F6F1; --sf-1: #FFFEFA; --sf-2: #FFFFFF; --sf-3: #F2F1EA;
+  --hair: rgba(33, 52, 44, .11); --hair-strong: rgba(33, 52, 44, .22); --hair-accent: rgba(47, 101, 77, .4); --hair-dark: rgba(247, 246, 241, .16);
+  --r-xs: 4px; --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px;
+  --font-display: 'Unbounded', system-ui, sans-serif; --font-body: 'Manrope', system-ui, sans-serif; --font-label: 'Hanken Grotesk', system-ui, sans-serif; --font-mono: 'Space Mono', monospace;
+  --ac: var(--mamao); --ac-soft: rgba(47, 101, 77, .1); --ac-on: var(--paper); --ink-1: var(--ink); --ink-2: var(--alcaparra); --ink-3: #7D8674;
+  --ease: cubic-bezier(.22, 1, .36, 1); --swift: 150ms cubic-bezier(.32, .72, 0, 1); --swift-2: 260ms cubic-bezier(.32, .72, 0, 1);
+  --editorial-canvas: var(--canvas); --editorial-paper: var(--sf-1); --editorial-paper-soft: var(--paper); --editorial-ink: var(--ink); --editorial-muted: var(--alcaparra); --editorial-green: var(--mamao); --editorial-teal: var(--floresta); --editorial-line: var(--hair); --editorial-line-strong: var(--hair-accent); --editorial-serif: var(--font-display); --editorial-ui: var(--font-label); --editorial-body: var(--font-body); --editorial-mono: var(--font-mono); --editorial-motion: cubic-bezier(.32, .72, 0, 1);
+}

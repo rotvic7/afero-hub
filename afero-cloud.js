@@ -30,6 +30,19 @@
     return value === true || value === 'sim' || value === 'yes' || value === 1;
   }
 
+  function isLegacyAnonKey(key, projectRef, localhost) {
+    const parts = String(key || '').split('.');
+    if (parts.length !== 3 || typeof global.atob !== 'function') return false;
+    try {
+      let encoded = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      while (encoded.length % 4) encoded += '=';
+      const payload = JSON.parse(global.atob(encoded));
+      return payload && payload.role === 'anon' && (localhost || payload.ref === projectRef);
+    } catch {
+      return false;
+    }
+  }
+
   function matchesLocalSignals(item, filters) {
     const signals = item && item.signals && typeof item.signals === 'object' ? item.signals : {};
     if (filters.pixel && !signalIsPresent(signals.pixel_ads || signals.pixel)) return false;
@@ -46,12 +59,16 @@
     const url = String(value.supabaseUrl || '').trim();
     const key = String(value.publishableKey || '').trim();
     if (!url || !key) return { enabled: false, reason: 'missing_config' };
-    if (!key.startsWith('sb_publishable_') || key.startsWith('sb_secret_')) return { enabled: false, reason: 'invalid_key' };
+    if (key.startsWith('sb_secret_')) return { enabled: false, reason: 'invalid_key' };
     try {
       const parsed = new URL(url);
       const localhost = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1';
       if ((parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && localhost)) || (!localhost && !parsed.hostname.endsWith('.supabase.co'))) {
         return { enabled: false, reason: 'invalid_url' };
+      }
+      const projectRef = localhost ? '' : parsed.hostname.slice(0, -'.supabase.co'.length);
+      if (!key.startsWith('sb_publishable_') && !isLegacyAnonKey(key, projectRef, localhost)) {
+        return { enabled: false, reason: 'invalid_key' };
       }
       return { enabled: true, reason: 'ready' };
     } catch {
@@ -97,7 +114,10 @@
         if (!subscribed) {
           const listener = supabaseClient.auth.onAuthStateChange((event, nextSession) => {
             applySession(nextSession);
-            if (typeof onAuthEvent === 'function' && VALID_EVENTS.has(event)) onAuthEvent({ event, session, user });
+            if (typeof onAuthEvent === 'function' && VALID_EVENTS.has(event)) {
+              const authEvent = { event, session, user };
+              global.setTimeout(() => onAuthEvent(authEvent), 0);
+            }
           });
           subscribed = true;
           client.unsubscribeAuth = () => listener && listener.data && listener.data.subscription && listener.data.subscription.unsubscribe();
@@ -147,6 +167,10 @@
           .filter((membership) => membership && membership.workspace && membership.workspace.id)
           .map((membership) => ({ workspaceId: membership.workspace.id, name: membership.workspace.name, slug: membership.workspace.slug, role: membership.role }))
           .sort((left, right) => String(left.name).localeCompare(String(right.name)));
+      },
+      async hasPaidAccess() {
+        const result = await supabaseClient.rpc('has_paid_access');
+        return errorFrom(result, 'Não foi possível verificar o acesso.') === true;
       },
       async listOffers({ workspaceId, cursor, filters, signal } = {}) {
         const selectedWorkspaceId = requireWorkspaceId(workspaceId);
@@ -238,7 +262,7 @@
       currentSession: () => null,
       currentUser: () => null,
       signUp: unavailable, signInWithPassword: unavailable, signInWithGoogle: unavailable,
-      sendPasswordReset: unavailable, updatePassword: unavailable, signOut: unavailable, listWorkspaces: unavailable,
+      sendPasswordReset: unavailable, updatePassword: unavailable, signOut: unavailable, listWorkspaces: unavailable, hasPaidAccess: unavailable,
       listOffers: unavailable, importHunt: unavailable, updateOfferDecision: unavailable, createHuntSignedUrl: unavailable
     };
   }

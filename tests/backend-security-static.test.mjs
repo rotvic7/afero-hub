@@ -9,6 +9,8 @@ const hardeningRollbackUrl = new URL('supabase/rollback/202609010001_afero_harde
 const edgeFunctionUrl = new URL('supabase/functions/import-hunt/index.ts', root);
 const edgeCoreUrl = new URL('supabase/functions/import-hunt/core.ts', root);
 const configUrl = new URL('supabase/config.toml', root);
+const functionEnvExampleUrl = new URL('supabase/functions/.env.example', root);
+const browserConfigExampleUrl = new URL('afero-cloud-config.example.js', root);
 const rollbackUrl = new URL('supabase/rollback/202608280001_afero_backend.rollback.sql', root);
 
 test('enables RLS for every public application table', async () => {
@@ -107,6 +109,23 @@ test('requires confirmed email and hardened password sessions locally', async ()
   assert.match(config, /secure_password_change = true/);
 });
 
+test('keeps production Auth redirects and Edge CORS aligned with the Afero deploy', async () => {
+  const [config, envExample, browserExample] = await Promise.all([
+    readFile(configUrl, 'utf8'),
+    readFile(functionEnvExampleUrl, 'utf8'),
+    readFile(browserConfigExampleUrl, 'utf8')
+  ]);
+
+  assert.match(config, /site_url = "https:\/\/afero-hub\.vercel\.app\/hub"/);
+  assert.match(config, /additional_redirect_urls = \[[^\]]*"https:\/\/afero-hub\.vercel\.app\/hub"/);
+  assert.match(config, /additional_redirect_urls = \[[^\]]*"https:\/\/afero-hub\.vercel\.app\/hub\.html"/);
+  assert.match(config, /additional_redirect_urls = \[[^\]]*"http:\/\/localhost:4377\/index\.html"/);
+  assert.match(config, /additional_redirect_urls = \[[^\]]*"http:\/\/127\.0\.0\.1:4377\/index\.html"/);
+  assert.match(envExample, /^ALLOWED_ORIGINS=http:\/\/127\.0\.0\.1:4377,http:\/\/localhost:4377,https:\/\/afero-hub\.vercel\.app$/m);
+  assert.match(browserExample, /redirectUrl: 'https:\/\/afero-hub\.vercel\.app\/hub'/);
+  assert.doesNotMatch(`${config}\n${envExample}\n${browserExample}`, /SEU-PROJETO|movimentobuilder-ia/i);
+});
+
 test('pins and serves the browser Supabase SDK locally', async () => {
   const pkg = JSON.parse(await readFile(new URL('../../package.json', import.meta.url), 'utf8'));
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
@@ -116,9 +135,34 @@ test('pins and serves the browser Supabase SDK locally', async () => {
   assert.doesNotMatch(html, /cdn[^"']*supabase|unpkg[^"']*supabase|jsdelivr[^"']*supabase/i);
 });
 
-test('keeps browser configuration public and cloud closed by default', async () => {
+/* O Hub é página estática sem passo de build, então a chave publicável precisa
+   viver no arquivo versionado para o produto conectar. O que este teste guarda
+   deixou de ser "arquivo vazio" e passou a ser o que de fato importa: a origem
+   tem que ser um projeto Supabase, e a chave tem que ser de papel anônimo,
+   protegida por RLS. service_role, segredo e string de conexão continuam
+   proibidos. Regra afrouxada em 06/09/2026, decisão do Victor, depois que o
+   commit 9ebbb78 conectou o Hub ao Supabase. */
+test('keeps browser configuration public and restricted to an anon key', async () => {
   const config = await readFile(new URL('../afero-cloud-config.js', import.meta.url), 'utf8');
-  assert.match(config, /supabaseUrl:\s*''/);
-  assert.match(config, /publishableKey:\s*''/);
+
+  const url = config.match(/supabaseUrl:\s*'([^']*)'/);
+  assert.ok(url, 'afero-cloud-config.js precisa declarar supabaseUrl.');
+  assert.match(url[1], /^$|^https:\/\/[a-z0-9-]+\.supabase\.co$/,
+    'supabaseUrl deve ser vazio ou a origem https de um projeto Supabase.');
+
+  const key = config.match(/publishableKey:\s*'([^']*)'/);
+  assert.ok(key, 'afero-cloud-config.js precisa declarar publishableKey.');
+  if (key[1]) {
+    /* Chave nova (sb_publishable_) passa direto. JWT antigo tem o papel
+       decodificado, porque uma service_role colada aqui vazaria o banco. */
+    if (!key[1].startsWith('sb_publishable_')) {
+      const partes = key[1].split('.');
+      assert.equal(partes.length, 3, 'publishableKey deve ser um JWT ou uma chave sb_publishable_.');
+      const carga = JSON.parse(Buffer.from(partes[1], 'base64').toString('utf8'));
+      assert.equal(carga.role, 'anon',
+        `publishableKey precisa ter papel anon, encontrado "${carga.role}".`);
+    }
+  }
+
   assert.doesNotMatch(config, /service[_-]?role|sb_secret_|URLSCAN|postgres(?:ql)?:\/\//i);
 });

@@ -4,9 +4,13 @@ project_id = "afero-hub"
 verify_jwt = true
 entrypoint = "./functions/import-hunt/index.ts"
 
+[functions.eduzz-webhook]
+verify_jwt = false
+entrypoint = "./functions/eduzz-webhook/index.ts"
+
 [auth]
-site_url = "http://127.0.0.1:4377"
-additional_redirect_urls = ["http://localhost:4377", "http://127.0.0.1:4377"]
+site_url = "https://afero-hub.vercel.app/hub"
+additional_redirect_urls = ["https://afero-hub.vercel.app/hub", "https://afero-hub.vercel.app/hub.html", "http://localhost:4377/index.html", "http://127.0.0.1:4377/index.html"]
 jwt_expiry = 3600
 enable_signup = true
 enable_refresh_token_rotation = true

@@ -107,13 +107,9 @@
         delay: .16,
         ease: 'power3.out'
       });
-      window.gsap.from('.hunt-stage-card', {
-        opacity: 0,
-        duration: .82,
-        stagger: .07,
-        delay: .2,
-        ease: 'power3.out'
-      });
+      /* Etapas são instrução operacional e precisam nascer legíveis. Um fade
+         interrompido pelo ciclo de visibilidade do navegador deixava 02–05
+         com opacidade inline quase zero, especialmente no mobile. */
 
       if (window.ScrollTrigger) {
         /* .sec-head do Painel/Catálogo não passa pela troca de aba (fica dentro
