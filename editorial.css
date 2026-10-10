@@ -990,7 +990,7 @@ html[data-theme='light'] .atmosphere { opacity: .08; }
 .cloud-account { border-radius: var(--r-md); padding: 0 14px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--text-main); font-size: 11px; font-weight: 600; letter-spacing: .065em; cursor: pointer; }
 .cloud-account:hover { border-color: var(--accent-bright); background: var(--surface-soft); }
 .cloud-workspace { border-radius: var(--r-md); max-width: 190px; padding: 0 10px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--text-main); }
-.cloud-modal[hidden] { display: none; }
+.cloud-modal[hidden], .cloud-modal [hidden], .catalog-cloud-controls[hidden] { display: none !important; }
 .cloud-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px; background: color-mix(in srgb, var(--page-deep) 82%, transparent); }
 .cloud-modal-card { position: relative; width: min(100%, 440px); max-height: calc(100vh - 48px); overflow: auto; padding: 32px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); color: var(--text-main); }
 .cloud-kicker { margin: 0 0 8px; color: var(--accent-bright); font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }

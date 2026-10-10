@@ -1,0 +1,9 @@
+.marketing-consent[hidden], [data-marketing-settings][hidden], [data-checkout-status][hidden] { display:none !important; }
+.marketing-consent { position:fixed; inset:auto 16px 16px; z-index:30; margin-inline:auto; max-width:760px; padding:20px; border:1px solid #83f79a66; border-radius:10px; background:#0b120d; color:#f4f8f3; box-shadow:0 12px 40px #0008; font:14px/1.6 Manrope,system-ui,sans-serif; }
+.marketing-consent p { margin:0 0 14px; }
+.marketing-consent a { color:#b2ffc0; text-decoration:underline; }
+.marketing-consent__actions { display:flex; flex-wrap:wrap; gap:12px; }
+.marketing-consent button { flex:1; min-width:150px; min-height:44px; padding:10px 16px; border:1px solid #83f79a88; border-radius:6px; background:#102719; color:#f4f8f3; font:600 13px Manrope,system-ui,sans-serif; cursor:pointer; }
+.marketing-consent button:focus-visible, .privacy-choice:focus-visible { outline:2px solid #83f79a; outline-offset:4px; }
+.hub .marketing-consent, .hub .marketing-consent button { font-family:Inter,system-ui,sans-serif; }
+.privacy-choice { padding:0; border:0; background:transparent; color:inherit; font:inherit; text-decoration:underline; text-underline-offset:.2em; cursor:pointer; }

@@ -11,14 +11,25 @@ const vercel = JSON.parse(readFileSync(join(root, 'vercel.json'), 'utf8'));
 const publicFiles = Object.freeze([
   { source: 'lp-afero-hub-vendas.html', target: 'index.html' },
   { source: 'index.html', target: 'hub.html' },
+  { source: 'supabase/functions/_shared/hunter-csv.js', target: 'afero-csv-core.js' },
   { source: 'logo-afero-new', target: 'assets/images/afero-logo.png' },
   { source: 'video/afero-hub-ad/public/fonts/manrope-600.ttf', target: 'assets/fonts/manrope-600.ttf' },
   ...[
   'lp-afero-hub-vendas.html',
   'guia-funil-afero-hub.html',
   'privacidade.html',
+  'robots.txt',
+  'sitemap.xml',
   'afero-cloud-config.js',
   'afero-cloud.js',
+  'afero-auth-challenge.js',
+  'afero-panel.css',
+  'afero-csv.js',
+  'afero-csv-worker.js',
+  'assets/afero-logo-transparent.webp',
+  'assets/afero-mark-transparent.webp',
+  'assets/fonts/Inter-Variable.woff2',
+  'assets/fonts/Unbounded-Variable.woff2',
   'afero-live-map-shelf.js',
   'editorial-motion.js',
   'afero-tokens.css',
@@ -31,6 +42,10 @@ const publicFiles = Object.freeze([
   'vendor/supabase.js',
   'assets/afero-vendas.css',
   'assets/afero-vendas.js',
+  'assets/afero-vendas-config.js',
+  'assets/afero-vendas-tracking.js',
+  'assets/afero-consent.css',
+  'afero-checkout.js',
   'assets/vendor/gsap.min.js',
   'assets/fonts/Satoshi-Variable.woff2',
   'prints/hub-catalogo.webp',
@@ -50,7 +65,15 @@ const publicFiles = Object.freeze([
   ].map((path) => ({ source: path, target: path }))
 ]);
 
-export const publicPaths = Object.freeze(publicFiles.map(({ target }) => target));
+function executableInlineScripts(html) {
+  return [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)].filter((match) =>
+    !/\bsrc\s*=/i.test(match[1]) && !/\btype\s*=\s*["'](?:application\/ld\+json|application\/json)["']/i.test(match[1]) && match[2].trim());
+}
+function inlineAsset(target, number) { return `assets/page-scripts/${target.replace(/\.html$/, '')}-${number}.js`; }
+const inlinePaths = publicFiles.filter(({ target }) => target.endsWith('.html')).flatMap(({ source, target }) =>
+  executableInlineScripts(readFileSync(join(root, source), 'utf8')).map((_, index) => inlineAsset(target, index + 1)));
+export const publicPaths = Object.freeze([...publicFiles.map(({ target }) => target), ...inlinePaths]);
+export const publicSourcePaths = Object.freeze(publicFiles.map(({ source }) => source));
 
 function publishedHtml(html, source) {
   // Source pages keep working locally; published links follow the public routes.
@@ -60,6 +83,17 @@ function publishedHtml(html, source) {
   if (source === 'lp-afero-hub-vendas.html') {
     html = html.replaceAll('video/afero-hub-ad/public/fonts/manrope-600.ttf', 'assets/fonts/manrope-600.ttf')
       .replaceAll("url('logo-afero-new')", "url('assets/images/afero-logo.png')");
+  }
+  return html;
+}
+
+function externalizeScripts(html, target, output) {
+  let number = 0;
+  for (const match of executableInlineScripts(html)) {
+    const asset = inlineAsset(target, ++number);
+    mkdirSync(dirname(join(output, asset)), { recursive: true });
+    writeFileSync(join(output, asset), match[2]);
+    html = html.replace(match[0], `<script${match[1]} src="/${asset}"></script>`);
   }
   return html;
 }
@@ -112,7 +146,7 @@ export function buildPublic(outputDir = join(root, vercel.outputDirectory)) {
     const destination = join(output, target);
     mkdirSync(dirname(destination), { recursive: true });
     if (target.endsWith('.html')) {
-      writeFileSync(destination, publishedHtml(readFileSync(join(root, source), 'utf8'), source));
+      writeFileSync(destination, externalizeScripts(publishedHtml(readFileSync(join(root, source), 'utf8'), source), target, output));
     } else {
       cpSync(join(root, source), destination);
     }

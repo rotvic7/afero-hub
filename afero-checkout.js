@@ -2,9 +2,8 @@
    AFERO · CHECKOUT
    Ponto único de configuração da URL de pagamento.
 
-   COMO USAR: crie o produto na Hotmart/Kiwify/Cakto, copie a URL do
-   checkout e cole em CHECKOUT_URL abaixo. Todos os botões [data-checkout]
-   de todas as landing pages passam a apontar para ela.
+   A LP atual usa assets/afero-vendas-config.js, com a URL HTTPS da Eduzz.
+   CHECKOUT_URL abaixo permanece disponível para as páginas anteriores.
 
    Enquanto a URL estiver vazia, os botões avisam que a venda ainda não
    abriu e levam ao Instagram, em vez de dar um clique morto que perde
@@ -14,6 +13,15 @@
   'use strict';
 
   var CHECKOUT_URL = '';
+  var salesConfig = window.AFERO_SALES_CONFIG;
+  var salesUrl = '';
+  if (salesConfig && typeof salesConfig.checkoutUrl === 'string') {
+    try {
+      var parsed = new URL(salesConfig.checkoutUrl);
+      if (parsed.protocol === 'https:' && !parsed.username && !parsed.password &&
+          !parsed.port && /(^|\.)eduzz\.com$/i.test(parsed.hostname)) salesUrl = parsed.href;
+    } catch (_) {}
+  }
   var FALLBACK_URL = 'https://instagram.com/victorneiva.ia';
   var AVISO = 'A venda ainda não abriu. Vou te levar ao Instagram para avisar quando abrir.';
 
@@ -25,6 +33,29 @@
   }
 
   function ligar(botao) {
+    if (salesConfig) {
+      if (salesUrl) {
+        if (botao.tagName === 'A') botao.href = salesUrl;
+        botao.removeAttribute('aria-disabled');
+      } else {
+        botao.setAttribute('aria-disabled', 'true');
+        if (botao.tagName === 'A') botao.href = '#acesso';
+      }
+      botao.addEventListener('click', function (event) {
+        if (!salesUrl) {
+          event.preventDefault();
+          var status = document.querySelector('[data-checkout-status]');
+          if (status) status.hidden = false;
+          return;
+        }
+        document.dispatchEvent(new CustomEvent('afero:checkout'));
+        if (botao.tagName !== 'A') {
+          event.preventDefault();
+          window.location.href = salesUrl;
+        }
+      });
+      return;
+    }
     var destino = CHECKOUT_URL || FALLBACK_URL;
 
     /* Um [data-checkout] pode ser <button type="submit">: ele não tem href e

@@ -28,100 +28,44 @@
 </script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F7F6F1' stroke-width='1.5'%3E%3Cpath d='M20.114 9.826A8.4 8.4 0 003.886 9.826M3.886 14.174A8.4 8.4 0 0020.114 14.174M12 3.1V0M12 21.4v1M2.6 12H1M21.4 12H23'/%3E%3Cpath d='M10.9 14.898V13.2h2.2v1.698a3.1 3.1 0 11-2.2 0z' fill='%238A9C7B' stroke='none'/%3E%3C/svg%3E" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://api.fontshare.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600&family=Manrope:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Unbounded:wght@500;700;800&display=swap">
-<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@700,800,900&display=swap">
 <!-- ?v= é cache busting: o navegador guarda cada versão como URL distinta.
      Ao editar editorial.css, afero-live-map.js, editorial-motion.js ou
      afero-cloud.js, incremente o número nos links deste arquivo. Sem isso o
      Chrome serve a versão antiga do disco e a mudança não aparece. -->
 
 <link rel="stylesheet" href="afero-tokens.css?v=1">
-<link rel="stylesheet" href="editorial.css?v=21">
-<link rel="stylesheet" href="orbitra-atlas.css?v=1">
-<link rel="stylesheet" href="orbitra-shelf.css?v=6">
+<link rel="stylesheet" href="editorial.css?v=22">
+<link rel="stylesheet" href="afero-panel.css?v=2">
+<link rel="preload" href="assets/fonts/Satoshi-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/afero-consent.css?v=2">
+<script src="assets/afero-vendas-config.js" defer></script>
+<script src="assets/afero-vendas-tracking.js?v=2" defer></script>
 
 
 </head>
-<body>
+<body class="hub" data-afero-hub-page data-marketing-surface="private">
 
 <a class="skip-link" href="#view-painel">Pular para o Painel</a>
 
-<div class="atmosphere"></div>
-<div class="grain"></div>
-
-<!-- ══ PRELOADER ══════════════════════════════════════════════ -->
-<div id="boot">
-  <div class="boot-inner">
-    <div class="boot-brand"><i></i> afero hub</div>
-    <div class="boot-bar"><div class="boot-fill" id="bootFill"></div></div>
-    <div class="boot-meta">
-      <span class="boot-step" id="bootStep">Preparando o painel local</span>
-      <span class="boot-pct" id="bootPct">0%</span>
-    </div>
-    <div class="boot-log" id="bootLog"></div>
-  </div>
-</div>
-
-<!-- ══ CABEÇALHO ══════════════════════════════════════════════ -->
-<header class="top">
-  <div class="top-in editorial-nav-shell">
-    <div class="brand">
-      <div class="brand-mark" style="--symbol-core:#8A9C7B">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <path d="M 20.114 9.826 A 8.4 8.4 0 0 0 3.886 9.826"/>
-          <path d="M 3.886 14.174 A 8.4 8.4 0 0 0 20.114 14.174"/>
-          <path d="M 12 3.1 L 12 0" stroke-width="1.14"/>
-          <path d="M 12 21.4 L 12 22.4" stroke-width="1.14"/>
-          <path d="M 2.6 12 L 1 12" stroke-width="1.14"/>
-          <path d="M 21.4 12 L 23 12" stroke-width="1.14"/>
-          <path d="M 15.524 9.042 A 4.6 4.6 0 0 0 8.476 9.042" stroke-width="1" opacity=".55"/>
-          <path d="M 15.329 7.25 A 5.8 5.8 0 0 0 8.671 7.25" stroke-width="1" opacity=".34"/>
-          <path d="M 10.9 14.898 L 10.9 13.2 L 13.1 13.2 L 13.1 14.898 A 3.1 3.1 0 1 0 10.9 14.898 Z" fill="var(--symbol-core)" stroke="none"/>
-        </svg>
-      </div>
-      <div class="brand-txt">
-        <div class="brand-name">afero <span>hub</span></div>
-      </div>
-    </div>
-
-    <nav class="tabs" role="tablist" aria-label="Seções do hub">
-      <button class="tab on" role="tab" aria-selected="true" data-view="painel">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="3.1"/><ellipse cx="12" cy="12" rx="9.6" ry="4.4" transform="rotate(-24 12 12)"/>
-        </svg>
-        Painel
-      </button>
-      <button class="tab" role="tab" aria-selected="false" data-view="comece">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M6 21V4.2"/><path d="M6 4.6h11.4l-2.7 3.9 2.7 3.9H6"/>
-        </svg>
-        Comece Aqui
-      </button>
-      <button class="tab" role="tab" aria-selected="false" data-view="agentes">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
-          <circle cx="12" cy="5.2" r="2.6"/><circle cx="5.4" cy="17.4" r="2.6"/><circle cx="18.6" cy="17.4" r="2.6"/>
-          <path d="M10.7 7.5L6.7 15.1M13.3 7.5l4 7.6M8 17.4h8"/>
-        </svg>
-        Agentes
-      </button>
+<header class="hub-top">
+  <div class="hub-wrap"><div class="hub-bar">
+    <a class="hub-brand" href="#view-painel" aria-label="Afero Hub, painel de inteligência de ofertas">
+      <img class="hub-mark" src="assets/afero-mark-transparent.webp" alt="" width="42" height="42">
+      <span class="hub-brand-text"><span class="hub-brand-name">afero<span>hub</span></span><span class="hub-brand-desc">Painel de inteligência de ofertas</span></span>
+    </a>
+    <nav class="hub-tabs" role="tablist" aria-label="Seções do hub">
+      <span class="hub-tab-indicator" aria-hidden="true"></span>
+      <button type="button" class="tab on" id="tab-painel" role="tab" aria-controls="view-painel" aria-selected="true" data-view="painel">Painel</button>
+      <button type="button" class="tab" id="tab-comece" role="tab" aria-controls="view-comece" aria-selected="false" data-view="comece" tabindex="-1">Comece aqui</button>
+      <button type="button" class="tab" id="tab-agentes" role="tab" aria-controls="view-agentes" aria-selected="false" data-view="agentes" tabindex="-1">Agentes</button>
     </nav>
-
-    <div class="top-right">
-      <button class="cloud-account" id="accountButton" type="button" aria-haspopup="dialog">Entrar</button>
-      <button class="top-import" type="button" data-import-topbar aria-label="Importar CSV">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0-12L8 7m4-4 4 4"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>
-        <span>Importar CSV</span>
-      </button>
-    </div>
-  </div>
+    <div class="hub-account"><select class="cloud-workspace" id="workspaceSelect" aria-label="Selecionar workspace" hidden></select><button class="cloud-account btn" id="accountButton" type="button" aria-haspopup="dialog">Entrar</button><button class="hub-button" type="button" data-import-topbar>Importar CSV</button></div>
+  </div></div>
 </header>
 
 <main>
 <!-- ══ VISTA: COMECE AQUI ═══════════════════════════════════════ -->
-<section class="view" id="view-comece">
+<section class="view" id="view-comece" role="tabpanel" aria-labelledby="tab-comece">
   <div class="wrap">
     <div class="sec">
       <div class="sec-head">
@@ -393,180 +337,28 @@ Caçada concluída. 127 ofertas encontradas.</pre>
 </section>
 
 <!-- ══ VISTA: PAINEL ══════════════════════════════════════════ -->
-<section class="view on" id="view-painel" tabindex="-1">
-  <!-- Faixa de abertura: verde de borda a borda, sem moldura. O creme
-       do painel só começa depois dela. -->
-  <div id="orbitHero">
-    <div class="orbit-hero-in">
-      <section class="panel-onboarding" id="panelOnboarding" aria-labelledby="panelOnboardingTitle">
-        <section class="live-map-shell" id="liveMapShell" data-map-state="empty" aria-labelledby="liveMapTitle">
-          <div class="live-map-cap">
-            <div><strong id="liveMapTitle">Workspace</strong><select class="cloud-workspace" id="workspaceSelect" aria-label="Selecionar workspace" hidden></select></div>
-            <span id="liveMapCount" hidden>aguardando CSV</span>
-            <div class="radar-bar">
-              <button class="radar-profile-pill" id="radarButton" type="button" aria-haspopup="dialog" title="Calibrar seu radar de ofertas">
-                <span class="radar-status-dot"></span><span id="radarLabel">Calibrar Radar</span>
-              </button>
-            </div>
-          </div>
-          <div class="atlas-tier-nav" role="group" aria-label="Isolar prateleira por classificação">
-            <button type="button" data-shelf-tier="S" aria-pressed="true">S <span>Excepcional</span></button>
-            <button type="button" data-shelf-tier="A" aria-pressed="false">A <span>Forte</span></button>
-            <button type="button" data-shelf-tier="B" aria-pressed="false">B <span>Potencial</span></button>
-            <button type="button" data-shelf-tier="C" aria-pressed="false">C <span>Observar</span></button>
-            <button type="button" data-shelf-tier="?" aria-pressed="false" hidden>? <span>Sem tier</span></button>
-          </div>
-          <div class="atlas-toolbar">
-            <select data-atlas-region aria-label="Explorar nicho"><option value="">Todos os nichos</option></select>
-            <input data-atlas-search type="search" aria-label="Buscar ofertas na prateleira" placeholder="Buscar oferta ou domínio" autocomplete="off">
-          </div>
-          <div class="atlas-breadcrumb"><button type="button" data-atlas-back disabled>Limpar busca</button><span data-atlas-summary>0 ofertas</span><span class="atlas-gesture-hint">Arraste para girar a estante</span></div>
-          <div class="live-map-viewport">
-            <canvas id="aferoLiveMap" role="img" aria-label="Estante 3D de ofertas por tier. Arraste lateralmente para girar. Use os controles e a lista para explorar por teclado."></canvas>
-            <div class="live-map-fallback" aria-label="Mapa simplificado dos agentes">
-              <div>
-                <div class="fallback-constellation">
-                  <div class="fallback-agent hunter"><strong>Caçador</strong><small>núcleo local</small></div>
-                  <div class="fallback-agent copywriter"><strong>Copywriter</strong><small>mensagem</small></div>
-                  <div class="fallback-agent pages"><strong>Páginas</strong><small>experiência</small></div>
-                </div>
-                <p class="fallback-message">A visualização 3D está indisponível neste dispositivo. A importação e o catálogo continuam funcionando.</p>
-                <button class="fallback-import" type="button" data-import-fallback>Importar CSV</button>
-              </div>
-            </div>
-            <div class="live-map-labels"></div>
-            <div class="shelf-floor-control" role="group" aria-label="Navegar pelas prateleiras">
-              <button type="button" data-shelf-prev aria-label="Subir para a prateleira anterior" disabled>Subir</button>
-              <span>Prateleira <strong data-shelf-current>S</strong></span>
-              <button type="button" data-shelf-next aria-label="Descer para a próxima prateleira" disabled>Descer</button>
-            </div>
-            <div class="shelf-hover-card" data-shelf-hover aria-hidden="true"></div>
-            <div class="live-map-empty">
-              <span data-map-empty-title>Estante vazia</span>
-              <p data-map-status role="status" aria-live="polite">Importe um CSV para organizar as ofertas.</p>
-              <button type="button" data-import-map>Importar CSV</button>
-            </div>
-          </div>
-          <div class="atlas-scale"><span data-atlas-scale>Toque em uma oferta para abrir o Raio X</span><button type="button" data-atlas-reset aria-label="Restaurar enquadramento da estante">Reenquadrar</button></div>
-          <div class="live-map-legend" aria-label="Legenda dos tiers">
-            <span><i class="tier-s"></i>S · excepcional</span>
-            <span><i class="tier-a"></i>A · forte</span>
-            <span><i class="tier-b"></i>B · potencial</span>
-            <span><i class="tier-c"></i>C · observar</span>
-            <span><i class="tier-unknown"></i>? · sem tier</span>
-          </div>
-          <div class="atlas-inspector" data-atlas-detail>
-            <div aria-live="polite"><strong data-atlas-title>Explore a estante de ofertas</strong><p data-atlas-meta>Importe seu CSV para preencher as prateleiras com ofertas reais.</p></div>
-            <button type="button" data-atlas-open disabled>Abrir Raio X</button>
-            <div class="atlas-agent-actions" data-atlas-agents hidden><span>Ferramentas</span><button type="button" data-atlas-agent="hunter">Caçador</button><button type="button" data-atlas-agent="copywriter">Copywriter</button><button type="button" data-atlas-agent="pages">Páginas</button></div>
-          </div>
-          <div class="atlas-pagination"><span data-atlas-results aria-live="polite">Aguardando sua caçada.</span><button type="button" data-atlas-prev aria-label="Página anterior" disabled>Anterior</button><span data-atlas-page>1 / 1</span><button type="button" data-atlas-next aria-label="Próxima página" disabled>Próxima</button></div>
-          <details class="atlas-list-panel" data-atlas-list-panel><summary>Explorar em lista</summary><div data-atlas-list class="atlas-list"></div></details>
-          <aside class="agent-drawer" id="agentDrawer" data-agent="" aria-hidden="true" aria-labelledby="agentDrawerTitle">
-            <button class="agent-drawer-close" id="agentDrawerClose" type="button" aria-label="Fechar detalhes do agente">×</button>
-            <span class="agent-drawer-kicker" id="agentDrawerKicker">Agente em órbita</span>
-            <h2 id="agentDrawerTitle">Agente</h2>
-            <p id="agentDrawerDescription"></p>
-            <div class="agent-drawer-meta">
-              <div><span>Status</span><b id="agentDrawerStatus">Pronto</b></div>
-              <div><span>Rota</span><b id="agentDrawerRoute">Local</b></div>
-            </div>
-            <button class="agent-drawer-action" id="agentDrawerAction" type="button">Abrir fluxo</button>
-          </aside>
-        </section>
-
-        <div class="onboarding-copy">
-          <h1 class="onboarding-title" id="panelOnboardingTitle">Encontre a próxima oferta antes de começar a modelar.</h1>
-          <p class="onboarding-desc">Rode o Caçador no seu computador para localizar ofertas com sinais reais de validação. Depois, traga o CSV para o Painel, compare as evidências e escolha com clareza qual projeto merece avançar.</p>
-          <div class="onboarding-actions">
-            <button class="btn hot" type="button" data-start-hunt>Começar uma caçada</button>
-            <button class="btn" type="button" data-import-now>Já tenho um CSV</button>
-          </div>
-          <div class="onboarding-note" aria-label="Características do processo">
-            <span>Execução local</span><span>Sua chave URLScan</span><span>Decisão guiada por sinais</span>
-          </div>
-        </div>
-
-      </section>
+<section class="view on hub-panel" id="view-painel" role="tabpanel" aria-labelledby="tab-painel" tabindex="-1">
+  <section id="panelOnboarding" class="hub-entry" aria-labelledby="panelOnboardingTitle">
+    <div class="hub-wrap hub-hero">
+      <div><p class="hub-eyebrow">Pesquise · Inspecione · Compare</p><h1 id="panelOnboardingTitle">Inspecione ofertas.<br>Decida com contexto.</h1><p class="hub-lead">Reúna as capturas e os sinais da sua caçada. Abra o Raio X e consulte a página original para analisar cada oferta.</p><button type="button" class="hub-link" data-import-now>Ir para importação <span aria-hidden="true">↓</span></button></div>
+      <div class="hub-logo-stage"><span class="hub-scan-ring" aria-hidden="true"></span><button type="button" class="hub-target" data-start-hunt aria-controls="huntGuide"><img class="hub-logo" src="assets/afero-logo-transparent.webp" alt="Afero Hub" width="340" height="228"><span class="hub-target-label">Começar uma caçada <span aria-hidden="true">↗</span></span></button><p class="hub-target-note">Conheça o caminho até o seu CSV</p></div>
     </div>
-  </div>
-
-  <div class="wrap">
-    <div class="sec">
-      <!-- Etapas e telemetria vivem sobre o creme, fora da faixa verde. -->
-      <div class="hunt-stage-stack onboarding-flow" aria-label="Etapas da caçada">
-        <button class="hunt-stage-card is-active" type="button" data-hunt-stage="cacar" aria-pressed="true">
-          <span class="hunt-stage-index">01</span><span class="hunt-stage-copy"><strong>Caçar</strong><span>Localize candidatos com o agente local.</span></span><span class="hunt-stage-tag">Terminal</span>
-        </button>
-        <button class="hunt-stage-card" type="button" data-hunt-stage="gerar" aria-pressed="false">
-          <span class="hunt-stage-index">02</span><span class="hunt-stage-copy"><strong>Gerar</strong><span>Consolide os sinais no CSV da caçada.</span></span><span class="hunt-stage-tag">CSV</span>
-        </button>
-        <button class="hunt-stage-card" type="button" data-hunt-stage="importar" aria-pressed="false">
-          <span class="hunt-stage-index">03</span><span class="hunt-stage-copy"><strong>Importar</strong><span>Traga a leitura para o Painel.</span></span><span class="hunt-stage-tag">Painel</span>
-        </button>
-        <button class="hunt-stage-card" type="button" data-hunt-stage="analisar" aria-pressed="false">
-          <span class="hunt-stage-index">04</span><span class="hunt-stage-copy"><strong>Analisar</strong><span>Compare score, recorrência e sinais.</span></span><span class="hunt-stage-tag">Raio X</span>
-        </button>
-        <button class="hunt-stage-card" type="button" data-hunt-stage="modelar" aria-pressed="false">
-          <span class="hunt-stage-index">05</span><span class="hunt-stage-copy"><strong>Modelar</strong><span>Abra Copy e Páginas com contexto.</span></span><span class="hunt-stage-tag">Projeto</span>
-        </button>
+  </section>
+  <section class="hub-import" id="importSection" aria-labelledby="importTitle">
+    <div class="hub-wrap">
+      <div class="hub-import-grid"><div><p class="hub-eyebrow">Abra sua base de pesquisa</p><h2 id="importTitle">Seu painel começa<br>com um CSV.</h2><p>Importe o arquivo da sua caçada para visualizar as ofertas e abrir cada Raio X.</p></div>
+        <div><button type="button" class="hub-upload" id="drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M4 15v5h16v-5"/></svg><strong>Solte seu CSV aqui</strong><small>Ou selecione o arquivo no computador ou celular.</small><span class="hub-upload-cta">Importar CSV <span aria-hidden="true">↗</span></span></button><p id="importStatus" role="status" aria-live="polite">CSV da caçada · ofertas, capturas e sinais</p></div>
       </div>
-
-      <div class="stats telemetry-grid" id="telemetry">
-        <div class="stat"><div class="stat-n" id="kTotal">0</div><div class="stat-l">Ofertas mineradas</div></div>
-        <div class="stat"><div class="stat-n hot" id="kElite">0</div><div class="stat-l">Tier S validado</div></div>
-        <div class="stat"><div class="stat-n clay" id="kRec">0</div><div class="stat-l">Recorrência detectada</div></div>
-        <div class="stat"><div class="stat-n" id="kProjects">0</div><div class="stat-l">Projetos em modelagem</div></div>
-      </div>
+      <input type="file" id="csvInput" accept=".csv,text/csv" hidden>
+      <details id="huntGuide" class="hub-guide"><summary><span><strong>Como fazer uma caçada</strong><small>Orientação opcional para preparar seu primeiro arquivo.</small></span></summary><ol class="hub-steps"><li><span class="hub-step-number">01</span><h3>Caçar</h3><p>Localize candidatos com o agente no computador.</p></li><li><span class="hub-step-number">02</span><h3>Gerar</h3><p>Consolide a captura e os sinais no CSV da caçada.</p></li><li><span class="hub-step-number">03</span><h3>Importar</h3><p>Traga o arquivo para o painel de ofertas.</p></li><li><span class="hub-step-number">04</span><h3>Analisar</h3><p>Abra o Raio X e consulte a página original.</p></li><li><span class="hub-step-number">05</span><h3>Modelar</h3><p>Prepare Copy e Páginas com o contexto da oferta.</p></li></ol><button type="button" class="hub-button" data-go="comece">Ver instruções da caçada <span aria-hidden="true">↗</span></button></details>
     </div>
-
-    <!-- ══ CATÁLOGO · mora dentro do painel, logo abaixo da órbita ══ -->
-    <div class="sec sec-cat" id="catalogoSec">
-      <div class="sec-head">
-        <div>
-          <span class="eyebrow">Painel de ofertas</span>
-          <h2 class="sec-title">Organize o que merece atenção.</h2>
-          <p class="sec-desc">Cada registro reúne a captura da página, os sinais que formaram o score e o acesso à origem. Importe outro CSV quando quiser ampliar ou substituir a leitura atual.</p>
-        </div>
-      </div>
-
-      <aside class="reference-hunt-note" id="referenceHuntNote" role="note" aria-label="Sobre a caçada de referência">
-        <span class="reference-hunt-note-label">Caçada de referência</span>
-        <strong><span id="referenceHuntCount">0</span> ofertas reais</strong>
-        <p id="referenceHuntPeriod">Amostra histórica. Estes registros não fazem parte do seu workspace.</p>
-      </aside>
-
-      <section class="analysis-bench" aria-label="Importação e filtros de análise">
-      <div class="drop" id="drop" role="button" tabindex="0" aria-label="Importar arquivo CSV de ofertas">
-        <svg class="drop-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-          <path d="M12 15V3m0 0L8 7m4-4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4" stroke-linecap="round"/>
-        </svg>
-        <div class="drop-t">Importe <code style="font-family:var(--font-mono);color:var(--clay)">_INFOPRODUTOS_BR.csv</code> ou um CSV SaaS</div>
-        <div class="drop-s">arraste ou clique para escolher · processamento local neste navegador</div>
-      </div>
-      <input type="file" id="csvInput" accept=".csv,text/csv" hidden />
-
-      <div class="stats">
-        <div class="stat"><div class="stat-n" id="cTotal">0</div><div class="stat-l">Ofertas na base</div></div>
-        <div class="stat"><div class="stat-n hot" id="cElite">0</div><div class="stat-l">S Elite</div></div>
-        <div class="stat"><div class="stat-n clay" id="cTop">0</div><div class="stat-l">A Top</div></div>
-        <div class="stat"><div class="stat-n clay" id="cDupla">0</div><div class="stat-l">Sinal duplo · gateway com tracker</div></div>
-      </div>
-
-      <div class="tools">
-        <div class="search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/>
-          </svg>
-          <input type="search" id="q" placeholder="Título, domínio, nicho ou gateway" aria-label="Buscar ofertas por título, domínio, nicho ou gateway" />
-        </div>
-        <div class="toggle" role="group" aria-label="Modo de visualização">
-          <button class="tbtn on" id="vGrid" aria-pressed="true">Grade</button>
-          <button class="tbtn" id="vTable" aria-pressed="false">Tabela</button>
-        </div>
-      </div>
-
+  </section>
+  <section id="catalogoSec" class="hub-catalog" aria-labelledby="catalogTitle" hidden>
+    <div class="hub-wrap">
+      <header class="hub-catalog-head"><div><p class="hub-eyebrow">Painel de ofertas</p><h1 id="catalogTitle">Sua base. Uma visão clara.</h1><p>Inspecione as evidências. Compare a oferta com sua página original.</p></div><span class="hub-base-label" id="baseLabel"></span></header>
+      <div id="workspaceToolbar" class="hub-workspace-bar"><button class="hub-button" id="radarButton" type="button" aria-haspopup="dialog"><span id="radarLabel">Configurar perfil</span></button><label id="catalogScopeField" class="hub-scope" hidden><span>Base exibida</span><select id="catalogScope" aria-label="Base exibida"><option value="hunt">Caçada atual</option><option value="all">Todo o acervo</option></select></label></div>
+      <div class="hub-stats"><div class="stat"><strong class="stat-n" id="cTotal">0</strong><span class="stat-l">Ofertas na base</span></div><div class="stat"><strong class="stat-n" id="cElite">0</strong><span class="stat-l">S Elite</span></div><div class="stat"><strong class="stat-n" id="cTop">0</strong><span class="stat-l">A Top</span></div><div class="stat"><strong class="stat-n" id="cDupla">0</strong><span class="stat-l">Sinal duplo</span></div></div>
+      <div class="hub-bench"><div class="hub-tools"><label class="hub-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="q" type="search" placeholder="Título, domínio, nicho ou gateway" aria-label="Pesquisar ofertas" maxlength="200"></label><button type="button" class="hub-button" id="favoritesFilter" aria-pressed="false">Favoritas</button><div class="toggle" role="group" aria-label="Visualização"><button type="button" class="tbtn on" id="vGrid" aria-pressed="true">Grade</button><button type="button" class="tbtn" id="vTable" aria-pressed="false">Tabela</button></div></div>
       <details class="catalog-filter-panel" id="catalogFilterPanel">
         <summary><strong>Refinar ofertas</strong><span data-filter-count>Filtros</span><i aria-hidden="true"></i></summary>
         <div class="catalog-filter-content">
@@ -600,27 +392,16 @@ Caçada concluída. 127 ofertas encontradas.</pre>
           </div>
         </div>
       </details>
-      </section>
-
-      <div class="grid" id="grid"></div>
-
-      <div class="table-wrap" id="tableWrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Tier</th><th>Score</th><th>Oferta</th><th>Nicho</th>
-              <th>Gateway</th><th>Rastreador</th><th>Vezes</th><th>Raio-x</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
       </div>
+      <div id="grid" class="hub-grid"></div>
+      <div id="tableWrap" class="hub-table-wrap"><table><thead><tr><th>Prioridade</th><th>Score</th><th>Oferta</th><th>Nicho</th><th>Gateway</th><th>Rastreador</th><th>Vezes</th><th>Ações</th></tr></thead><tbody id="tbody"></tbody></table></div>
+      <nav class="hub-pagination" aria-label="Páginas de ofertas"><button type="button" class="hub-button" id="pagePrevious">Anterior</button><span id="pageLabel" role="status" aria-live="polite"></span><button type="button" class="hub-button" id="pageNext">Próxima</button></nav>
     </div>
-  </div>
+  </section>
 </section>
 
 <!-- ══ VISTA: AGENTES ═════════════════════════════════════════ -->
-<section class="view" id="view-agentes">
+<section class="view" id="view-agentes" role="tabpanel" aria-labelledby="tab-agentes">
   <div class="wrap">
     <div class="sec">
       <div class="sec-head">
@@ -727,16 +508,15 @@ Caçada concluída. 127 ofertas encontradas.</pre>
 </section>
 </main>
 
-<div class="wrap">
-  <footer class="foot">
-    <span>afero hub · inteligência de ofertas digitais</span>
-    <span><span id="footStamp">painel local · processamento neste computador</span> · <a href="lp-afero-hub-vendas.html">Conhecer o Afero Hub</a> · <a href="privacidade.html">Privacidade</a></span>
-  </footer>
-</div>
+<footer class="hub-footer"><div class="hub-wrap hub-footer-grid"><div><strong>Afero Hub</strong><p>Pesquisa e análise de ofertas digitais.</p><small>As evidências refletem a coleta disponível e ajudam a orientar sua análise.</small></div><div><strong>Seu workspace</strong><button type="button" class="hub-link" id="footerProfile">Configurar perfil</button><button type="button" class="hub-link" data-guide>Orientação da caçada</button><small id="footStamp">Nenhum CSV importado nesta sessão.</small></div><div><strong>Sobre o Afero</strong><a href="lp-afero-hub-vendas.html">Conhecer o Afero Hub</a><a href="privacidade.html">Privacidade</a><button type="button" class="hub-link" data-marketing-settings hidden>Preferências de cookies</button><small>Dados da sua base seguem as permissões do workspace.</small></div></div></footer>
+<aside class="marketing-consent" aria-label="Preferências de cookies" data-marketing-consent hidden>
+  <p>Com sua autorização, usamos cookies opcionais para medir visitas à entrada do Hub e à página de vendas. Os dados da sua conta e das suas ofertas não são enviados nesses eventos. Você pode recusar e continuar usando o Hub. <a href="privacidade.html">Saiba como seus dados são usados.</a></p>
+  <div class="marketing-consent__actions"><button type="button" data-marketing-reject>Recusar opcionais</button><button type="button" data-marketing-accept>Aceitar opcionais</button></div>
+</aside>
 
 <!-- ══ DRAWER DE RAIO-X ═══════════════════════════════════════ -->
 <div class="scrim" id="scrim"></div>
-<aside id="xray" role="dialog" aria-modal="true" aria-labelledby="xrTitle" aria-hidden="true">
+<aside class="hub-xray" inert id="xray" role="dialog" aria-modal="true" aria-labelledby="xrTitle" aria-hidden="true">
   <div class="xr-head">
     <div>
       <div class="xr-kind" id="xrKind">Raio-x da oferta</div>
@@ -753,9 +533,10 @@ Caçada concluída. 127 ofertas encontradas.</pre>
       <button class="btn" id="xrPages" type="button" disabled title="Disponível depois que a copy desta oferta for aprovada">Gerar Estrutura de Página</button>
     </div>
     <div class="xr-actions-util">
-      <button class="xr-icon-btn" id="xrSave" type="button" aria-pressed="false" aria-label="Salvar oferta no workspace">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1z"/></svg>
+      <button class="xr-icon-btn" id="xrSave" type="button" aria-pressed="false" aria-label="Favoritar oferta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"/></svg>
       </button>
+      <button class="xr-icon-btn" id="xrShare" type="button" aria-label="Compartilhar oferta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 13v8h14v-8"/></svg></button>
       <button class="xr-icon-btn" id="xrDiscard" type="button" aria-label="Descartar oferta">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
@@ -825,10 +606,11 @@ Caçada concluída. 127 ofertas encontradas.</pre>
     <h2 id="authTitle">Entre para guardar seu acervo</h2>
     <p class="cloud-copy" id="authDescription">Use sua conta para salvar decisões e acessar workspaces.</p>
     <form id="authForm" novalidate>
-      <label class="cloud-field" id="authNameField"><span>Nome</span><input id="authName" name="name" autocomplete="name" maxlength="120"></label>
-      <label class="cloud-field"><span>E-mail</span><input id="authEmail" name="email" type="email" autocomplete="email" required></label>
-      <label class="cloud-field" id="authPasswordField"><span>Senha</span><input id="authPassword" name="password" type="password" autocomplete="current-password" minlength="12" required></label>
+      <label class="cloud-field" id="authNameField" hidden><span>Nome</span><input id="authName" name="name" autocomplete="name" maxlength="120" disabled></label>
+      <label class="cloud-field" id="authEmailField"><span>E-mail</span><input id="authEmail" name="email" type="email" autocomplete="email" maxlength="320" required></label>
+      <label class="cloud-field" id="authPasswordField"><span>Senha</span><input id="authPassword" name="password" type="password" autocomplete="current-password" minlength="1" required></label>
       <p class="cloud-error" id="cloudErrorRef" role="status" aria-live="polite"></p>
+      <div id="authChallenge" aria-live="polite" hidden></div>
       <button class="cloud-primary" id="authSubmit" type="submit">Entrar</button>
     </form>
     <button class="cloud-google" id="authGoogle" type="button">Continuar com Google</button>
@@ -847,10 +629,10 @@ Caçada concluída. 127 ofertas encontradas.</pre>
      devolvem a contagem de convergência ao vivo; a última calibra e
      entrega o dossiê. Todo número visível é calculado do acervo em
      memória, nunca escrito na marcação. ══════════════════════════════ -->
-<div class="onboarding-modal" id="onboardingModal" role="dialog" aria-modal="true" aria-labelledby="obTitle" aria-hidden="true">
+<div class="onboarding-modal" inert id="onboardingModal" role="dialog" aria-modal="true" aria-labelledby="obTitle" aria-hidden="true">
   <div class="onboarding-modal-card">
     <div class="ob-progress-bar" id="obProgressBar" role="presentation">
-      <i data-seg="1"></i><i data-seg="2"></i><i data-seg="3"></i><i data-seg="4"></i><i data-seg="5"></i>
+      <i data-seg="1"></i><i data-seg="2"></i><i data-seg="3"></i><i data-seg="4"></i>
     </div>
     <div class="ob-header">
       <div class="ob-step-indicator" id="obStepIndicator">ETAPA 01 DE 04</div>
@@ -1004,7 +786,7 @@ Caçada concluída. 127 ofertas encontradas.</pre>
 
         <div class="ob-actions">
           <button class="btn ob-back-btn" type="button" data-ob-back="3">Voltar</button>
-          <button class="btn hot ob-next-btn" type="button" id="obFinishBtn">Gerar dossiê</button>
+          <button class="btn hot ob-next-btn" type="button" id="obFinishBtn">Concluir perfil</button>
         </div>
       </div>
 
@@ -1029,7 +811,7 @@ Caçada concluída. 127 ofertas encontradas.</pre>
 
           <div class="ob-actions">
             <button class="btn ob-back-btn" type="button" data-ob-back="4">Recalibrar</button>
-            <button class="btn hot" type="button" id="obEnterHubBtn">Abrir catálogo</button>
+            <button class="btn hot" type="button" id="obEnterHubBtn">Ir para importação</button>
           </div>
         </div>
       </div>
@@ -1039,40 +821,21 @@ Caçada concluída. 127 ofertas encontradas.</pre>
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<script src="vendor/three.min.js"></script>
-<script src="vendor/gsap.min.js"></script>
-<script src="vendor/ScrollTrigger.min.js"></script>
-<script src="afero-live-map-shelf.js?v=2"></script>
-<script src="editorial-motion.js?v=2"></script>
+<script src="editorial-motion.js?v=3"></script>
+<script src="afero-csv.js?v=2"></script>
 <script src="vendor/supabase.js"></script>
-<script src="afero-cloud-config.js?v=2"></script>
-<script src="afero-cloud.js?v=3"></script>
+<script src="afero-cloud-config.js?v=3"></script>
+<script src="afero-auth-challenge.js?v=1"></script>
+<script src="afero-cloud.js?v=7"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════
    AFERO HUB · MOTOR LOCAL
-   Tudo roda em memória, no navegador. Nenhum dado sai da máquina.
+   CSV local em memória; importações na conta usam o workspace autorizado.
    ══════════════════════════════════════════════════════════════════ */
 (function () {
 'use strict';
 
-/* ── Base de demonstração: recorte real das caçadas já rodadas.
-      Campos iguais aos do _INFOPRODUTOS_BR.csv, com a captura do urlscan. ── */
-var BASE = [{"t":"Desafio Jejum 5 em 7 · Dr. Renan Botelho","d":"desafiodrrenanbotelho.com.br","s":11,"p":"S","n":"saude_emagrecimento","q":"gateway_hotmart","u":"https://descubra-idade-metabolica.desafiodrrenanbotelho.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Desafio+Jejum+5+em+7&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019f58e5-749a-717e-b37b-9f3990dc7b99.png","pv":"https://urlscan.io/result/019f58e5-749a-717e-b37b-9f3990dc7b99/","v":1,"vd":"","dt":"2026-07-13","ida":"0","lang":"pt","sd":0,"cn":0},{"t":"Ansiedade Sob Controle · Método com 95% de Eficácia","d":"ansiedadesobcontrole.com.br","s":9,"p":"S","n":"saude_bem_estar","q":"gateway_hotmart","u":"https://ansiedadesobcontrole.com.br/","a":"","sh":"https://urlscan.io/screenshots/019f1bf5-1767-7329-9340-e3b8f6b9ccd7.png","pv":"https://urlscan.io/result/019f1bf5-1767-7329-9340-e3b8f6b9ccd7/","v":1,"vd":"","dt":"2026-07-01","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"E-Book Grátis · Desenvolvedor Full-Stack","d":"pacotefullstack.com","s":9,"p":"S","n":"outros","q":"gateway_hotmart","u":"https://pacotefullstack.com/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=E-Book+Gr%C3%A1tis&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019fab3d-2a06-73f8-8359-0a6b637d8bcc.png","pv":"https://urlscan.io/result/019fab3d-2a06-73f8-8359-0a6b637d8bcc/","v":1,"vd":"","dt":"2026-07-29","ida":"0","lang":"pt","sd":0,"cn":0},{"t":"Fórmula Mentalidade Vencedora","d":"formulamentevencedora.com","s":9,"p":"S","n":"desenvolvimento_pessoal","q":"gateway_monetizze","u":"https://formulamentevencedora.com/?mcr=ATZ20801259","a":"","sh":"https://urlscan.io/screenshots/019f2b6f-8a3e-7639-85c0-ce42aa0a0414.png","pv":"https://urlscan.io/result/019f2b6f-8a3e-7639-85c0-ce42aa0a0414/","v":1,"vd":"","dt":"2026-07-04","ida":"6","lang":"pt","sd":0,"cn":0},{"t":"Lucre com a Shopee · Ganhe Dinheiro Todos os Dias","d":"lucrenasho.com","s":9,"p":"S","n":"renda_extra","q":"gateway_cakto","u":"https://www.lucrenasho.com/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Lucre+com+a+Shoppe&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019f527c-c789-717a-993a-4b5e9d17b6bd.png","pv":"https://urlscan.io/result/019f527c-c789-717a-993a-4b5e9d17b6bd/","v":1,"vd":"","dt":"2026-07-11","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"Manual do Sucesso do Cliente · Sessão 01 Grátis","d":"unlockingrevops.com.br","s":9,"p":"S","n":"outros","q":"gateway_eduzz","u":"https://www.paredeperderclientes.unlockingrevops.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Manual+do+Sucesso+do+Cliente&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019f9a1b-7b1e-752c-8025-2970e75d009b.png","pv":"https://urlscan.io/result/019f9a1b-7b1e-752c-8025-2970e75d009b/","v":1,"vd":"","dt":"2026-07-25","ida":"4","lang":"pt","sd":0,"cn":0},{"t":"Protocolo Manchas Sob Controle","d":"manchassobcontrole.com.br","s":9,"p":"S","n":"saude_beleza","q":"gateway_hotmart","u":"https://manchassobcontrole.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Protocolo+Manchas+Sob+Controle&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/01a02069-d112-712c-9313-cc59e6c06707.png","pv":"https://urlscan.io/result/01a02069-d112-712c-9313-cc59e6c06707/","v":1,"vd":"","dt":"2026-08-20","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Última Chance · Carteira Black com Desconto","d":"thaycamilla.com","s":9,"p":"S","n":"outros","q":"gateway_kirvano","u":"https://down2sofia.thaycamilla.com/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=%C3%9Altima+Chance&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019ffa2c-3d85-76a0-aa87-d94374de437b.png","pv":"https://urlscan.io/result/019ffa2c-3d85-76a0-aa87-d94374de437b/","v":1,"vd":"","dt":"2026-08-13","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Aprendendo o ABC · Acelere o Aprendizado do Seu Pequeno","d":"aprendendooabc.com.br","s":7,"p":"A","n":"concurso_educacao","q":"gateway_hotmart","u":"https://aprendendooabc.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=ACELERE+O+APRENDIZADO+DO+SEU+PEQUENO&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019ffab6-1e30-72be-89c8-9305ed8a747d.png","pv":"https://urlscan.io/result/019ffab6-1e30-72be-89c8-9305ed8a747d/","v":1,"vd":"","dt":"2026-08-13","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Curso de Geladinho Gourmet · Compilado de Receitas","d":"geladinhodesucesso.com.br","s":7,"p":"A","n":"concurso_educacao","q":"gateway_hotmart","u":"https://geladinhodesucesso.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=CURSO+DE+GELADINHO+GOURMET&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019fa4db-12e1-70d5-b9a5-1ad07d171d3c.png","pv":"https://urlscan.io/result/019fa4db-12e1-70d5-b9a5-1ad07d171d3c/","v":1,"vd":"","dt":"2026-07-27","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"Club Riqueza Digital","d":"clubriquezadigital.com","s":7,"p":"A","n":"outros","q":"gateway_hotmart","u":"https://www.clubriquezadigital.com/paginadeventa?ref=L105682768G","a":"","sh":"https://urlscan.io/screenshots/019f3de8-dcee-73df-a97c-2627417659cf.png","pv":"https://urlscan.io/result/019f3de8-dcee-73df-a97c-2627417659cf/","v":1,"vd":"","dt":"2026-07-07","ida":"3","lang":"pt","sd":0,"cn":0},{"t":"Controladoria Prática","d":"controladoriapratica.com.br","s":7,"p":"A","n":"digital_afiliado","q":"gateway_hotmart","u":"https://www.controladoriapratica.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Controladoria&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019fa23f-d7f2-7677-824d-485923327c2b.png","pv":"https://urlscan.io/result/019fa23f-d7f2-7677-824d-485923327c2b/","v":1,"vd":"","dt":"2026-07-27","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"Controle do Diabetes: Dicas e Receitas Saudáveis","d":"controletotaldodiabetes.com.br","s":7,"p":"A","n":"saude_emagrecimento","q":"gateway_hotmart","u":"https://controletotaldodiabetes.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Controle+do+Diabetes&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/01a01e1d-b4db-703d-9a28-e8e4e6e07a22.png","pv":"https://urlscan.io/result/01a01e1d-b4db-703d-9a28-e8e4e6e07a22/","v":1,"vd":"","dt":"2026-08-20","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Copy Sniper","d":"copysniper.com.br","s":7,"p":"A","n":"outros","q":"gateway_hotmart","u":"https://copysniper.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Copy+Sniper&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019fae1f-697f-774e-90ae-33bf12dda8f1.png","pv":"https://urlscan.io/result/019fae1f-697f-774e-90ae-33bf12dda8f1/","v":1,"vd":"","dt":"2026-07-29","ida":"0","lang":"pt","sd":0,"cn":0},{"t":"Groomer de Sucesso · Curso de Banho e Tosa Online","d":"groomerdesucesso.com.br","s":7,"p":"A","n":"concurso_educacao","q":"gateway_hotmart","u":"https://groomerdesucesso.com.br/","a":"","sh":"https://urlscan.io/screenshots/019f1eb4-150c-7448-a3cb-050d7f26109e.png","pv":"https://urlscan.io/result/019f1eb4-150c-7448-a3cb-050d7f26109e/","v":1,"vd":"","dt":"2026-07-01","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"Diabetes: Você no Controle","d":"diabetesvocenocontrole.com.br","s":7,"p":"A","n":"saude_emagrecimento","q":"gateway_hotmart","u":"https://diabetesvocenocontrole.com.br/","a":"","sh":"https://urlscan.io/screenshots/019f2813-faf8-767d-8de7-81f3a4093cd2.png","pv":"https://urlscan.io/result/019f2813-faf8-767d-8de7-81f3a4093cd2/","v":1,"vd":"","dt":"2026-07-03","ida":"0","lang":"pt","sd":0,"cn":0},{"t":"Contato.io · Automação em Marketing Digital","d":"contato.io","s":7,"p":"A","n":"digital_afiliado","q":"gateway_hotmart","u":"https://contato.io/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Esse+site+%C3%A9+hospedado+pelo+leadlovers&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/01a01f8d-8cbc-7259-98d3-c8f2c3ea6a3f.png","pv":"https://urlscan.io/result/01a01f8d-8cbc-7259-98d3-c8f2c3ea6a3f/","v":1,"vd":"","dt":"2026-08-20","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Ganhe Renda Extra com Buquês de Balão","d":"maisseguidoresmaisvendas.com","s":7,"p":"A","n":"renda_extra","q":"gateway_hotmart","u":"https://maisseguidoresmaisvendas.com/","a":"","sh":"https://urlscan.io/screenshots/019f4771-4545-71aa-8e59-3f479ce432bc.png","pv":"https://urlscan.io/result/019f4771-4545-71aa-8e59-3f479ce432bc/","v":1,"vd":"","dt":"2026-07-09","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Investidor de Sucesso","d":"oinvestidordesucesso.com","s":7,"p":"A","n":"financas_investimento","q":"gateway_hotmart","u":"https://oinvestidordesucesso.com/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Investidor+De+Sucesso&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019ff821-af3c-7497-a1e6-77f8f23096af.png","pv":"https://urlscan.io/result/019ff821-af3c-7497-a1e6-77f8f23096af/","v":1,"vd":"","dt":"2026-08-12","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"Integrações Sistêmicas · Raízes Fortes, Emoções Livres","d":"nayaraoliveiraterapeuta.com.br","s":7,"p":"A","n":"financas_investimento","q":"gateway_hotmart","u":"https://raizesfortesemocoeslivres.nayaraoliveiraterapeuta.com.br/en/club/raizes-fortes-emocoes-livres?signinSilentCallback=login_required","a":"","sh":"https://urlscan.io/screenshots/019f1b1e-d678-745f-9086-3750eb19ccf4.png","pv":"https://urlscan.io/result/019f1b1e-d678-745f-9086-3750eb19ccf4/","v":1,"vd":"","dt":"2026-07-01","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"Federal Vestibulares · Plataforma de Membros","d":"federalvestibulares.com.br","s":7,"p":"A","n":"concurso_educacao","q":"gateway_kiwify","u":"https://www.membros.federalvestibulares.com.br/","a":"","sh":"https://urlscan.io/screenshots/019f0af5-9b4e-7348-907f-b9240a85e9a3.png","pv":"https://urlscan.io/result/019f0af5-9b4e-7348-907f-b9240a85e9a3/","v":1,"vd":"","dt":"2026-06-27","ida":"6","lang":"pt","sd":0,"cn":0},{"t":"Missão de Amor e Fé em Moçambique","d":"soldoamor.com.br","s":7,"p":"A","n":"relacionamento","q":"gateway_hotmart","u":"https://soldoamor.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Miss%C3%A3o+de+Amor+e+F%C3%A9+em+Mo%C3%A7ambique&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019fac5f-5b94-76a0-bacb-09a25c5b2678.png","pv":"https://urlscan.io/result/019fac5f-5b94-76a0-bacb-09a25c5b2678/","v":1,"vd":"","dt":"2026-07-29","ida":"0","lang":"pt","sd":0,"cn":0},{"t":"Oferta Especial · Nuevo Testamento Ilustrado","d":"cantinhodetudo.online","s":7,"p":"A","n":"espiritualidade","q":"combo_hotmart_utmify","u":"https://nuevotestamento.cantinhodetudo.online/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Especial&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/01a00d7a-b382-72e5-a0aa-958e8df64c60.png","pv":"https://urlscan.io/result/01a00d7a-b382-72e5-a0aa-958e8df64c60/","v":1,"vd":"2026-08-21","dt":"2026-08-17","ida":"4","lang":"es","sd":1,"cn":0},{"t":"Aceleração LZT · Acelere 6 Meses em 45 Dias","d":"raphacunha.com.br","s":7,"p":"A","n":"saude_beleza","q":"gateway_hotmart","u":"https://raphacunha.com.br/aceleracao-lzt/upsell","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Parab%C3%A9ns%21+Acelere+6+meses+em+45+dias&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019ff9a2-9ec0-778e-9572-d6298d70ef08.png","pv":"https://urlscan.io/result/019ff9a2-9ec0-778e-9572-d6298d70ef08/","v":1,"vd":"","dt":"2026-08-13","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Programa Investidor Uber 3.0","d":"investidoruber.com.br","s":7,"p":"A","n":"financas_investimento","q":"gateway_hotmart","u":"https://investidoruber.com.br/","a":"","sh":"https://urlscan.io/screenshots/019f254b-e4ef-7521-95fb-4b57feca6b0e.png","pv":"https://urlscan.io/result/019f254b-e4ef-7521-95fb-4b57feca6b0e/","v":1,"vd":"","dt":"2026-07-03","ida":"0","lang":"pt","sd":0,"cn":0},{"t":"Cardápio da Fertilidade","d":"cardapiodafertilidade.com.br","s":7,"p":"A","n":"outros","q":"gateway_eduzz","u":"https://www.cardapiodafertilidade.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=P%C3%A1gina+de+Vendas&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/01a02044-d0c4-7567-ae08-4014eb00e0d9.png","pv":"https://urlscan.io/result/01a02044-d0c4-7567-ae08-4014eb00e0d9/","v":1,"vd":"","dt":"2026-08-20","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Webinar Rentas 3.0 · El Economista Youtuber","d":"economistayoutuber.com","s":7,"p":"A","n":"outros","q":"gateway_hotmart","u":"https://rentas.economistayoutuber.com/registro-webinar/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Registro+Webinar+Rentas+3.0&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019ffee4-8cd4-77ee-8508-4bb0fc92c570.png","pv":"https://urlscan.io/result/019ffee4-8cd4-77ee-8508-4bb0fc92c570/","v":1,"vd":"","dt":"2026-08-14","ida":"0","lang":"pt","sd":0,"cn":0},{"t":"Vortigo · Tecnologia para Transformar Desafios em Resultados","d":"vortigo.digital","s":7,"p":"A","n":"digital_afiliado","q":"tracker_rdstation","u":"https://vortigo.digital/","a":"","sh":"https://urlscan.io/screenshots/019f46cd-0380-713f-804f-634e3fd9adcd.png","pv":"https://urlscan.io/result/019f46cd-0380-713f-804f-634e3fd9adcd/","v":1,"vd":"","dt":"2026-07-09","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Carreira Sem Frescuras","d":"carreirasemfrescuras.com","s":7,"p":"A","n":"saude_bem_estar","q":"gateway_hotmart","u":"https://click.carreirasemfrescuras.com/","a":"","sh":"https://urlscan.io/screenshots/019f1a4b-9873-73ef-81a6-43d8fed012ec.png","pv":"https://urlscan.io/result/019f1a4b-9873-73ef-81a6-43d8fed012ec/","v":1,"vd":"","dt":"2026-06-30","ida":"3","lang":"pt","sd":0,"cn":0},{"t":"Álvaro Amorim Engenharia","d":"alvaroamorimeng.com.br","s":7,"p":"A","n":"relacionamento","q":"gateway_hotmart","u":"https://click.alvaroamorimeng.com.br/","a":"","sh":"https://urlscan.io/screenshots/019f1567-d055-7708-9c2b-a474b921a74e.png","pv":"https://urlscan.io/result/019f1567-d055-7708-9c2b-a474b921a74e/","v":1,"vd":"","dt":"2026-06-29","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"Cursos Cíntia Cunha","d":"cursoscintiacunha.com.br","s":7,"p":"A","n":"saude_beleza","q":"gateway_hotmart","u":"https://click.cursoscintiacunha.com.br/","a":"","sh":"https://urlscan.io/screenshots/019f1565-82b5-7069-bc70-43a593e87764.png","pv":"https://urlscan.io/result/019f1565-82b5-7069-bc70-43a593e87764/","v":1,"vd":"","dt":"2026-06-29","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"Handebol em Foco","d":"handebolemfoco.com.br","s":7,"p":"A","n":"desenvolvimento_pessoal","q":"gateway_hotmart","u":"https://click.handebolemfoco.com.br/","a":"","sh":"https://urlscan.io/screenshots/019f1560-5de6-759a-b893-606ee057180e.png","pv":"https://urlscan.io/result/019f1560-5de6-759a-b893-606ee057180e/","v":1,"vd":"","dt":"2026-06-29","ida":"2","lang":"pt","sd":0,"cn":0},{"t":"Álbum de Figurinhas Copa 2026 · Avaliações Prontas para Imprimir","d":"aprenderbrincandopro.com","s":7,"p":"A","n":"financas_investimento","q":"gateway_cakto","u":"https://aprenderbrincandopro.com/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=%C3%81lbum+de+Figurinhas+Copa+2026&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019feb03-2745-729a-9be8-b5600c391c2a.png","pv":"https://urlscan.io/result/019feb03-2745-729a-9be8-b5600c391c2a/","v":1,"vd":"","dt":"2026-08-10","ida":"4","lang":"pt","sd":0,"cn":0},{"t":"Código Milionário IA · Vídeos Realistas com IA","d":"veo3code.com","s":6,"p":"A","n":"digital_afiliado","q":"gateway_hotmart","u":"https://veo3code.com/","a":"","sh":"https://urlscan.io/screenshots/019f4687-435c-754c-988d-7f0f732cc548.png","pv":"https://urlscan.io/result/019f4687-435c-754c-988d-7f0f732cc548/","v":1,"vd":"","dt":"2026-07-09","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Fórmula Negócio Online 5.0 · Negócio Online Lucrativo","d":"formulanegocioonline.com","s":6,"p":"A","n":"renda_extra","q":"gateway_hotmart","u":"https://formulanegocioonline.com/?ref=B91935407K","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Formula+Negocio+Online&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019ffb03-af5e-7048-b796-23180fc8990f.png","pv":"https://urlscan.io/result/019ffb03-af5e-7048-b796-23180fc8990f/","v":1,"vd":"","dt":"2026-08-13","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Guia sobre Toxina Botulínica para Fisioterapeutas","d":"cienciaeestetica.com.br","s":6,"p":"A","n":"saude_beleza","q":"gateway_hotmart","u":"https://cienciaeestetica.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Guia+sobre+Toxina+Botul%C3%ADnica+para+Fisioterapeutas&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019fad67-5c53-7005-aa21-dd9efd05f12a.png","pv":"https://urlscan.io/result/019fad67-5c53-7005-aa21-dd9efd05f12a/","v":1,"vd":"","dt":"2026-07-29","ida":"0","lang":"pt","sd":0,"cn":0},{"t":"Protocolo Hígado Limpio · Menús para un Hígado Sano","d":"protocolohigadolimpio.online","s":5,"p":"B","n":"saude_emagrecimento","q":"tracker_utmify","u":"https://protocolohigadolimpio.online/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Dieta+para+el+h%C3%ADgado&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019f55a5-050e-7319-ac81-29fffb9a9761.png","pv":"https://urlscan.io/result/019f55a5-050e-7319-ac81-29fffb9a9761/","v":1,"vd":"","dt":"2026-07-12","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Instagram Turbinado · Passo a Passo para Publicações","d":"envokmarketing.com.br","s":5,"p":"B","n":"financas_investimento","q":"tracker_utmify","u":"https://ebookinstagramturbinado.envokmarketing.com.br/","a":"","sh":"https://urlscan.io/screenshots/019f48ec-45fb-76df-9a86-31e0d9b93d4c.png","pv":"https://urlscan.io/result/019f48ec-45fb-76df-9a86-31e0d9b93d4c/","v":1,"vd":"","dt":"2026-07-09","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"Kit Consultório Lúdico · Método Sessão com Direção","d":"consultorioludico.site","s":5,"p":"B","n":"concurso_educacao","q":"tracker_utmify","u":"https://consultorioludico.site/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=Kit+Consult%C3%B3rio+L%C3%BAdico&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/01a02130-1577-71ff-adb0-25cde37e4049.png","pv":"https://urlscan.io/result/01a02130-1577-71ff-adb0-25cde37e4049/","v":2,"vd":"2026-07-09","dt":"2026-08-20","ida":"1","lang":"pt","sd":0,"cn":0},{"t":"MM Licitações · Assessoria e Resultados em Licitações","d":"mmlicitacoes.com.br","s":5,"p":"B","n":"financas_investimento","q":"tracker_rdstation","u":"https://www.mmlicitacoes.com.br/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=MM+Licita%C3%A7%C3%B5es&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019fabaf-03e1-70c9-b236-83d82776da53.png","pv":"https://urlscan.io/result/019fabaf-03e1-70c9-b236-83d82776da53/","v":1,"vd":"","dt":"2026-07-29","ida":"0","lang":"pt","sd":0,"cn":0},{"t":"Método Corte Perfeito · Faculdade da Beleza","d":"faculdadedabeleza.com","s":5,"p":"B","n":"saude_beleza","q":"tracker_utmify","u":"https://corte.faculdadedabeleza.com/","a":"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BR&q=M%C3%A9todo+Corte+Perfeito&search_type=keyword_unordered&media_type=all","sh":"https://urlscan.io/screenshots/019ffde9-7458-740c-908c-532ac9e315c8.png","pv":"https://urlscan.io/result/019ffde9-7458-740c-908c-532ac9e315c8/","v":1,"vd":"","dt":"2026-08-14","ida":"0","lang":"pt","sd":0,"cn":0}];
 
-/* A entrada do produto usa um recorte pequeno, datado e verificável da
-   base acima. O restante continua disponível apenas como fonte histórica
-   do projeto e nunca é injetado no workspace de uma conta. */
-var REFERENCE_HUNT = Object.freeze({
-  period: 'capturas de 13 a 20 ago 2026',
-  domains: Object.freeze([
-    'manchassobcontrole.com.br',
-    'thaycamilla.com',
-    'controletotaldodiabetes.com.br',
-    'cantinhodetudo.online',
-    'consultorioludico.site',
-    'faculdadedabeleza.com'
-  ])
-});
 
 var TITULO_DOMINIO = {
   'carreirasemfrescuras.com': 'Carreira Sem Frescuras',
@@ -1109,12 +872,7 @@ function limparTituloOferta(titulo, dominio) {
   return t.slice(0, 110);
 }
 
-function ofertasDaCacadaReferencia() {
-  return REFERENCE_HUNT.domains.map(function (domain) {
-    var original = BASE.filter(function (oferta) { return oferta.d === domain; })[0];
-    return original ? Object.assign({}, original, { t: limparTituloOferta(original.t, original.d), p: tierDe(original.s) }) : null;
-  }).filter(Boolean);
-}
+
 
 /* ── Dicionários ─────────────────────────────────────────────── */
 var NICHO_NOME = {
@@ -1141,9 +899,9 @@ var MARCA = {
 var TIER_NOME = { S: 'S Elite', A: 'A Top', B: 'B Alta', C: 'C Média', D: 'D Baixa' };
 
 var ROTEIRO_XRAY = [
-  { t: 'Identifique a promessa central', d: 'Leia a headline e o vídeo com atenção: qual resultado exato o concorrente promete, e qual gancho ele usa pra prender a atenção nos primeiros segundos?' },
-  { t: 'Encontre a falha de comunicação', d: 'Procure o ângulo esquecido: prova social fraca, objeção não respondida, oferta confusa. É aí que a sua versão ganha.' },
-  { t: 'Acione a esteira de agentes', d: 'Com a leitura pronta, mande pro Copywriter estruturar o argumento e pro Páginas construir a experiência.' }
+  { t: 'Identifique a promessa central', d: 'Abra a página original. Leia a headline e, se houver, assista ao início do vídeo. Que resultado concreto é prometido? Qual gancho prende a atenção? Registre o que está realmente visível.' },
+  { t: 'Encontre uma brecha de comunicação', d: 'Observe se a prova social é fraca, se alguma objeção fica sem resposta ou se preço, entrega e chamada para ação estão confusos. Confirme na página original: algo ausente na captura pode aparecer em outra etapa.' },
+  { t: 'Defina o ângulo da sua remodelação', d: 'Escolha uma diferença útil para o público que você quer atender. Decida o que pode mudar na promessa, no mecanismo ou na oferta e quais evidências você consegue apresentar. Leve esse contexto ao Copywriter e ao Páginas.' }
 ];
 
 /* Palavras por nicho, espelhando o classificador do cacador_ofertas.py.
@@ -1176,9 +934,13 @@ function nichoNome(n) { return NICHO_NOME[n] || cap(String(n || 'outros').replac
 function urlDe(v) {
   if (!v) return '';
   var m = String(v).match(/=HYPERLINK\(\s*"([^"]+)"/i);
-  if (m) return m[1];
-  v = String(v).trim();
-  return v.indexOf('http') === 0 ? v : '';
+  return urlHttpSegura(m ? m[1] : v);
+}
+function urlHttpSegura(value) {
+  try {
+    var url = new URL(String(value || '').trim());
+    return /^(https?:)$/.test(url.protocol) && !url.username && !url.password ? url.href : '';
+  } catch (_) { return ''; }
 }
 
 function tierDe(score) {
@@ -1231,9 +993,9 @@ function sinalAtivo(sinais, nome) {
 function mapearOfertaCloud(row) {
   var sinais = row && row.signals && typeof row.signals === 'object' ? row.signals : {};
   return {
-    id: row.id, workspaceId: row.workspace_id, t: limparTituloOferta(row.title, row.domain), d: row.domain, s: row.score,
-    p: row.priority || tierDe(row.score), n: row.niche, q: sinais.query || '', u: row.url_final,
-    a: row.ads_url || '', sh: row.screenshot_url || '', pv: row.preview_url || '',
+    id: row.id, fingerprint: row.fingerprint, workspaceId: row.workspace_id, t: limparTituloOferta(row.title, row.domain), d: row.domain, s: row.score,
+    p: /^[SABC]$/.test(row.priority) ? row.priority : tierDe(row.score), n: row.niche, q: sinais.query || '', u: urlHttpSegura(row.url_final),
+    a: urlHttpSegura(row.ads_url), sh: urlHttpSegura(row.screenshot_url), pv: urlHttpSegura(row.preview_url),
     v: row.recurrence_count, vd: row.first_seen_at, dt: row.last_seen_at, lang: sinais.language || '',
     sd: sinalAtivo(sinais, 'double_signal') ? 1 : 0, cn: sinalAtivo(sinais, 'new_builder') ? 1 : 0,
     signals: sinais, status: row.status, userNotes: row.user_notes || '', tags: Array.isArray(row.tags) ? row.tags : []
@@ -1241,100 +1003,18 @@ function mapearOfertaCloud(row) {
 }
 
 /* ── Parser de CSV tolerante: aspas, vírgula interna e quebra de linha ── */
-function parseCSV(txt) {
-  txt = String(txt).replace(/^﻿/, '');
-  var linhas = [], campo = '', linha = [], dentro = false;
-  for (var i = 0; i < txt.length; i++) {
-    var c = txt[i];
-    if (dentro) {
-      if (c === '"') {
-        if (txt[i + 1] === '"') { campo += '"'; i++; }
-        else dentro = false;
-      } else campo += c;
-    } else if (c === '"') {
-      dentro = true;
-    } else if (c === ',') {
-      linha.push(campo); campo = '';
-    } else if (c === '\n' || c === '\r') {
-      if (c === '\r' && txt[i + 1] === '\n') i++;
-      linha.push(campo); campo = '';
-      if (linha.length > 1 || linha[0] !== '') linhas.push(linha);
-      linha = [];
-    } else campo += c;
-  }
-  if (campo !== '' || linha.length) { linha.push(campo); linhas.push(linha); }
-  if (!linhas.length) return [];
-
-  var head = linhas[0].map(function (h) { return String(h).trim().toLowerCase(); });
-  var out = [];
-  for (var r = 1; r < linhas.length; r++) {
-    var obj = {};
-    for (var c2 = 0; c2 < head.length; c2++) obj[head[c2]] = linhas[r][c2] || '';
-    if (obj.url || obj.dominio || obj.titulo) out.push(obj);
-  }
-  return out;
-}
-
 /* Normaliza a linha do CSV para o formato que a interface consome.
    O cabeçalho mudou entre as versões do script, então cada coluna
    tem reserva: nicho, idioma e vezes_vista só existem no formato novo. */
-function normalizar(row) {
-  var score = parseInt(row.score, 10);
-  if (isNaN(score)) score = 0;
-  var titulo = limparTituloOferta(row.titulo, row.dominio);
-  var nicho = String(row.nicho || '').trim();
-  if (!nicho || nicho === 'outros') nicho = nichoDe(titulo + ' ' + (row.dominio || ''));
-  var query = String(row.query || '');
-  var sim = function (valor) { return /^(sim|true|1|yes)$/i.test(String(valor || '').trim()); };
-  /* Sinal duplo sai da query, nunca do campo motivos: nas caçadas anteriores a
-     agosto de 2026 o motivo era gravado por nome de query e marcava oferta que
-     só tinha gateway. Só a query combo_* prova gateway e rastreador na mesma página. */
-  var queryTemCombo = query.toLowerCase().split('|').some(function (parte) { return parte.trim().indexOf('combo_') === 0; });
-  var duplo = sim(row.sinal_duplo) || queryTemCombo ? 1 : 0;
-  /* O Caçador grava os sinais como
-     colunas próprias. Sem montar signals aqui, o import local descartava todas
-     elas e os filtros de validação enxergavam só o que dava para deduzir da
-     query, um recorte muito menor que o dado real do arquivo. */
-  var vezes = parseInt(row.vezes_vista, 10) || 1;
-  var sinais = {
-    pixel_ads: sim(row.pixel_ads),
-    vsl_player: sim(row.vsl_player),
-    funnel_quiz: sim(row.funil_quiz),
-    billing_tech_detected: sim(row.billing_tech_detected) || sim(row.mrr),
-    subscription_verified: sim(row.subscription_verified),
-    escalado: sim(row.escalado),
-    double_signal: !!duplo,
-    new_builder: sim(row.construtor_novo),
-    novel: sim(row.inedita),
-    group: String(row.grupo || '').trim(),
-    times_seen: vezes,
-    language: String(row.idioma || ''),
-    query: query
-  };
-  return {
-    t: titulo.slice(0, 110),
-    d: String(row.dominio || '').trim(),
-    s: score,
-    p: tierDe(score),
-    n: nicho,
-    q: query,
-    u: String(row.url || '').trim() || urlDe(row.oferta),
-    a: urlDe(row.ads_ativos),
-    sh: urlDe(row.screenshot),
-    pv: urlDe(row.preview),
-    v: vezes,
-    vd: String(row.visto_desde || ''),
-    dt: String(row.data_scan || ''),
-    ida: String(row.idade_dias || ''),
-    lang: String(row.idioma || ''),
-    sd: duplo,
-    cn: sim(row.construtor_novo) ? 1 : 0,
-    signals: sinais
-  };
+function ofertaCSV(row) {
+  var o = mapearOfertaCloud(Object.assign({}, row, { recurrence_count: row.signals.times_seen, first_seen_at: row.source_seen_at, last_seen_at: row.source_seen_at, status: 'new' }));
+  if (!o.n || o.n === 'outros') o.n = nichoDe(o.t + ' ' + o.d);
+  return o;
 }
 
 /* ── Estado ──────────────────────────────────────────────────── */
 var state = {
+  page: 0, pageSize: 48, onlyFavorites: false, favorites: new Map(), favoriteRows: [], favoritesLoading: false, importEpoch: 0, baseName: "",
   ofertas: [],
   filtradas: [],
   nicho: '',
@@ -1352,7 +1032,7 @@ var state = {
   projetosLocais: [],
   aggressiveness: '',
   radarProfile: null,
-  cloud: { enabled: false, phase: 'demo', session: null, user: null, workspaces: [], workspaceId: '', role: '', accessStatus: '', requestEpoch: 0, offersCursor: null, offersTotal: null, loading: false, loadingMore: false, localFilterLabel: '', errorRef: '', client: null, controller: null, continuation: null, returnFocus: null, authMode: 'signin' },
+  cloud: { enabled: false, phase: 'demo', session: null, user: null, workspaces: [], workspaceId: '', role: '', accessStatus: '', authEpoch: 0, authBusy: false, requestEpoch: 0, offersCursor: null, offersTotal: null, loading: false, loadingMore: false, paging: false, initializing: false, huntId: '', huntName: '', catalogScope: 'all', localFilterLabel: '', errorRef: '', client: null, controller: null, continuation: null, returnFocus: null, authMode: 'signin' },
   demoOfertas: []
 };
 
@@ -1362,13 +1042,21 @@ function mensagemCloud(error) {
   if (code === 'provider_disabled') return 'O login com Google não está habilitado nas configurações deste projeto.';
   if (code === 'invalid_credentials') return 'E-mail ou senha incorretos.';
   if (code === 'email_not_confirmed') return 'Confirme seu e-mail antes de entrar.';
-  if (code === 'weak_password' || code === 'password_too_short') return 'Use pelo menos 12 caracteres, com letra maiúscula, letra minúscula e número.';
+  if (code === 'weak_password' || code === 'password_too_short') return 'Use pelo menos 8 caracteres, com letra maiúscula, letra minúscula e número.';
   if (code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit') return 'Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.';
+  if (code === 'rate_limited' || Number(error && error.status) === 429) return 'O limite de importações da conta foi atingido. Aguarde e tente novamente.';
+  if (code === 'origin_forbidden') return 'Este endereço de preview não está autorizado a importar na conta. Abra aferohub.com.br/hub ou o servidor local autorizado.';
+  if (code === 'workspace_forbidden') return 'Sua conta não tem permissão para importar neste workspace. Confira o workspace e a liberação do acesso.';
+  if (code === 'authentication_required' || Number(error && error.status) === 401) return 'Sua sessão não pôde ser validada. Entre novamente para importar.';
+  if (code === 'database_import_failed') return 'O CSV foi validado, mas o banco não concluiu a importação. Seu acervo anterior foi preservado.';
+  if (code === 'quota_check_failed' || code === 'storage_upload_failed' || code === 'duplicate_check_failed') return 'O serviço de importação está indisponível. Aguarde e tente novamente.';
   if (code === 'email_address_invalid') return 'Informe um endereço de e-mail válido.';
   if (code === 'signup_disabled') return 'A criação de contas está temporariamente indisponível.';
+  if (code === 'auth_callback_failed') return 'Este link não pôde ser confirmado. Solicite um novo e-mail em Esqueci minha senha.';
+  if (code === 'captcha_required' || code === 'captcha_failed') return 'Conclua a verificação de segurança e tente novamente.';
   return 'Não foi possível concluir esta ação. Tente novamente.';
 }
-function senhaForte(password) { return password.length >= 12 && /[a-z]/.test(password) && /[A-Z]/.test(password) && /\d/.test(password); }
+function senhaForte(password) { return password.length >= 8 && /[a-z]/.test(password) && /[A-Z]/.test(password) && /\d/.test(password); }
 function renderCloud() {
   var cloud = state.cloud, authenticated = !!cloud.user;
   document.body.dataset.cloudState = authenticated ? 'authenticated' : 'demo';
@@ -1379,40 +1067,53 @@ function renderCloud() {
     return '<option value="' + esc(workspace.workspaceId) + '">' + esc(workspace.name) + '</option>';
   }).join('');
   $('workspaceSelect').value = cloud.workspaceId;
-  var nomeConta = authenticated ? (cloud.user.user_metadata && cloud.user.user_metadata.full_name || cloud.user.email || 'Conta') : '';
+  var nomeConta = String(authenticated ? (cloud.user.user_metadata && cloud.user.user_metadata.full_name || cloud.user.email || 'Conta') : '');
   $('accountButton').textContent = authenticated ? nomeConta.trim().split(/\s+/)[0] : 'Entrar';
   $('accountButton').title = authenticated ? nomeConta + ' · Sair da conta' : 'Entrar na conta';
   $('accountButton').setAttribute('aria-label', authenticated ? 'Sair da conta' : 'Entrar na conta');
+  document.body.dataset.marketingSurface = cloud.trackingReady && !authenticated ? 'public' : 'private';
+  document.dispatchEvent(new CustomEvent('afero:marketing-surface'));
 }
 
 function abrirAuth(mode, trigger) {
+  if (state.cloud.authMode !== (mode || 'signin')) $('authPassword').value = '';
   state.cloud.authMode = mode || 'signin';
   var modal = $('authModal');
   state.cloud.returnFocus = trigger || (!modal.hidden ? state.cloud.returnFocus : document.activeElement);
-  var signup = state.cloud.authMode === 'signup', recovery = state.cloud.authMode === 'recovery-request', update = state.cloud.authMode === 'recovery-update', pending = state.cloud.authMode === 'confirmation-pending';
+  var signup = state.cloud.authMode === 'signup', recovery = state.cloud.authMode === 'recovery-request', confirm = state.cloud.authMode === 'recovery-confirm', update = state.cloud.authMode === 'recovery-update', pending = state.cloud.authMode === 'confirmation-pending';
   modal.hidden = false; modal.setAttribute('aria-hidden', 'false');
   $('authNameField').hidden = !signup;
-  $('authPasswordField').hidden = recovery || pending;
-  $('authGoogle').hidden = recovery || update || pending;
-  $('authToggle').hidden = recovery || update || pending;
-  $('authRecovery').hidden = signup || recovery || update || pending;
+  $('authName').disabled = !signup;
+  $('authEmailField').hidden = update || confirm || pending;
+  $('authEmail').disabled = update || confirm || pending;
+  $('authPasswordField').hidden = recovery || confirm || pending;
+  $('authPassword').disabled = recovery || confirm || pending;
+  $('authPassword').minLength = signup || update ? 8 : 1;
+  $('authGoogle').hidden = recovery || confirm || update || pending || (window.AFERO_CLOUD_CONFIG && window.AFERO_CLOUD_CONFIG.googleEnabled === false);
+  $('authToggle').hidden = recovery || confirm || update || pending;
+  $('authToggle').textContent = signup ? 'Já tenho conta' : 'Criar conta';
+  $('authRecovery').hidden = signup || recovery || confirm || update || pending;
   $('authUseDemo').hidden = !state.cloud.continuation || state.cloud.continuation.action !== 'import';
-  $('authModeLabel').textContent = pending ? 'Confirmação pendente' : update ? 'Nova senha' : recovery ? 'Recuperação de senha' : signup ? 'Criar conta' : 'Conta Afero';
-  $('authTitle').textContent = pending ? 'Confirme seu e-mail' : update ? 'Defina uma nova senha' : recovery ? 'Recupere sua senha' : signup ? 'Crie sua conta' : 'Entre para guardar seu acervo';
-  $('authDescription').textContent = pending ? 'Enviamos um link de confirmação para seu e-mail.' : recovery ? 'Enviaremos instruções se houver uma conta compatível.' : update || signup ? 'Use pelo menos 12 caracteres, com letra maiúscula, letra minúscula e número.' : 'Use sua conta para salvar decisões e acessar workspaces.';
+  $('authModeLabel').textContent = pending ? 'Confirmação pendente' : confirm || recovery ? 'Recuperação de senha' : update ? 'Nova senha' : signup ? 'Criar conta' : 'Conta Afero';
+  $('authTitle').textContent = pending ? 'Confirme seu e-mail' : confirm ? 'Continue a recuperação' : update ? 'Defina uma nova senha' : recovery ? 'Recupere sua senha' : signup ? 'Crie sua conta' : 'Entre para guardar seu acervo';
+  $('authDescription').textContent = pending ? 'Enviamos um link de confirmação para seu e-mail.' : confirm ? 'Confirme que deseja usar este link. Em seguida, você poderá definir uma nova senha.' : recovery ? 'Enviaremos instruções se houver uma conta compatível.' : update || signup ? 'Use pelo menos 8 caracteres, com letra maiúscula, letra minúscula e número.' : 'Use sua conta para salvar decisões e acessar workspaces.';
   $('authPassword').autocomplete = signup || update ? 'new-password' : 'current-password';
-  $('authSubmit').textContent = pending ? 'Fechar' : update ? 'Atualizar senha' : recovery ? 'Enviar instruções' : signup ? 'Criar conta' : 'Entrar';
+  $('authSubmit').textContent = pending ? 'Fechar' : confirm ? 'Continuar recuperação' : update ? 'Atualizar senha' : recovery ? 'Enviar instruções' : signup ? 'Criar conta' : 'Entrar';
   $('cloudErrorRef').textContent = '';
-  (recovery ? $('authEmail') : (signup ? $('authName') : $('authEmail'))).focus({ preventScroll: true });
+  if (window.AferoAuthChallenge) window.AferoAuthChallenge.show(state.cloud.authMode);
+  (pending || confirm ? $('authSubmit') : update ? $('authPassword') : signup ? $('authName') : $('authEmail')).focus({ preventScroll: true });
 }
 function fecharAuth() {
+  if (window.AferoAuthChallenge) window.AferoAuthChallenge.clear();
   var modal = $('authModal'); modal.hidden = true; modal.setAttribute('aria-hidden', 'true');
+  $('authPassword').value = ''; state.cloud.continuation = null;
   var focus = state.cloud.returnFocus; state.cloud.returnFocus = null;
   if (focus && typeof focus.focus === 'function') focus.focus();
 }
 function definirErroCloud(error) {
   var requestId = error && error.request_id ? ' Referência: ' + error.request_id + '.' : '';
-  state.cloud.errorRef = requestId;
+  state.cloud.errorRef = mensagemCloud(error) + requestId;
+  if($('catalogoSec').hidden)statusImport(state.cloud.errorRef);
   $('cloudErrorRef').textContent = mensagemCloud(error) + requestId;
   atualizarControlesCatalogoCloud();
 }
@@ -1424,9 +1125,15 @@ function exigirSessao(action, continuation, trigger, demoContinuation) {
 }
 function restaurarDemo() {
   var cloud = state.cloud;
+  cloud.authEpoch++; cloud.continuation = null;state.favoriteRequest=(state.favoriteRequest||0)+1;state.favoritesLoading=false;statusImport('CSV da caçada · ofertas, capturas e sinais',false);if($('shareDialog'))$('shareDialog').remove();
   if (cloud.controller) cloud.controller.abort();
   cloud.requestEpoch++; cloud.session = null; cloud.user = null; cloud.workspaces = []; cloud.workspaceId = ''; cloud.role = ''; cloud.accessStatus = ''; cloud.offersCursor = null; cloud.offersTotal = null; cloud.loading = false; cloud.loadingMore = false; cloud.localFilterLabel = ''; cloud.errorRef = '';
+  cloud.paging = false; cloud.initializing = false; cloud.huntId = ''; cloud.huntName = ''; cloud.catalogScope = 'all';
+  state.importEpoch++;if(window.AferoCSV)window.AferoCSV.cancel();state.favorites.clear();state.favoriteRows=[];state.onlyFavorites=false;$('favoritesFilter').setAttribute('aria-pressed','false');
+  state.baseName='';resetarFiltrosCatalogo();
   state.aberta = null; state.ofertas = state.demoOfertas.slice(); state.mapaComDadosReais = false;
+  fecharXray(); $('xrBody').replaceChildren(); $('xrTitle').textContent = ''; $('xrSite').removeAttribute('href'); $('xrAds').removeAttribute('href');
+  $('authPassword').value = '';
   state.radarProfile = carregarRadarProfile();
   atualizarHeaderRadar();
   pintarStats(); pintarRail(); aplicar(); renderCloud();
@@ -1434,24 +1141,39 @@ function restaurarDemo() {
 async function selecionarWorkspace(id) {
   var cloud = state.cloud, workspace = cloud.workspaces.filter(function (item) { return item.workspaceId === id; })[0];
   if (!workspace) return;
+  state.importEpoch++;if(window.AferoCSV)window.AferoCSV.cancel();statusImport(null,false);
   if (cloud.controller) cloud.controller.abort();
   cloud.controller = new AbortController(); cloud.requestEpoch++;
-  var epoch = cloud.requestEpoch; cloud.workspaceId = workspace.workspaceId; cloud.role = workspace.role; cloud.offersCursor = null; cloud.offersTotal = null; cloud.localFilterLabel = ''; cloud.errorRef = ''; state.aberta = null; state.ofertas = []; state.filtradas = [];
+  var epoch = cloud.requestEpoch; cloud.loading = false; cloud.loadingMore = false; state.baseName='';cloud.workspaceId = workspace.workspaceId; cloud.role = workspace.role; cloud.offersCursor = null; cloud.offersTotal = null; cloud.localFilterLabel = ''; cloud.errorRef = ''; state.aberta = null; state.ofertas = []; state.filtradas = [];
+  cloud.paging = false; cloud.initializing = true; cloud.huntId = ''; cloud.huntName = ''; cloud.catalogScope = 'all';
+  fecharXray(); $('xrBody').replaceChildren();
   renderCloud(); pintarStats(); pintarRail(); aplicar();
-  await carregarPrimeiraPagina({ epoch: epoch });
+  try {
+    if (typeof cloud.client.getLatestHunt === 'function') {
+      var hunt = await cloud.client.getLatestHunt({ workspaceId: id, signal: cloud.controller.signal });
+      if (epoch !== cloud.requestEpoch) return;
+      if (hunt) { cloud.huntId = hunt.id; cloud.huntName = hunt.original_file_name; cloud.catalogScope = 'hunt'; state.baseName = cloud.huntName; }
+    }
+    cloud.initializing = false;
+    await carregarPrimeiraPagina({ epoch: epoch });if(epoch===cloud.requestEpoch)await carregarFavoritas();
+  } catch (error) { if (epoch === cloud.requestEpoch && error.name !== 'AbortError') definirErroCloud(error); }
+  finally { if (epoch === cloud.requestEpoch) { cloud.initializing = false; atualizarControlesCatalogoCloud(); pintarCatalogo(); } }
 }
 
 function filtrosCloud() {
-  return { search: state.busca, niche: state.nicho, priority: state.tier, status: state.soSalvas ? 'saved' : '',
-    pixel: !!state.sinais.pixel, vsl: !!state.sinais.vsl, quiz: !!state.sinais.quiz, billing: !!state.sinais.billing,
+  return { search: state.busca, niche: state.nicho, priority: state.tier, status: state.soSalvas ? 'saved' : '', sort: state.ordem,
+    huntId: state.cloud.catalogScope === 'hunt' ? state.cloud.huntId : '', hideDiscarded: state.ocultarDescartadas,
+    pixel: !!(state.sinais.pixel || state.sinais.ads), doubleSignal: !!state.sinais.sd, vsl: !!state.sinais.vsl, quiz: !!state.sinais.quiz, billing: !!state.sinais.billing,
     verified: !!state.sinais.verified, group: state.grupo, novel: !!state.sinais.novel,
     scaled: !!state.sinais.scaled, recurring: !!state.sinais.rec };
 }
 function aplicarOuRecarregarCloud() {
   var cloud = state.cloud;
-  if (!cloud.user || !cloud.workspaceId) { aplicar(); return; }
+  if (state.onlyFavorites || !cloud.user || !cloud.workspaceId) { aplicar(); return; }
+  if (cloud.initializing) { aplicar(); return; }
   if (cloud.controller) cloud.controller.abort();
   cloud.controller = new AbortController(); cloud.requestEpoch++; cloud.offersCursor = null; cloud.offersTotal = null;
+  cloud.loading = false; cloud.loadingMore = false; cloud.paging = false;
   state.ofertas = []; state.filtradas = []; aplicar();
   carregarPrimeiraPagina({ epoch: cloud.requestEpoch });
 }
@@ -1462,37 +1184,62 @@ async function carregarPrimeiraPagina(options) {
   cloud.loading = true; cloud.errorRef = ''; atualizarControlesCatalogoCloud();
   try {
     var page = await cloud.client.listOffers({ workspaceId: cloud.workspaceId, filters: filtrosCloud(), signal: cloud.controller && cloud.controller.signal });
-    if (epoch !== cloud.requestEpoch) return;
+    if (epoch !== cloud.requestEpoch) return false;
     state.ofertas = (page.items || []).map(mapearOfertaCloud);
     state.mapaComDadosReais = true; cloud.offersCursor = page.nextCursor; cloud.offersTotal = page.total; cloud.localFilterLabel = page.localFilterLabel || '';
     pintarStats(); pintarRail(); aplicar();
+    return true;
   } catch (error) {
     if (epoch !== cloud.requestEpoch || (error && error.name === 'AbortError')) return;
     definirErroCloud(error);
-  } finally { if (epoch === cloud.requestEpoch) { cloud.loading = false; atualizarControlesCatalogoCloud(); } }
+  } finally { if (epoch === cloud.requestEpoch) { cloud.loading = false; atualizarControlesCatalogoCloud(); pintarCatalogo(); } }
 }
-async function carregarMais() {
+async function carregarMais(options) {
   var cloud = state.cloud;
   if (!cloud.user || !cloud.workspaceId || !cloud.offersCursor || cloud.loading || cloud.loadingMore) return;
+  var epoch = cloud.requestEpoch;
   cloud.loadingMore = true; atualizarControlesCatalogoCloud();
   try {
     var page = await cloud.client.listOffers({ workspaceId: cloud.workspaceId, cursor: cloud.offersCursor, filters: filtrosCloud(), signal: cloud.controller && cloud.controller.signal });
+    if (epoch !== cloud.requestEpoch) return false;
     var ids = new Set(state.ofertas.map(function (o) { return o.id; }));
     (page.items || []).map(mapearOfertaCloud).forEach(function (o) { if (!ids.has(o.id)) { ids.add(o.id); state.ofertas.push(o); } });
     cloud.offersCursor = page.nextCursor; cloud.localFilterLabel = page.localFilterLabel || cloud.localFilterLabel;
-    pintarStats(); pintarRail(); aplicar();
-  } catch (error) { if (!(error && error.name === 'AbortError')) definirErroCloud(error); }
-  finally { cloud.loadingMore = false; atualizarControlesCatalogoCloud(); }
+    pintarStats(); pintarRail(); aplicar({ preservePage: !options || options.preservePage !== false });
+    return true;
+  } catch (error) { if (epoch === cloud.requestEpoch && !(error && error.name === 'AbortError')) definirErroCloud(error); }
+  finally { if (epoch === cloud.requestEpoch) { cloud.loadingMore = false; atualizarControlesCatalogoCloud(); pintarCatalogo(); } }
+}
+function temMaisOfertasCloud() {
+  return !state.onlyFavorites && !!(state.cloud.user && state.cloud.workspaceId && state.cloud.offersCursor);
+}
+async function proximaPagina() {
+  var cloud = state.cloud;
+  if (cloud.initializing || cloud.loading || cloud.loadingMore || cloud.paging) return;
+  var epoch = cloud.requestEpoch, target = state.page + 1;
+  cloud.paging = true; pintarCatalogo();
+  try {
+    while (state.filtradas.length < (target + 1) * state.pageSize && temMaisOfertasCloud()) {
+      var cursor = JSON.stringify(cloud.offersCursor);
+      var ok = await carregarMais({ preservePage: true });
+      if (epoch !== cloud.requestEpoch || !ok) return;
+      if (JSON.stringify(cloud.offersCursor) === cursor) { cloud.offersCursor = null; break; }
+    }
+    if (epoch === cloud.requestEpoch && state.filtradas.length > target * state.pageSize) state.page = target;
+  } finally { if (epoch === cloud.requestEpoch) { cloud.paging = false; pintarCatalogo(); atualizarControlesCatalogoCloud(); } }
 }
 async function salvarDecisao(o, patch) {
   if (!o || !state.cloud.user) return;
+  if (!['owner', 'admin', 'editor'].includes(state.cloud.role)) { toast('Seu acesso permite apenas consultar ofertas.'); return; }
+  var epoch = state.cloud.requestEpoch;
   var previous = { status: o.status, userNotes: o.userNotes, tags: o.tags };
   var button = patch.status === 'discarded' ? $('xrDiscard') : $('xrSave');
   button.disabled = true; button.setAttribute('aria-busy', 'true');
   try {
     var saved = await state.cloud.client.updateOfferDecision({ workspaceId: state.cloud.workspaceId, offerId: o.id, status: patch.status || o.status || 'new', userNotes: patch.userNotes === undefined ? o.userNotes : patch.userNotes, tags: patch.tags === undefined ? o.tags : patch.tags });
+    if (epoch !== state.cloud.requestEpoch) return;
     o.status = saved.status; o.userNotes = saved.user_notes || ''; o.tags = saved.tags || []; aplicar(); abrirXray(o);
-  } catch (error) { o.status = previous.status; o.userNotes = previous.userNotes; o.tags = previous.tags; definirErroCloud(error); }
+  } catch (error) { if (epoch === state.cloud.requestEpoch) { o.status = previous.status; o.userNotes = previous.userNotes; o.tags = previous.tags; definirErroCloud(error); } }
   finally { button.disabled = false; button.removeAttribute('aria-busy'); }
 }
 function atualizarControlesCatalogoCloud() {
@@ -1511,48 +1258,70 @@ function atualizarControlesCatalogoCloud() {
   }
   var cloud = state.cloud, active = !!cloud.user;
   controls.hidden = !active;
+  $('catalogScopeField').hidden = !active || !cloud.huntId || state.onlyFavorites;
+  $('catalogScope').value = cloud.catalogScope;
   $('catalogTotal').textContent = cloud.accessStatus ? 'Acesso à conta pendente' : cloud.offersTotal === null ? 'Total ainda indisponível' : cloud.offersTotal + ' ofertas no recorte';
-  $('catalogSampleLabel').textContent = cloud.localFilterLabel || 'Mapa: amostra carregada';
-  $('catalogLoadMore').hidden = !cloud.offersCursor;
+  $('catalogSampleLabel').textContent = cloud.localFilterLabel || state.ofertas.length + (cloud.offersTotal === null ? '' : ' de ' + cloud.offersTotal) + ' ofertas carregadas. As classificações refletem as ofertas carregadas.';
+  $('catalogLoadMore').hidden = !temMaisOfertasCloud();
   $('catalogCheckAccess').hidden = cloud.accessStatus !== 'purchase_required';
-  $('catalogLoadMore').disabled = cloud.loading || cloud.loadingMore;
+  $('catalogLoadMore').disabled = cloud.initializing || cloud.loading || cloud.loadingMore || cloud.paging;
   $('catalogLoadMore').textContent = cloud.loadingMore ? 'Carregando…' : 'Carregar mais';
   $('catalogCloudError').textContent = cloud.accessStatus === 'purchase_required'
-    ? 'A compra ainda não foi confirmada. Use no cadastro o mesmo e-mail da Eduzz. As ofertas exibidas são uma demonstração.'
+    ? 'A compra ainda não foi confirmada. Use no cadastro o mesmo e-mail da Eduzz. Seu painel será liberado após a confirmação.'
     : cloud.accessStatus === 'workspace_missing'
       ? 'Não foi possível localizar seu workspace. Entre em contato com o suporte antes de importar uma caçada.'
       : cloud.errorRef;
 }
 async function aplicarEventoAuth(payload) {
   var cloud = state.cloud, event = payload && payload.event, session = payload && payload.session;
-  if (event === 'PASSWORD_RECOVERY') { abrirAuth('recovery-update'); return; }
   if (!session) { restaurarDemo(); return; }
+  var sameUser = cloud.user && session.user && cloud.user.id === session.user.id;
+  if (sameUser && (['TOKEN_REFRESHED', 'USER_UPDATED'].includes(event) || (cloud.workspaceId && event === 'SIGNED_IN'))) {
+    cloud.session = session; cloud.user = payload.user || session.user; renderCloud(); return;
+  }
+  if (!sameUser) {
+    var continuation = cloud.continuation;
+    restaurarDemo(); cloud.continuation = continuation;
+  }
+  var authEpoch = ++cloud.authEpoch;
   cloud.session = session; cloud.user = payload.user || session.user;
+  if (event === 'PASSWORD_RECOVERY') { renderCloud(); abrirAuth('recovery-update'); return; }
   try {
-    cloud.workspaces = await cloud.client.listWorkspaces();
+    var workspaces = await cloud.client.listWorkspaces();
+    if (authEpoch !== cloud.authEpoch) return;
+    cloud.workspaces = workspaces;
     if (cloud.workspaces.length) {
       cloud.accessStatus = '';
       await selecionarWorkspace(cloud.workspaces[0].workspaceId);
     } else {
-      cloud.accessStatus = await cloud.client.hasPaidAccess() ? 'workspace_missing' : 'purchase_required';
+      var paidAccess = await cloud.client.hasPaidAccess();
+      if (authEpoch !== cloud.authEpoch) return;
+      cloud.accessStatus = paidAccess ? 'workspace_missing' : 'purchase_required';
       state.ofertas = state.demoOfertas.slice(); state.mapaComDadosReais = false;
       pintarStats(); pintarRail(); aplicar(); atualizarControlesCatalogoCloud();
     }
-  } catch (error) { definirErroCloud(error); }
+  } catch (error) { if (authEpoch !== cloud.authEpoch) return; definirErroCloud(error); }
+  if (authEpoch !== cloud.authEpoch) return;
   renderCloud();
   if (cloud.continuation && cloud.user && cloud.workspaceId) { var pending = cloud.continuation; cloud.continuation = null; fecharAuth(); pending.run(); }
   else if (cloud.continuation && cloud.accessStatus === 'purchase_required') { cloud.continuation = null; fecharAuth(); }
-  else if (!$('authModal').hidden) fecharAuth();
+  else if (!$('authModal').hidden && cloud.authMode !== 'recovery-update') fecharAuth();
   if (cloud.workspaceId) exigirCalibragemDaConta();
 }
 async function iniciarCloud() {
   var cloud = state.cloud;
-  if (!window.AferoCloud) { renderCloud(); return; }
+  cloud.trackingReady = false;
+  if (!window.AferoCloud) { cloud.trackingReady = true; renderCloud(); return; }
   cloud.client = window.AferoCloud.create({ config: window.AFERO_CLOUD_CONFIG, supabaseFactory: window.__AFERO_SUPABASE_FACTORY__ || (window.supabase && window.supabase.createClient) });
   var initialized = await cloud.client.initialize(aplicarEventoAuth);
+  cloud.trackingReady = true;
   cloud.enabled = initialized.enabled;
   if (!initialized.enabled) { renderCloud(); return; }
-  if (initialized.session) await aplicarEventoAuth({ event: 'SIGNED_IN', session: initialized.session, user: initialized.user });
+  if (initialized.recoveryLink) {
+    cloud.session = initialized.session; cloud.user = initialized.user;
+    renderCloud(); abrirAuth('recovery-confirm'); return;
+  }
+  if (initialized.session) await aplicarEventoAuth({ event: initialized.recovery ? 'PASSWORD_RECOVERY' : 'SIGNED_IN', session: initialized.session, user: initialized.user });
   else renderCloud();
 }
 
@@ -1602,46 +1371,7 @@ var MAP_AGENT_DETAILS = {
   }
 };
 
-function selecionarAgenteMapa(agent) {
-  var drawer = $('agentDrawer');
-  if (!drawer) return;
-  var detail = agent && MAP_AGENT_DETAILS[agent.id];
-  if (!detail) {
-    drawer.classList.remove('on');
-    drawer.dataset.agent = '';
-    drawer.setAttribute('aria-hidden', 'true');
-    return;
-  }
-  drawer.dataset.agent = agent.id;
-  $('agentDrawerKicker').textContent = detail.kicker;
-  $('agentDrawerTitle').textContent = detail.title;
-  $('agentDrawerDescription').textContent = detail.description;
-  $('agentDrawerStatus').textContent = detail.status;
-  $('agentDrawerRoute').textContent = detail.route;
-  $('agentDrawerAction').dataset.agentView = detail.view;
-  drawer.classList.add('on');
-  drawer.setAttribute('aria-hidden', 'false');
-}
-
-function montarMapaVivo() {
-  if (!window.AferoLiveMap) return;
-  var canvas = $('aferoLiveMap');
-  if (!canvas) return;
-  window.AferoLiveMap.mount({
-    canvas: canvas,
-    onOfferClick: function (oferta) { abrirXray(oferta); },
-    onAgentSelect: selecionarAgenteMapa
-  });
-}
-
-function sincronizarMapaVivo() {
-  if (!window.AferoLiveMap) return;
-  var origem = state.cloud.user && state.cloud.workspaceId
-    ? 'authenticated'
-    : state.mapaComDadosReais ? 'demo' : 'empty';
-  window.AferoLiveMap.setOffers(state.mapaComDadosReais ? state.filtradas : [], origem);
-  atualizarHeaderRadar();
-}
+function sincronizarMapaVivo() { atualizarHeaderRadar(); atualizarPainel(); }
 
 /* ── Toast ───────────────────────────────────────────────────── */
 var toastTimer;
@@ -1670,10 +1400,9 @@ function contar() {
 
 function pintarStats() {
   var k = contar();
-  $('kTotal').textContent = k.total;
-  $('kElite').textContent = k.elite;
-  $('kRec').textContent = k.rec;
-  $('cTotal').textContent = k.total;
+  var totalCloud = !state.onlyFavorites && state.cloud.user && state.cloud.offersTotal !== null;
+  $('cTotal').textContent = totalCloud ? state.cloud.offersTotal : k.total;
+  $('cTotal').nextElementSibling.textContent = totalCloud ? 'Ofertas no recorte' : 'Ofertas na base';
   $('cElite').textContent = k.elite;
   $('cTop').textContent = k.top;
   $('cDupla').textContent = k.dupla;
@@ -1717,10 +1446,11 @@ function atualizarContagemFiltros() {
   document.querySelector('[data-filter-count]').textContent = total ? total + (total === 1 ? ' ativo' : ' ativos') : 'Filtros';
   document.querySelector('[data-signal-count]').textContent = sinais + (sinais === 1 ? ' selecionado' : ' selecionados');
 }
-function aplicar() {
+function aplicar(options) {
+  if (!options || !options.preservePage) state.page = 0;
   var q = state.busca.toLowerCase().trim();
   var s = state.sinais;
-  state.filtradas = state.ofertas.filter(function (o) {
+  state.filtradas = (state.onlyFavorites ? state.favoriteRows.map(ofertaFavorita) : state.ofertas).filter(function (o) {
     if (state.nicho && o.n !== state.nicho) return false;
     if (state.tier && o.p !== state.tier) return false;
     var sinais = sinaisDaOferta(o);
@@ -1755,7 +1485,7 @@ function aplicar() {
     return true;
   });
 
-  state.filtradas.sort(function (a, b) {
+  if (!state.cloud.user || state.onlyFavorites) state.filtradas.sort(function (a, b) {
     if (state.ordem === 'rec') return (b.v - a.v) || (b.s - a.s);
     if (state.ordem === 'novo') return String(b.dt).localeCompare(String(a.dt)) || (b.s - a.s);
     return (b.s - a.s) || String(a.t).localeCompare(String(b.t));
@@ -1767,6 +1497,7 @@ function aplicar() {
 }
 
 function resetarFiltrosCatalogo() {
+  state.page = 0; state.onlyFavorites = false; $('favoritesFilter').setAttribute('aria-pressed', 'false');
   state.nicho = ''; state.tier = ''; state.grupo = ''; state.sinais = {}; state.busca = '';
   state.aggressiveness = ''; state.ordem = 'score'; state.soSalvas = false; state.ocultarDescartadas = true;
   $('q').value = ''; $('fTier').value = ''; $('fGroup').value = ''; $('fAggr').value = ''; $('fSort').value = 'score';
@@ -1780,254 +1511,100 @@ function resetarFiltrosCatalogo() {
 }
 
 /* ── Cartão de oferta ────────────────────────────────────────── */
+var STAR_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"/></svg>';
+var SHARE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 13v8h14v-8"/></svg>';
+function tecnologia(o) {
+  var signals = sinaisDaOferta(o), query = sinaisDaQuery(String(o.q || '').split('|')[0]);
+  return { gw: signals.gateway || query.gw || '', tr: signals.tracker || query.tr || '' };
+}
+function favorita(o) { return !!o.fingerprint && state.favorites.has(o.fingerprint); }
+function ofertaFavorita(f) {
+  if (f.offer) return mapearOfertaCloud(f.offer);
+  return { fingerprint: f.offer_fingerprint, d: f.source_domain, u: urlHttpSegura(f.source_url), t: f.source_title, p: '?', s: null, n: 'outros', q: '', sh: '', v: null, dt: '', signals: {}, referenceOnly: true };
+}
 function cartao(o, idx) {
-  var sig = sinaisDaQuery(o.q), sinais = sinaisDaOferta(o);
-  var badges = '';
-  if ((o.status || '') === 'saved' || flagDaOferta(o) === 'salva') badges += '<span class="badge saved">salva</span>';
-  if (state.radarProfile && state.radarProfile.niches && state.radarProfile.niches.indexOf(o.n) !== -1) {
-    badges += '<span class="badge match">radar match</span>';
-  }
-  if (o.sd || sinalAtivo(sinais, 'double_signal')) badges += '<span class="badge dupla">sinal duplo</span>';
-  if (o.v > 1) badges += '<span class="badge rec">' + o.v + 'x vista</span>';
-  if (sinalAtivo(sinais, 'pixel_ads') || sinalAtivo(sinais, 'pixel')) badges += '<span class="badge ads">pixel</span>';
-  if (sinalAtivo(sinais, 'novel')) badges += '<span class="badge">inédita</span>';
-  if (sinalAtivo(sinais, 'new_builder')) badges += '<span class="badge">builder novo</span>';
-  if (sinalAtivo(sinais, 'billing_tech_detected') || sinalAtivo(sinais, 'mrr')) badges += '<span class="badge">billing</span>';
-  if (sinalAtivo(sinais, 'subscription_verified')) badges += '<span class="badge">assinatura verificada</span>';
-  if (sinalAtivo(sinais, 'escalado') || sinalAtivo(sinais, 'scaled')) badges += '<span class="badge">escalada</span>';
-
-  var thumb = o.sh
-    ? '<img data-src="' + esc(o.sh) + '" alt="Captura da página ' + esc(o.d) + '" loading="lazy" />'
-    : '<div class="noshot">SEM CAPTURA</div>';
-
-  var meta = '';
-  if (sig.gw) meta += '<span class="mchip"><i>gateway</i> ' + esc(marca(sig.gw)) + '</span>';
-  if (sig.tr) meta += '<span class="mchip"><i>tracker</i> ' + esc(marca(sig.tr)) + '</span>';
-  if (!sig.gw && !sig.tr && sig.builder) meta += '<span class="mchip"><i>builder</i> ' + esc(marca(sig.builder)) + '</span>';
-
-  return '<article class="offer ' + o.p + '" data-i="' + idx + '" tabindex="0" role="button" aria-label="Abrir raio-x de ' + esc(o.t) + '">' +
-    '<div class="shot"><span class="tier ' + o.p + '">' + esc(TIER_NOME[o.p]) + '</span>' +
-    '<div class="badges">' + badges + '</div>' + thumb + '</div>' +
-    '<div class="offer-body">' +
-    '<h3 class="offer-t">' + esc(o.t) + '</h3>' +
-    '<div class="offer-d">' + esc(o.d) + '</div>' +
-    '<div class="offer-meta">' + meta +
-    '<span class="score-pip">score ' + o.s + '</span></div>' +
-    '</div></article>';
+  var sig = tecnologia(o), f = state.favorites.get(o.fingerprint), favorite = favorita(o);
+  var thumb = urlHttpSegura(o.sh) ? '<img data-src="' + esc(urlHttpSegura(o.sh)) + '" alt="Captura de ' + esc(o.d) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer">' : '<div class="noshot">' + (o.referenceOnly ? 'Página original disponível' : 'Sem captura disponível') + '</div>';
+  return '<article class="hub-offer" data-i="' + idx + '">' +
+    '<div class="hub-offer-identity"><span class="hub-tier"><strong class="hub-tier-letter">' + esc(o.p) + '</strong><span>' + esc((TIER_NOME[o.p] || 'Referência').replace(/^[SABC] /,'')) + '</span></span><span class="hub-capture-label">' + (f && f.has_new_collection ? 'Nova coleta' : 'Oferta') + '</span></div>' +
+    '<div class="hub-offer-visual"><div class="hub-shot">' + thumb + '</div><h3 class="hub-offer-title">' + esc(o.t) + '</h3></div>' +
+    '<div class="hub-offer-context"><span>' + esc(o.d) + '</span></div>' +
+    '<div class="hub-offer-evidence"><div class="hub-score-group"><label>Score' + (o.id ? ' agregado' : '') + '</label><strong class="hub-score">' + (o.s == null ? '·' : esc(o.s)) + '</strong></div><dl class="hub-signals"><div><dt>Gateway</dt><dd>' + esc(marca(sig.gw) || 'Não detectado') + '</dd></div><div><dt>Rastreador</dt><dd>' + esc(marca(sig.tr) || 'Não detectado') + '</dd></div><div><dt>Observações</dt><dd>' + (o.v == null ? 'Sem base acessível' : esc(o.v) + 'x vista') + '</dd></div></dl></div>' +
+    '<div class="hub-offer-actions"><button type="button" class="hub-inspect" data-inspect>Inspecionar <span aria-hidden="true">↗</span></button><button type="button" class="hub-icon-button" data-favorite aria-pressed="' + favorite + '" aria-label="' + (favorite ? 'Remover das favoritas' : 'Favoritar oferta') + '">' + STAR_ICON + '</button><button type="button" class="hub-icon-button" data-share aria-label="Compartilhar oferta">' + SHARE_ICON + '</button></div></article>';
 }
-
 function linha(o, idx) {
-  var sig = sinaisDaQuery(o.q);
-  return '<tr data-i="' + idx + '" tabindex="0">' +
-    '<td><span class="t-tier ' + o.p + '">' + o.p + '</span></td>' +
-    '<td class="mono">' + o.s + '</td>' +
-    '<td class="t-name">' + esc(o.t) + '<small>' + esc(o.d) + '</small></td>' +
-    '<td class="mono">' + esc(nichoNome(o.n)) + '</td>' +
-    '<td class="mono">' + esc(marca(sig.gw) || '·') + '</td>' +
-    '<td class="mono">' + esc(marca(sig.tr) || '·') + '</td>' +
-    '<td class="mono">' + o.v + 'x</td>' +
-    '<td><span class="t-act">abrir</span></td>' +
-    '</tr>';
+  var sig = tecnologia(o);
+  return '<tr data-i="' + idx + '"><td>' + esc(TIER_NOME[o.p] || 'Referência') + '</td><td>' + (o.s == null ? '·' : esc(o.s)) + '</td><td class="t-name">' + esc(o.t) + '<small>' + esc(o.d) + '</small></td><td>' + esc(nichoNome(o.n)) + '</td><td>' + esc(marca(sig.gw) || 'Não detectado') + '</td><td>' + esc(marca(sig.tr) || 'Não detectado') + '</td><td>' + (o.v == null ? '·' : esc(o.v) + 'x') + '</td><td><button type="button" class="hub-inspect" data-inspect>Inspecionar</button></td></tr>';
 }
-
-/* Carrega as capturas só quando entram na tela. */
-var lazyObs = null;
-function ligarLazy(raiz) {
-  if (!('IntersectionObserver' in window)) {
-    var todas = raiz.querySelectorAll('img[data-src]');
-    for (var i = 0; i < todas.length; i++) { todas[i].src = todas[i].getAttribute('data-src'); }
-    return;
-  }
+var lazyObs;
+function ligarLazy(root) {
   if (lazyObs) lazyObs.disconnect();
-  lazyObs = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      var img = e.target;
-      img.src = img.getAttribute('data-src');
-      img.removeAttribute('data-src');
-      img.addEventListener('load', function () { img.classList.add('ready'); });
-      img.addEventListener('error', function () {
-        var pai = img.parentElement;
-        if (pai) { img.remove(); pai.insertAdjacentHTML('beforeend', '<div class="noshot">CAPTURA EXPIRADA</div>'); }
-      });
-      lazyObs.unobserve(img);
-    });
-  }, { rootMargin: '260px' });
-  var imgs = raiz.querySelectorAll('img[data-src]');
-  for (var j = 0; j < imgs.length; j++) lazyObs.observe(imgs[j]);
+  function load(img) {
+    img.addEventListener('load', function () { img.classList.add('ready'); }, { once: true });
+    img.addEventListener('error', function () { var fallback = document.createElement('div'); fallback.className = 'noshot'; fallback.textContent = 'Captura indisponível'; img.replaceWith(fallback); }, { once: true });
+    img.src = img.dataset.src; img.removeAttribute('data-src');
+  }
+  if (!('IntersectionObserver' in window)) { root.querySelectorAll('img[data-src]').forEach(load); return; }
+  lazyObs = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { lazyObs.unobserve(e.target); load(e.target); } }); }, { rootMargin: '200px' });
+  root.querySelectorAll('img[data-src]').forEach(function (img) { lazyObs.observe(img); });
 }
-
 function pintarCatalogo() {
-  var grid = $('grid'), tbody = $('tbody');
-  var lista = state.filtradas;
-
-  if (!lista.length) {
-    grid.innerHTML = '<div class="empty">Nenhuma oferta bate com esse recorte. Solte outro filtro ou limpe a busca.</div>';
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--txt-2);font-family:var(--font-mono);font-size:12px">Nenhuma oferta nesse recorte</td></tr>';
-    return;
-  }
-
-  var g = '', t = '';
-  for (var i = 0; i < lista.length; i++) { g += cartao(lista[i], i); t += linha(lista[i], i); }
-  grid.innerHTML = g;
-  tbody.innerHTML = t;
-  ligarLazy(grid);
-  if (window.AferoMotion && window.AferoMotion.revealCards) {
-    window.AferoMotion.revealCards(grid.querySelectorAll('.offer'));
-  }
+  var grid = $('grid'), tbody = $('tbody'), count = state.filtradas.length;
+  state.page = Math.max(0, Math.min(state.page, Math.ceil(count / state.pageSize) - 1));
+  var start = state.page * state.pageSize, lista = state.filtradas.slice(start, start + state.pageSize);
+  grid.hidden = state.vista !== 'grid'; $('tableWrap').classList.toggle('on', state.vista === 'table');
+  grid.innerHTML = state.vista !== 'grid' ? '' : lista.length ? lista.map(function (o,i) { return cartao(o,start+i); }).join('') : '<p class="empty">' + (state.favoritesLoading ? 'Carregando suas favoritas…' : 'Nenhuma oferta neste recorte. Ajuste os filtros ou a busca.') + '</p>';
+  tbody.innerHTML = state.vista !== 'table' ? '' : lista.length ? lista.map(function (o,i) { return linha(o,start+i); }).join('') : '<tr><td colspan="8">Nenhuma oferta neste recorte.</td></tr>';
+  if (state.vista === 'grid') ligarLazy(grid);
+  $('pagePrevious').disabled = state.page === 0 || state.cloud.paging;
+  $('pageNext').disabled = !!state.cloud.initializing || state.cloud.loading || state.cloud.loadingMore || state.cloud.paging || (start + state.pageSize >= count && !temMaisOfertasCloud());
+  var total = !state.onlyFavorites && state.cloud.user && !state.aggressiveness && state.cloud.offersTotal !== null ? state.cloud.offersTotal : count;
+  $('pageLabel').textContent = count ? (start+1) + '–' + Math.min(start+state.pageSize,count) + ' de ' + total + ' ofertas' : '0 ofertas';
 }
 
-/* ── Script de abordagem, no espírito do agentecopywriter.md ──── */
+/* ── Roteiro de reflexão para remodelar a oferta ─────────────── */
 function scriptDeAbordagem(o) {
-  var sig = sinaisDaQuery(o.q);
-  var nome = nichoNome(o.n).toLowerCase();
-  var gw = marca(sig.gw) || 'um gateway próprio';
-  var forte = o.p === 'S' || o.p === 'A';
+  var nome = esc(nichoNome(o.n).toLowerCase());
+  var titulo = esc(o.t || 'Oferta selecionada');
+  var passos = ROTEIRO_XRAY.map(function (passo, i) {
+    return '<b>' + (i + 1) + '. ' + esc(passo.t) + '</b>\n' + esc(passo.d);
+  }).join('\n\n');
 
-  var ganchos = {
-    saude_emagrecimento: 'a promessa de resultado rápido sem passar fome',
-    saude_beleza: 'o antes e depois que a pessoa quer mostrar pra alguém',
-    saude_bem_estar: 'o alívio de um incômodo que já virou rotina',
-    renda_extra: 'a primeira venda dentro da semana',
-    financas_investimento: 'sair do vermelho sem depender de sorte',
-    relacionamento: 'a conversa que reabre a porta',
-    desenvolvimento_pessoal: 'a virada de chave que a pessoa já tentou sozinha',
-    digital_afiliado: 'o atalho de quem já cansou de tentar no escuro',
-    concurso_educacao: 'a aprovação com o tempo que a pessoa realmente tem',
-    espiritualidade: 'o encontro diário que organiza o resto do dia',
-    outros: 'a dor específica que essa página escolheu atacar'
-  };
-  var gancho = ganchos[o.n] || ganchos.outros;
-
-  var evid = [];
-  if (o.sd) evid.push('gateway e rastreador carregando na mesma página');
-  if (o.v > 1) evid.push('reaparecendo em ' + o.v + ' caçadas diferentes');
-  if (o.a) evid.push('com link para pesquisar na Biblioteca Meta');
-  if (!evid.length) evid.push('página viva e acessível na última varredura');
-
-  return '<b>BIG IDEA</b>\n' +
-    'Essa operação de ' + nome + ' já resolveu a parte cara: tráfego chegando e checkout ' + gw + ' funcionando. ' +
-    'O ângulo aberto é ' + gancho + '.\n\n' +
-    '<b>EVIDÊNCIA QUE SUSTENTA A ABORDAGEM</b>\n' +
-    '· ' + evid.join('\n· ') + '\n' +
-    '· Score ' + o.s + ' na faixa ' + TIER_NOME[o.p] + (forte ? ', prioridade alta na fila' : ', vale como referência de ângulo') + '\n\n' +
-    '<b>GANCHO 1 · DOR</b>\n' +
-    '"Vi a sua página de ' + nome + ' rodando. Quantos visitantes chegam no checkout e somem sem comprar?"\n\n' +
-    '<b>GANCHO 2 · GANHO</b>\n' +
-    '"Sua oferta de ' + nome + ' já converte. Achei três pontos que seguram o ticket antes do pagamento."\n\n' +
-    '<b>GANCHO 3 · CURIOSIDADE</b>\n' +
-    '"Analisei ' + o.d + ' hoje. Tem um detalhe no seu funil que seu concorrente direto já corrigiu."\n\n' +
-    '<b>CORPO EM PAS</b>\n' +
-    'Problema: você paga por cada clique que chega em ' + o.d + ', e a página trabalha sozinha depois disso.\n' +
-    'Agitação: quem sai sem comprar leva junto o que você já gastou pra trazer essa pessoa. Sem recuperação, esse custo não volta.\n' +
-    'Solução: mapear a página e devolver a lista do que muda a taxa de conversão, na ordem de impacto.\n\n' +
-    '<b>CTA</b>\n' +
-    '"Se fizer sentido, eu te mando esse mapa em vídeo curto, sem custo. Quer que eu grave?"\n\n' +
-    '<b>PS</b>\n' +
-    '"Já apliquei isso em oferta de ' + nome + ' com o mesmo tipo de checkout. A diferença aparece no mesmo tráfego que você já compra."';
+  return '<b>REFERÊNCIA EM ANÁLISE</b>\n' + titulo + ' · Nicho: ' + nome + '\n\n' +
+    passos + '\n\n' +
+    '<b>CONTEXTO PARA O COPYWRITER</b>\n' +
+    'Registre o público que você quer atender, a promessa própria que consegue cumprir, o mecanismo que pretende usar e as provas que realmente possui. Inclua a brecha observada e peça um argumento original, sem copiar alegações da referência.\n\n' +
+    '<b>LEMBRETE</b>\n' +
+    'Score, recorrência e sinais técnicos ajudam a escolher o que investigar; não comprovam vendas, faturamento ou anúncios ativos.';
 }
 
 /* ── Drawer de raio-x ────────────────────────────────────────── */
 function abrirXray(o) {
   if (!o) return;
+  if (!$('xray').classList.contains('on')) state.xrayReturnFocus = document.activeElement;
   state.aberta = o;
-  if (window.AferoLiveMap) window.AferoLiveMap.focusOffer(o);
-  var sig = sinaisDaQuery(o.q), sinaisPersistidos = sinaisDaOferta(o);
-
-  $('xrTitle').textContent = o.t;
-  $('xrKind').textContent = 'Raio-x · ' + nichoNome(o.n);
-
-  var hero = o.sh
-    ? '<div class="xr-hero"><img src="' + esc(o.sh) + '" alt="Captura da página ' + esc(o.d) + '" onerror="this.parentElement.innerHTML=\'<div class=&quot;noshot&quot;>CAPTURA EXPIRADA NO URLSCAN</div>\'" /></div>'
-    : '<div class="xr-hero"><div class="noshot">SEM CAPTURA DISPONÍVEL</div></div>';
-
-  var celulas =
-    '<div class="xr-cell"><span>Prioridade</span><b class="hot">' + esc(TIER_NOME[o.p]) + '</b></div>' +
-    '<div class="xr-cell"><span>Score</span><b>' + o.s + '</b></div>' +
-    '<div class="xr-cell"><span>Gateway</span><b>' + esc(marca(sig.gw) || 'não detectado') + '</b></div>' +
-    '<div class="xr-cell"><span>Rastreador</span><b>' + esc(marca(sig.tr) || 'não detectado') + '</b></div>' +
-    '<div class="xr-cell"><span>Vezes vista</span><b>' + o.v + 'x</b></div>' +
-    '<div class="xr-cell"><span>Domínio</span><b style="font-size:12.5px;word-break:break-all">' + esc(o.d) + '</b></div>';
-
-  var sinais =
-    '<span class="sig ' + (o.sd ? 'yes' : 'no') + '">sinal duplo</span>' +
-    '<span class="sig ' + (o.v > 1 ? 'yes' : 'no') + '">reincidente</span>' +
-    '<span class="sig ' + (sinalAtivo(sinaisPersistidos, 'pixel_ads') ? 'yes' : 'no') + '">pixel técnico</span>' +
-    '<span class="sig ' + (sinalAtivo(sinaisPersistidos, 'new_builder') ? 'yes' : 'no') + '">inédita</span>' +
-    '<span class="sig ' + (sinalAtivo(sinaisPersistidos, 'escalado') ? 'yes' : 'no') + '">escalada</span>' +
-    '<span class="sig">status ' + esc(o.status || 'new') + '</span>' +
-    (o.lang ? '<span class="sig">idioma ' + esc(o.lang) + '</span>' : '') +
-    (o.dt ? '<span class="sig">scan ' + esc(o.dt) + '</span>' : '');
-
-  var roteiro = ROTEIRO_XRAY.map(function (passo, i) {
-    return '<div class="xr-step"><span class="xr-step-n">' + (i + 1) + '</span>' +
-      '<div><b>' + esc(passo.t) + '</b><p>' + esc(passo.d) + '</p></div></div>';
-  }).join('');
-
-  var vulnerabilidade = extrairVulnerabilidades(o);
-  var remodelBloco =
-    '<div class="xr-block">' +
-    '<div class="xr-lbl">Matriz de Remodelação Anti-Slop</div>' +
-    '<div class="xr-remodel-box">' +
-    '<div class="remodel-point">' +
-    '<span class="remodel-tag win">Ponto Forte do Concorrente</span>' +
-    '<p>' + esc(vulnerabilidade.win) + '</p>' +
-    '</div>' +
-    '<div class="remodel-point">' +
-    '<span class="remodel-tag gap">Brecha para sua Remodelação</span>' +
-    '<p>' + esc(vulnerabilidade.gap) + '</p>' +
-    '</div>' +
-    '</div></div>';
-
-  $('xrBody').innerHTML =
-    hero +
-    '<div class="xr-block"><div class="xr-lbl">Diagnóstico</div><div class="xr-grid">' + celulas + '</div></div>' +
-    '<div class="xr-block"><div class="xr-lbl">Sinais capturados</div><div class="signals">' + sinais + '</div>' +
-    '<p class="xr-nota">' +
-    'Os sinais persistidos descrevem a evidência disponível nesta oferta. A pesquisa na Biblioteca Meta não confirma anúncio em veiculação.</p></div>' +
-    remodelBloco +
-    '<div class="xr-block"><div class="xr-lbl">O que fazer com essa oferta</div><div class="xr-roteiro">' + roteiro + '</div></div>' +
-    '<div class="xr-block"><div class="xr-lbl">Abordagem do Copywriter <button id="xrCopy">copiar</button></div>' +
-    '<div class="script-box" id="xrScript">' + scriptDeAbordagem(o) + '</div></div>';
-
-  var site = $('xrSite'), ads = $('xrAds');
-  site.href = o.u || o.pv || '#';
-  if (o.a) { ads.href = o.a; ads.textContent = 'Pesquisar na Biblioteca Meta'; ads.style.display = ''; }
-  else { ads.href = '#'; ads.style.display = 'none'; }
-
-  $('xrCopy').addEventListener('click', function () {
-    var txt = $('xrScript').innerText;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(txt).then(function () { toast('Abordagem copiada'); },
-        function () { toast('O navegador bloqueou a cópia'); });
-    } else toast('Cópia indisponível neste navegador');
-  });
-
-  var salva = (o.status || '') === 'saved' || flagDaOferta(o) === 'salva';
-  $('xrSave').classList.toggle('on', salva);
-  $('xrSave').setAttribute('aria-pressed', String(salva));
-
-  var projeto = state.projetosLocais.filter(function (p) { return p.offerTitle === o.t; })[0];
-  var copyPronta = !!projeto && projeto.status !== 'copy-em-revisao';
-  var xrPages = $('xrPages');
-  xrPages.disabled = !copyPronta;
-  xrPages.title = copyPronta
-    ? 'Ver o andamento dessa remodelação no Painel'
-    : 'Disponível depois que a copy desta oferta for aprovada';
-
-  $('xray').classList.add('on');
-  $('xray').setAttribute('aria-hidden', 'false');
-  $('scrim').classList.add('on');
-  $('xrClose').focus();
-  if (window.AferoMotion) window.AferoMotion.revealXray($('xrBody'));
+  var sig = tecnologia(o), signals = sinaisDaOferta(o);
+  $('xrTitle').textContent = o.t; $('xrKind').textContent = 'Raio X · ' + nichoNome(o.n);
+  var hero = urlHttpSegura(o.sh) ? '<div class="xr-hero"><img src="' + esc(urlHttpSegura(o.sh)) + '" alt="Captura de ' + esc(o.d) + '" decoding="async" referrerpolicy="no-referrer"></div>' : '<div class="xr-hero"><div class="noshot">Sem captura disponível</div></div>';
+  var facts = [['Gateway',marca(sig.gw) || 'Não detectado'], ['Rastreador',marca(sig.tr) || 'Não detectado'], ['Observações',o.v == null ? 'Sem base acessível' : o.v + 'x vista'], ['Domínio',o.d], ['Coleta',o.dt || 'Não informada']];
+  var captured = [['double_signal','Gateway e rastreador'],['pixel_ads','Pixel técnico'],['vsl_player','Player de vídeo'],['funnel_quiz','Quiz'],['billing_tech_detected','Tecnologia de billing'],['subscription_verified','Assinatura verificada']].filter(function (v) { return sinalAtivo(signals,v[0]); }).map(function (v) { return '<span class="sig">' + esc(v[1]) + '</span>'; }).join('');
+  $('xrBody').innerHTML = hero + '<section class="xr-block"><h3 class="xr-lbl">' + (o.referenceOnly ? 'Página original disponível' : 'Diagnóstico da coleta') + '</h3><div class="hub-xr-diagnosis"><div><span>' + (o.id ? 'Score agregado' : 'Score da coleta') + '</span><strong class="hub-score">' + (o.s == null ? '·' : esc(o.s)) + '</strong></div><div><span>Prioridade</span><strong class="hub-xr-priority">' + esc(TIER_NOME[o.p] || 'Sem base acessível') + '</strong></div></div><dl class="hub-xr-facts">' + facts.map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl></section><section class="xr-block"><h3 class="xr-lbl">Sinais capturados</h3><div class="signals">' + (captured || '<p>Nenhum sinal adicional informado.</p>') + '</div><p class="xr-nota">Evidências técnicas da coleta. Elas não comprovam vendas, faturamento ou anúncios em veiculação.</p></section><section class="xr-block" id="xrHistory" hidden><h3 class="xr-lbl">Histórico de coletas</h3><div id="xrHistoryContent"></div></section>' + (o.referenceOnly ? '' : '<details class="xr-block"><summary>Refletir e planejar a remodelação</summary><p class="xr-nota">Analise a referência, escolha uma brecha relevante e prepare um briefing próprio. Confirme suas observações na página original.</p><div class="script-box" id="xrScript">' + scriptDeAbordagem(o) + '</div><button type="button" class="btn" id="xrCopy">Copiar roteiro</button></details>');
+  var image = $('xrBody').querySelector('img'); if (image) image.addEventListener('error',function () { var p=document.createElement('div');p.className='noshot';p.textContent='Captura indisponível';image.replaceWith(p); },{once:true});
+  var site=$('xrSite'), url=urlHttpSegura(o.u); site.hidden=!url; if(url)site.href=url;else site.removeAttribute('href');
+  var ads=$('xrAds');ads.hidden=!urlHttpSegura(o.a);if(!ads.hidden)ads.href=urlHttpSegura(o.a);else ads.removeAttribute('href');
+  var copy=$('xrCopy');if(copy)copy.addEventListener('click',function(){copiarTexto($('xrScript').textContent,'Roteiro copiado');});
+  sincronizarFavoritosUI();
+  var project=state.projetosLocais.find(function(p){return p.offerTitle===o.t;});
+  $('xrModel').disabled=!!o.referenceOnly; $('xrPages').disabled=!project || project.status==='copy-em-revisao';
+  $('xray').inert=false; $('xray').classList.add('on');$('xray').setAttribute('aria-hidden','false');$('scrim').classList.add('on');
+  $('xrBody').scrollTop=0;bloquearFundo(true);$('xrClose').focus({preventScroll:true});
+  carregarHistorico(o);
 }
 
 function fecharXray() {
-  $('xray').classList.remove('on');
-  $('xray').setAttribute('aria-hidden', 'true');
-  $('scrim').classList.remove('on');
-  state.aberta = null;
-  if (window.AferoLiveMap) window.AferoLiveMap.focusOffer('');
+  var wasOpen=$('xray').classList.contains('on');
+  $('xray').classList.remove('on');$('xray').inert=true;$('xray').setAttribute('aria-hidden','true');$('scrim').classList.remove('on');state.aberta=null;
+  if(wasOpen){bloquearFundo(false);var focus=state.xrayReturnFocus;state.xrayReturnFocus=null;if(focus && focus.isConnected)focus.focus({preventScroll:true});else $('q').focus({preventScroll:true});}
 }
 
 /* ── Modais de protocolo dos agentes ─────────────────────────── */
@@ -2280,8 +1857,9 @@ function irPara(nome) {
   for (var i = 0; i < tabs.length; i++) {
     var on = tabs[i].getAttribute('data-view') === nome;
     tabs[i].classList.toggle('on', on);
-    tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
+    tabs[i].setAttribute('aria-selected', on ? 'true' : 'false'); tabs[i].tabIndex=on?0:-1;
   }
+  atualizarCapsula();
   var views = document.querySelectorAll('.view');
   var ativa = null;
   var jaEstavaAberta = false;
@@ -2299,62 +1877,61 @@ function irPara(nome) {
     window.AferoMotion.revealView(ativa);
   }
   if (descerAoCatalogo) {
-    var alvo = $('catalogoSec');
+    var alvo = $('catalogoSec').hidden ? $('importSection') : $('catalogoSec');
     if (alvo) {
       if (window.AferoMotion && window.AferoMotion.settle) window.AferoMotion.settle(alvo);
-      alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      alvo.scrollIntoView({ behavior: obMovimentoReduzido() ? 'auto' : 'smooth', block: 'start' });
       return;
     }
   }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: obMovimentoReduzido() ? 'auto' : 'smooth' });
 }
 
 /* ── Importação de CSV ───────────────────────────────────────── */
-function carregarTexto(txt, origem) {
-  var linhas = parseCSV(txt);
-  if (!linhas.length) { toast('Não encontrei linhas nesse arquivo'); return; }
-  var novas = [];
-  for (var i = 0; i < linhas.length; i++) {
-    var o = normalizar(linhas[i]);
-    if (o.d || o.u) novas.push(o);
-  }
-  if (!novas.length) { toast('O arquivo não tem as colunas do Caçador'); return; }
-
-  state.ofertas = novas;
-  state.mapaComDadosReais = true;
-  resetarFiltrosCatalogo();
-
-  pintarStats(); pintarRail(); aplicar();
-  try { localStorage.setItem('afero-hub-has-import', '1'); } catch (_) {}
-  $('footStamp').textContent = origem + ' · ' + novas.length + ' ofertas em memória';
-  toast(novas.length + ' ofertas carregadas do seu CSV');
-  exigirCalibragemDaConta();
+async function lerArquivoLocal(file) {
+  var epoch=++state.importEpoch;statusImport('Lendo e validando o CSV…',true);
+  try {
+    var parsed=await window.AferoCSV.read(file);
+    var novas=[];
+    for(var i=0;i<parsed.rows.length;i++){novas.push(ofertaCSV(parsed.rows[i]));if(i && i%250===0)await new Promise(function(resolve){setTimeout(resolve,0);});}
+    if(epoch!==state.importEpoch)return;
+    state.ofertas=novas;state.mapaComDadosReais=true;state.baseName=file.name;resetarFiltrosCatalogo();pintarStats();pintarRail();aplicar();
+    $('footStamp').textContent=file.name+' · '+novas.length+' ofertas em memória neste navegador';
+    statusImport(novas.length+' ofertas carregadas'+(parsed.meta.duplicateRows?' · '+parsed.meta.duplicateRows+' duplicadas consolidadas':''));
+    atualizarPainel();irPara('catalogo');
+  }catch(error){if(epoch===state.importEpoch && error.name!=='AbortError'){statusImport(error.message);toast(error.message);}}
+  finally{if(epoch===state.importEpoch)statusImport(null,false);}
 }
-
-function lerArquivoLocal(file) {
-  if (!file) return;
-  if (!/\.csv$/i.test(file.name)) { toast('Envie o arquivo .csv da caçada'); return; }
-  var fr = new FileReader();
-  fr.onload = function () { carregarTexto(String(fr.result), file.name); };
-  fr.onerror = function () { toast('Falha ao ler o arquivo'); };
-  fr.readAsText(file, 'utf-8');
-}
-function lerArquivo(file) {
-  if (!file) return;
-  if (!state.cloud.user) {
-    exigirSessao('import', function () { lerArquivo(file); }, $('csvInput'), function () { lerArquivoLocal(file); });
-    return;
-  }
-  if (state.cloud.accessStatus === 'purchase_required') { toast('Aguarde a confirmação da compra para importar caçadas.'); return; }
-  if (!state.cloud.workspaceId || !/^(owner|admin|editor)$/.test(state.cloud.role)) { toast('Sua conta não tem permissão para importar neste workspace.'); return; }
-  var cloud = state.cloud;
-  cloud.loading = true; atualizarControlesCatalogoCloud();
-  state.cloud.client.importHunt({ workspaceId: state.cloud.workspaceId, file: file }).then(function () {
-    resetarFiltrosCatalogo();
-    toast('Arquivo enviado para processamento.');
-    cloud.loading = false;
-    return carregarPrimeiraPagina({ epoch: state.cloud.requestEpoch }).then(exigirCalibragemDaConta);
-  }).catch(function (error) { definirErroCloud(error); }).finally(function () { cloud.loading = false; atualizarControlesCatalogoCloud(); });
+async function lerArquivo(file) {
+  if(!file)return;
+  if(!state.radarProfile){abrirRadarOnboarding(1,{obrigatorio:true});return;}
+  if(!/\.csv$/i.test(file.name)||!file.size||file.size>5*1024*1024){statusImport('Selecione um CSV de até 5 MiB.');return;}
+  if(!state.cloud.user){if(!state.cloud.enabled)return lerArquivoLocal(file);exigirSessao('import',function(){lerArquivo(file);},$('drop'),function(){lerArquivoLocal(file);});return;}
+  if(state.cloud.accessStatus==='purchase_required'){toast('Aguarde a confirmação da compra para importar.');return;}
+  if(!state.cloud.workspaceId || !/^(owner|admin|editor)$/.test(state.cloud.role)){toast('Sua conta não tem permissão para importar neste workspace.');return;}
+  var cloud=state.cloud, operation=++state.importEpoch, authEpoch=cloud.authEpoch, workspaceId=cloud.workspaceId, userId=cloud.user.id;
+  function importAtual(){return operation===state.importEpoch && authEpoch===cloud.authEpoch && cloud.workspaceId===workspaceId && cloud.user && cloud.user.id===userId;}
+  statusImport('Validando o CSV…',true);
+  try {
+    await window.AferoCSV.read(file);
+    if(!importAtual())return;
+    statusImport('Importando na sua conta…',true);
+    var result = await cloud.client.importHunt({workspaceId:workspaceId,file:file});
+    if(!importAtual())return;
+    if (!result || !result.hunt_id) throw new Error('O servidor não informou a caçada importada. Recarregue o painel para conferir.');
+    if (cloud.controller) cloud.controller.abort();
+    cloud.controller = new AbortController();cloud.requestEpoch++;cloud.loading=false;cloud.loadingMore=false;cloud.paging=false;cloud.initializing=false;
+    cloud.huntId=result.hunt_id;cloud.huntName=file.name;cloud.catalogScope='hunt';cloud.offersCursor=null;cloud.offersTotal=null;
+    resetarFiltrosCatalogo();state.baseName=file.name;
+    state.ofertas=[];state.filtradas=[];pintarStats();pintarRail();aplicar();
+    var refreshed=await carregarPrimeiraPagina({epoch:cloud.requestEpoch});
+    if(!importAtual())return;
+    await carregarFavoritas();
+    if(!importAtual())return;
+    statusImport(refreshed ? (result.duplicate ? 'Este CSV já estava na conta. Exibindo essa caçada.' : 'Caçada importada na sua conta. Exibindo as ofertas deste CSV.') : 'O CSV foi salvo na conta, mas não foi possível carregar a caçada. Tente recarregar o painel.');
+    atualizarPainel();irPara('catalogo');
+  }catch(error){if(importAtual()){var detail=error.code||error.status ? mensagemCloud(error) : error.message; if(error.request_id)detail+=' Referência: '+error.request_id+'.';statusImport(detail);toast(detail);}}
+  finally{if(importAtual())statusImport(null,false);}
 }
 
 /* ── Ligações de interface ───────────────────────────────────── */
@@ -2395,15 +1972,27 @@ function ligarEventos() {
     event.preventDefault();
     var cloud = state.cloud, mode = cloud.authMode, email = $('authEmail').value.trim(), password = $('authPassword').value;
     if (mode === 'confirmation-pending') { fecharAuth(); return; }
-    if (mode !== 'recovery-request' && password.length < 12) { definirErroCloud({ code: 'password_too_short' }); return; }
+    if (cloud.authBusy) return;
+    if (mode !== 'recovery-request' && mode !== 'recovery-confirm' && !password) { $('cloudErrorRef').textContent = 'Informe sua senha.'; return; }
     if ((mode === 'signup' || mode === 'recovery-update') && !senhaForte(password)) { definirErroCloud({ code: 'weak_password' }); return; }
-    if (mode !== 'recovery-update' && !email) { definirErroCloud(); return; }
+    if (mode !== 'recovery-update' && mode !== 'recovery-confirm' && (!email || !$('authEmail').checkValidity())) { definirErroCloud({ code: 'email_address_invalid' }); return; }
+    cloud.authBusy = true;
+    ['authSubmit', 'authToggle', 'authRecovery', 'authGoogle'].forEach(function (id) { $(id).disabled = true; });
+    $('authForm').setAttribute('aria-busy', 'true');
     try {
-      if (mode === 'signup') { var created = await cloud.client.signUp({ email: email, password: password, fullName: $('authName').value }); if (created.confirmationPending) { abrirAuth('confirmation-pending'); return; } await aplicarEventoAuth({ event: 'SIGNED_IN', session: created.session, user: created.user }); }
-      else if (mode === 'recovery-request') { await cloud.client.sendPasswordReset(email); $('cloudErrorRef').textContent = 'Se houver uma conta compatível, enviaremos as instruções.'; }
-      else if (mode === 'recovery-update') { await cloud.client.updatePassword(password); fecharAuth(); }
-      else { var signedIn = await cloud.client.signInWithPassword({ email: email, password: password }); await aplicarEventoAuth({ event: 'SIGNED_IN', session: signedIn.session, user: signedIn.user }); }
-    } catch (error) { definirErroCloud(error); }
+      var captchaToken = ['signin','signup','recovery-request'].includes(mode) && window.AferoAuthChallenge ? window.AferoAuthChallenge.getToken() : undefined;
+      if (mode === 'signup') { var created = await cloud.client.signUp({ email: email, password: password, fullName: $('authName').value, captchaToken: captchaToken }); if (created.confirmationPending) { abrirAuth('confirmation-pending'); return; } await aplicarEventoAuth({ event: 'SIGNED_IN', session: created.session, user: created.user }); }
+      else if (mode === 'recovery-request') { await cloud.client.sendPasswordReset(email, captchaToken); $('cloudErrorRef').textContent = 'Se houver uma conta compatível, enviaremos as instruções.'; }
+      else if (mode === 'recovery-confirm') { var recovered = await cloud.client.verifyPasswordRecovery(); await aplicarEventoAuth({ event: 'PASSWORD_RECOVERY', session: recovered.session, user: recovered.user }); }
+      else if (mode === 'recovery-update') { await cloud.client.updatePassword(password); fecharAuth(); await aplicarEventoAuth({ event: 'SIGNED_IN', session: cloud.client.currentSession(), user: cloud.client.currentUser() }); }
+      else { var signedIn = await cloud.client.signInWithPassword({ email: email, password: password, captchaToken: captchaToken }); await aplicarEventoAuth({ event: 'SIGNED_IN', session: signedIn.session, user: signedIn.user }); }
+    } catch (error) { if (mode === 'recovery-confirm') abrirAuth('recovery-request'); definirErroCloud(error); }
+    finally {
+      cloud.authBusy = false;
+      if (window.AferoAuthChallenge) window.AferoAuthChallenge.reset();
+      ['authSubmit', 'authToggle', 'authRecovery', 'authGoogle'].forEach(function (id) { $(id).disabled = false; });
+      $('authForm').removeAttribute('aria-busy');
+    }
   });
 
   document.querySelectorAll('.tab').forEach(function (t) {
@@ -2420,7 +2009,7 @@ function ligarEventos() {
       if (!target) return;
       if (!target.classList.contains('on')) irPara('painel');
       target.focus({ preventScroll: true });
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      target.scrollIntoView({ behavior: obMovimentoReduzido() ? 'auto' : 'smooth', block: 'start' });
     });
   }
   document.querySelectorAll('[data-go]').forEach(function (b) {
@@ -2430,68 +2019,15 @@ function ligarEventos() {
     b.addEventListener('click', function () { abrirModal(b.getAttribute('data-modal')); });
   });
 
-  var importTopbar = document.querySelector('[data-import-topbar]');
-  if (importTopbar) {
-    importTopbar.addEventListener('click', function () {
-      irPara('painel');
-      var input = $('csvInput');
-      if (input) input.click();
-      setTimeout(function () {
-        var dropTarget = $('drop');
-        if (dropTarget) dropTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 120);
-    });
-  }
-  var importMap = document.querySelector('[data-import-map]');
-  if (importMap && importTopbar) importMap.addEventListener('click', function () { importTopbar.click(); });
-  var importFallback = document.querySelector('[data-import-fallback]');
-  if (importFallback) {
-    importFallback.addEventListener('click', function () {
-      var input = $('csvInput');
-      if (input) input.click();
-    });
-  }
+  function irImportacao(){irPara('painel');var target=$('importSection');if(window.AferoMotion)window.AferoMotion.settle(target);target.scrollIntoView({behavior:obMovimentoReduzido()?'auto':'smooth',block:'center'});}
+  document.querySelector('[data-import-topbar]').addEventListener('click',function(){if(!state.radarProfile){abrirRadarOnboarding(1,{obrigatorio:true});return;}irImportacao();$('csvInput').click();});
+  document.querySelector('[data-import-now]').addEventListener('click',function(){irImportacao();$('drop').focus({preventScroll:true});});
+  function abrirGuia(){irPara('painel');$('huntGuide').open=true;if(window.AferoMotion)window.AferoMotion.settle($('huntGuide'));$('huntGuide').scrollIntoView({behavior:obMovimentoReduzido()?'auto':'smooth',block:'center'});}
+  document.querySelector('[data-start-hunt]').addEventListener('click',abrirGuia);
+  document.querySelector('[data-guide]').addEventListener('click',abrirGuia);
+  $('footerProfile').addEventListener('click',function(){abrirRadarOnboarding(1,{obrigatorio:!state.radarProfile});});
+  document.querySelector('.hub-brand').addEventListener('click',function(e){e.preventDefault();irPara('painel');});
 
-  $('agentDrawerClose').addEventListener('click', function () {
-    if (window.AferoLiveMap) window.AferoLiveMap.focusAgent('');
-    else selecionarAgenteMapa(null);
-  });
-  $('agentDrawerAction').addEventListener('click', function () {
-    var targetView = this.dataset.agentView;
-    if (targetView) irPara(targetView);
-  });
-
-  var startHunt = document.querySelector('[data-start-hunt]');
-  if (startHunt) {
-    startHunt.addEventListener('click', function () {
-      irPara('comece');
-      setTimeout(function () {
-        var alvo = document.querySelector('.gstep[data-step="1"]');
-        if (alvo) alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 180);
-    });
-  }
-  var importNow = document.querySelector('[data-import-now]');
-  if (importNow) {
-    importNow.addEventListener('click', function () {
-      irPara('catalogo');
-      setTimeout(function () { var drop = $('drop'); if (drop) drop.focus(); }, 420);
-    });
-  }
-
-  document.querySelectorAll('[data-hunt-stage]').forEach(function (card) {
-    card.addEventListener('click', function () {
-      document.querySelectorAll('[data-hunt-stage]').forEach(function (item) {
-        var ativo = item === card;
-        item.classList.toggle('is-active', ativo);
-        item.setAttribute('aria-pressed', ativo ? 'true' : 'false');
-      });
-      var etapa = card.getAttribute('data-hunt-stage');
-      if (etapa === 'cacar') irPara('comece');
-      if (etapa === 'importar') irPara('catalogo');
-      if (window.AferoMotion && window.AferoMotion.activateCard) window.AferoMotion.activateCard(card);
-    });
-  });
 
   document.querySelectorAll('.gstep-head').forEach(function (h) {
     h.setAttribute('role', 'button');
@@ -2520,7 +2056,7 @@ function ligarEventos() {
     if (!c) return;
     state.nicho = c.getAttribute('data-n');
     pintarRail();
-    aplicar();
+    aplicarOuRecarregarCloud();
   });
 
   $('fTier').addEventListener('change', function () {
@@ -2544,7 +2080,7 @@ function ligarEventos() {
 
   $('fSort').addEventListener('change', function () {
     state.ordem = this.value;
-    aplicar();
+    aplicarOuRecarregarCloud();
   });
 
   $('fStatus').addEventListener('click', function (e) {
@@ -2555,51 +2091,40 @@ function ligarEventos() {
     var ativo = v === 'hide-discarded' ? state.ocultarDescartadas : state.soSalvas;
     b.classList.toggle('on', ativo);
     b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
-    aplicar();
+    aplicarOuRecarregarCloud();
   });
 
   var buscaTimer;
   $('q').addEventListener('input', function () {
     var v = this.value;
     clearTimeout(buscaTimer);
-    buscaTimer = setTimeout(function () { state.busca = v; aplicar(); }, 130);
+    buscaTimer = setTimeout(function () { state.busca = v; if(state.onlyFavorites)aplicar();else aplicarOuRecarregarCloud(); }, 130);
   });
 
   $('vGrid').addEventListener('click', function () {
     state.vista = 'grid';
     $('vGrid').classList.add('on'); $('vTable').classList.remove('on');
     $('vGrid').setAttribute('aria-pressed', 'true'); $('vTable').setAttribute('aria-pressed', 'false');
-    $('grid').classList.remove('off'); $('tableWrap').classList.remove('on');
+    pintarCatalogo();
   });
   $('vTable').addEventListener('click', function () {
     state.vista = 'table';
     $('vTable').classList.add('on'); $('vGrid').classList.remove('on');
     $('vTable').setAttribute('aria-pressed', 'true'); $('vGrid').setAttribute('aria-pressed', 'false');
-    $('grid').classList.add('off'); $('tableWrap').classList.add('on');
+    pintarCatalogo();
   });
 
-  function abrirPorIndice(el) {
-    var i = parseInt(el.getAttribute('data-i'), 10);
-    if (!isNaN(i) && state.filtradas[i]) abrirXray(state.filtradas[i]);
-  }
-  $('grid').addEventListener('click', function (e) {
-    var c = e.target.closest('.offer'); if (c) abrirPorIndice(c);
-  });
-  $('grid').addEventListener('keydown', function (e) {
-    if (e.key !== 'Enter' && e.key !== ' ') return;
-    var c = e.target.closest('.offer'); if (c) { e.preventDefault(); abrirPorIndice(c); }
-  });
-  $('tbody').addEventListener('click', function (e) {
-    var r = e.target.closest('tr'); if (r) abrirPorIndice(r);
-  });
-  $('tbody').addEventListener('keydown', function (e) {
-    if (e.key !== 'Enter') return;
-    var r = e.target.closest('tr'); if (r) abrirPorIndice(r);
-  });
+  function acaoOferta(event){var button=event.target.closest('button[data-inspect],button[data-favorite],button[data-share]');if(!button)return;var item=button.closest('[data-i]'),o=item && state.filtradas[Number(item.dataset.i)];if(!o)return;if(button.hasAttribute('data-favorite'))alternarFavorita(o,button);else if(button.hasAttribute('data-share'))compartilharOferta(o,button);else abrirXray(o);}
+  $('grid').addEventListener('click',acaoOferta);$('tbody').addEventListener('click',acaoOferta);
+  $('pagePrevious').addEventListener('click',function(){state.page--;pintarCatalogo();});$('pageNext').addEventListener('click',proximaPagina);
+  $('catalogScope').addEventListener('change',function(){state.cloud.catalogScope=this.value==='hunt'&&state.cloud.huntId?'hunt':'all';state.baseName=state.cloud.catalogScope==='hunt'?state.cloud.huntName:'';aplicarOuRecarregarCloud();});
+  $('favoritesFilter').addEventListener('click',async function(){if(!state.cloud.user){abrirAuth('signin',this);return;}state.onlyFavorites=!state.onlyFavorites;this.setAttribute('aria-pressed',String(state.onlyFavorites));aplicar();if(state.onlyFavorites)await carregarFavoritas();});
+
 
   $('xrClose').addEventListener('click', fecharXray);
   $('xrModel').addEventListener('click', function () { exigirSessao('project', function () { abrirProjeto(state.aberta); }, $('xrModel')); });
-  $('xrSave').addEventListener('click', function () { exigirSessao('save', function () { if (state.aberta.id) salvarDecisao(state.aberta, { status: 'saved' }); else { alternarFlag(state.aberta, 'salva'); abrirXray(state.aberta); } }, $('xrSave')); });
+  $('xrSave').addEventListener('click',function(){alternarFavorita(state.aberta,this);});
+  $('xrShare').addEventListener('click',function(){compartilharOferta(state.aberta,this);});
   $('xrDiscard').addEventListener('click', function () {
     exigirSessao('discard', function () { if (state.aberta.id) salvarDecisao(state.aberta, { status: 'discarded' }); else { alternarFlag(state.aberta, 'descartada'); fecharXray(); toast('Oferta descartada'); } }, $('xrDiscard'));
   });
@@ -2611,7 +2136,7 @@ function ligarEventos() {
     setTimeout(function () {
       var card = document.querySelector('.local-project[data-offer="' + CSS.escape(titulo) + '"]');
       if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.scrollIntoView({ behavior: obMovimentoReduzido() ? 'auto' : 'smooth', block: 'center' });
         card.classList.add('flash');
         setTimeout(function () { card.classList.remove('flash'); }, 1200);
       }
@@ -2632,22 +2157,28 @@ function ligarEventos() {
   });
 
   document.addEventListener('keydown', function (e) {
+    if (e.key === 'Tab' && !$('authModal').hidden) {
+      var fields = Array.from($('authModal').querySelectorAll('button, input, a[href], [tabindex]')).filter(function (field) {
+        return !field.disabled && field.tabIndex >= 0 && field.getClientRects().length > 0;
+      });
+      var first = fields[0], last = fields[fields.length - 1];
+      if (fields.length && (e.shiftKey && document.activeElement === first || !e.shiftKey && document.activeElement === last || !$('authModal').contains(document.activeElement))) {
+        e.preventDefault(); (e.shiftKey ? last : first).focus();
+      }
+    }
     if (e.key === 'Escape') {
       fecharXray(); fecharModal(); fecharProjeto(); fecharAuth();
       /* fecharRadarOnboarding ignora o pedido quando a calibragem é
          obrigatória, então a conta nova não escapa pelo teclado. */
       fecharRadarOnboarding();
       if (window.AferoLiveMap) window.AferoLiveMap.focusAgent('');
-      else selecionarAgenteMapa(null);
+
     }
   });
 
   // Importação por clique, teclado e arraste
   var drop = $('drop'), input = $('csvInput');
-  drop.addEventListener('click', function () { input.click(); });
-  drop.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
-  });
+  drop.addEventListener('click', function () { if(!state.radarProfile){abrirRadarOnboarding(1,{obrigatorio:true});return;}input.click(); });
   input.addEventListener('change', function () { lerArquivo(this.files[0]); this.value = ''; });
 
   ['dragenter', 'dragover'].forEach(function (ev) {
@@ -2684,35 +2215,7 @@ function ligarBloqueio() {
 /* ══════════════════════════════════════════════════════════════════
    PRELOADER E PARTIDA
    ══════════════════════════════════════════════════════════════════ */
-var PASSOS = [
-  { pct: 18, txt: 'Indexando base local', log: 'ofertas lidas em memória' },
-  { pct: 42, txt: 'Conectando etapas de execução', log: 'copy e páginas disponíveis' },
-  { pct: 68, txt: 'Organizando o painel de ofertas', log: 'registros distribuídos por prioridade' },
-  { pct: 88, txt: 'Conferindo sinais técnicos', log: 'evidências registradas no catálogo' },
-  { pct: 100, txt: 'Painel pronto', log: 'fluxo de decisão ativo' }
-];
 
-function rodarBoot(aoTerminar) {
-  var fill = $('bootFill'), step = $('bootStep'), pct = $('bootPct'), log = $('bootLog');
-  var i = 0;
-  function proximo() {
-    if (i >= PASSOS.length) {
-      setTimeout(function () {
-        $('boot').classList.add('done');
-        if (aoTerminar) aoTerminar();
-      }, 340);
-      return;
-    }
-    var p = PASSOS[i++];
-    fill.style.width = p.pct + '%';
-    pct.textContent = p.pct + '%';
-    step.textContent = p.txt;
-    log.insertAdjacentHTML('beforeend', '<div><b>ok</b> · ' + p.log + '</div>');
-    log.scrollTop = log.scrollHeight;
-    setTimeout(proximo, 210 + Math.random() * 150);
-  }
-  proximo();
-}
 
 /* ══════════════════════════════════════════════════════════════════
    RADAR DE OPERAÇÃO & ONBOARDING INTERATIVO
@@ -2728,12 +2231,7 @@ function chaveRadar() {
 }
 
 function carregarRadarProfile() {
-  try {
-    var raw = localStorage.getItem(chaveRadar());
-    return raw ? JSON.parse(raw) : null;
-  } catch (_) {
-    return null;
-  }
+  try{var p=JSON.parse(localStorage.getItem(chaveRadar())||'null');return p && ['white','grey','black'].includes(p.aggressiveness) && Array.isArray(p.niches) && p.niches.length>=1 && p.niches.length<=3 && p.niches.every(function(n){return Object.prototype.hasOwnProperty.call(NICHO_NOME,n);}) && ['vsl','frontend','saas','quiz'].includes(p.vehicle) && ['traffic','content','suite'].includes(p.strength) ? p : null;}catch(_){return null;}
 }
 
 function salvarRadarProfile(p) {
@@ -2747,37 +2245,11 @@ function salvarRadarProfile(p) {
 
 /* Calibragem só usa o acervo importado. O Hub segue acessível sem CSV. */
 function exigirCalibragemDaConta() {
-  var user = state.cloud && state.cloud.user;
-  if (user && user.id) state.radarProfile = carregarRadarProfile();
-  atualizarHeaderRadar();
-  if (!poolOnboarding().length) { fecharRadarOnboarding(true); return; }
-  if (state.radarProfile && state.radarProfile.niches && state.radarProfile.niches.length) return;
-  irPara('painel');
-  abrirRadarOnboarding(1);
+  state.radarProfile=carregarRadarProfile();atualizarHeaderRadar();atualizarPainel();
+  if(!state.radarProfile && !$('onboardingModal').classList.contains('on')){irPara('painel');abrirRadarOnboarding(1,{obrigatorio:true});}
 }
 
-function atualizarHeaderRadar() {
-  var btn = $('radarButton');
-  var lbl = $('radarLabel');
-  if (!btn || !lbl) return;
-  var p = state.radarProfile;
-  var temAcervo = poolOnboarding().length > 0;
-  btn.disabled = !temAcervo;
-  if (!temAcervo) {
-    lbl.textContent = 'Radar · importe CSV';
-    btn.title = 'Importe seu primeiro CSV para calibrar o radar';
-    return;
-  }
-  if (!p || !p.niches || !p.niches.length) {
-    lbl.textContent = 'Calibrar Radar';
-    btn.title = 'Clique para calibrar seu radar de ofertas';
-  } else {
-    var aggrNome = p.aggressiveness === 'white' ? 'White Hat' : p.aggressiveness === 'black' ? 'Black Hat' : 'Grey Hat';
-    var nLabel = nichoNome(p.niches[0]);
-    lbl.textContent = 'Radar calibrado';
-    btn.title = 'Radar ativo: ' + aggrNome + ' (' + p.niches.map(nichoNome).join(', ') + '). Clique para recalibrar.';
-  }
-}
+function atualizarHeaderRadar(){ $('radarButton').disabled=false;$('radarLabel').textContent=state.radarProfile?'Recalibrar perfil':'Configurar perfil'; }
 
 function classificarAgressividade(o) {
   var t = (o.t || '').toLowerCase();
@@ -2884,7 +2356,7 @@ function atualizarConvergencia() {
   var wrap = $('obConvergence'), el = $('obConvergenceN');
   if (!wrap || !el) return;
   var passo = obState.currentStep;
-  if (passo < 1 || passo > 4) { wrap.hidden = true; return; }
+  if (!poolOnboarding().length || passo < 1 || passo > 4) { wrap.hidden = true; return; }
   wrap.hidden = false;
   obAnimarNumero(el, convergirOfertas().length);
 }
@@ -2902,63 +2374,23 @@ function pintarDensidadeNichos() {
   grid.querySelectorAll('.ob-niche-card').forEach(function (card) {
     var qtd = porNicho[card.getAttribute('data-niche')] || 0;
     var tag = card.querySelector('[data-count]');
+    if(tag)tag.hidden=!poolOnboarding().length;
     if (tag) tag.textContent = qtd === 1 ? '1 oferta' : qtd + ' ofertas';
-    card.classList.toggle('is-empty', qtd === 0);
+    card.classList.toggle('is-empty', poolOnboarding().length > 0 && qtd === 0);
   });
 }
 
 /* Tela 5, fase A: calibragem. Cada linha mostra um número calculado de
    verdade, sem barra falsa de porcentagem. */
-function rodarCalibragem(aoTerminar) {
-  var box = $('obCalibrate'), log = $('obCalibrateLog'), dossie = $('obDossier');
-  if (!box || !log || !dossie) { if (aoTerminar) aoTerminar(); return; }
-
-  var pool = poolOnboarding();
-  var porNicho = pool.filter(function (o) { return obState.niches.indexOf(o.n) !== -1; });
-  var porPostura = porNicho.filter(function (o) {
-    return classificarAgressividade(o) === obState.aggressiveness;
-  });
-  var nomesNicho = obState.niches.map(nichoNome).join(', ');
-
-  var linhas = [
-    ['lendo perfil local', 'ok'],
-    ['cruzando ofertas mineradas', String(pool.length)],
-    ['filtrando por nicho: ' + nomesNicho, String(porNicho.length)],
-    ['aplicando postura: ' + (OB_POSTURA[obState.aggressiveness] || 'grey hat'), String(porPostura.length)],
-    ['ordenando por score e reincidência', 'ok'],
-    ['dossiê pronto', 'ok']
-  ];
-
-  log.innerHTML = linhas.map(function (l) {
-    return '<div><span>' + esc(l[0]) + '</span><b>' + esc(l[1]) + '</b></div>';
-  }).join('');
-
-  var itens = Array.prototype.slice.call(log.querySelectorAll('div'));
-  box.hidden = false;
-  dossie.hidden = true;
-
-  function concluir() {
-    box.hidden = true;
-    dossie.hidden = false;
-    if (aoTerminar) aoTerminar();
-  }
-
-  if (obMovimentoReduzido()) {
-    itens.forEach(function (d) { d.classList.add('on'); });
-    concluir();
-    return;
-  }
-
-  itens.forEach(function (d, i) { obAgendar(function () { d.classList.add('on'); }, 180 * i); });
-  obAgendar(concluir, 180 * itens.length + 320);
-}
+function rodarCalibragem(aoTerminar){$('obCalibrate').hidden=true;$('obDossier').hidden=false;if(aoTerminar)aoTerminar();}
 
 function abrirRadarOnboarding(passoInicial, opcoes) {
-  if (!poolOnboarding().length) { toast('Importe seu primeiro CSV para calibrar o radar'); return; }
+
   var m = $('onboardingModal');
   if (!m) return;
   obObrigatorio = !!(opcoes && opcoes.obrigatorio);
   m.classList.toggle('is-required', obObrigatorio);
+  state.onboardReturnFocus=document.activeElement;m.inert=false;bloquearFundo(true);
   m.classList.add('on');
   m.setAttribute('aria-hidden', 'false');
 
@@ -2984,7 +2416,7 @@ function fecharRadarOnboarding(forcar) {
   obObrigatorio = false;
   var m = $('onboardingModal');
   if (!m) return;
-  m.classList.remove('on', 'is-required');
+  m.inert=true; m.classList.remove('on', 'is-required');bloquearFundo(false);var focus=state.onboardReturnFocus;if(focus && focus.isConnected)focus.focus({preventScroll:true});
   m.setAttribute('aria-hidden', 'true');
 }
 
@@ -3011,7 +2443,7 @@ function irParaPassoOnboarding(passo) {
 
   var ind = $('obStepIndicator');
   if (ind) {
-    if (passo === 5) ind.textContent = 'DOSSIÊ CONCLUÍDO';
+    if (passo === 5) ind.textContent = 'PERFIL CONFIGURADO';
     else ind.textContent = 'ETAPA 0' + passo + ' DE 04';
   }
 
@@ -3023,6 +2455,7 @@ function irParaPassoOnboarding(passo) {
     $('onboardingModal').setAttribute('aria-labelledby', tituloAtivo.id);
   }
 
+  var focus=document.querySelector('.ob-step.on .ob-title');if(focus){focus.tabIndex=-1;focus.focus({preventScroll:true});}
   var corpo = document.querySelector('.ob-body');
   if (corpo) corpo.scrollTop = 0;
 
@@ -3057,99 +2490,11 @@ function atualizarContadorNichos() {
 /* Tela 5, fase B: o dossiê. Prefere as ofertas que batem com nicho e
    postura; se a postura estreitar demais, cai para o nicho puro em vez
    de devolver lista curta. */
-function gerarDossieOnboarding() {
-  var pool = poolOnboarding();
-  var doNicho = pool.filter(function (o) { return obState.niches.indexOf(o.n) !== -1; });
-  var daPostura = doNicho.filter(function (o) {
-    return classificarAgressividade(o) === obState.aggressiveness;
-  });
-
-  var candidatas = daPostura.length >= 3 ? daPostura : (doNicho.length ? doNicho : pool.slice());
-  candidatas = candidatas.slice().sort(function (a, b) { return (b.s - a.s) || (b.v - a.v); });
-  var top = candidatas.slice(0, 3);
-
-  var maiorScore = pool.reduce(function (m, o) { return o.s > m ? o.s : m; }, 1);
-
-  var badge = $('obProfileBadge');
-  if (badge) {
-    var escolhas = [OB_POSTURA[obState.aggressiveness] || 'Grey Hat']
-      .concat(obState.niches.map(nichoNome), [
-      OB_VEICULO[obState.vehicle] || 'Funil VSL',
-      OB_FORCA[obState.strength] || 'Tráfego pago'
-    ]);
-    badge.innerHTML = escolhas.map(function (escolha) {
-      return '<span class="ob-profile-chip">' + esc(escolha) + '</span>';
-    }).join('');
-  }
-
-  var resumo = $('obDossierSummary');
-  if (resumo) {
-    resumo.textContent = candidatas.length === top.length
-      ? 'O acervo devolveu ' + candidatas.length + ' oferta' + (candidatas.length === 1 ? '' : 's') + ' dentro da sua calibragem. Todas estão listadas abaixo.'
-      : 'O acervo devolveu ' + candidatas.length + ' ofertas dentro da sua calibragem. Estas três têm o maior score e a maior reincidência.';
-  }
-
-  var container = $('obTopOffers');
-  if (!container) return;
-
-  if (!top.length) {
-    container.innerHTML = '<p class="ob-desc">Nenhuma oferta do acervo atual bate com essa calibragem. Amplie os nichos ou importe um CSV novo do Caçador.</p>';
-    return;
-  }
-
-  container.innerHTML = top.map(function (o) {
-    var sig = sinaisDaQuery(o.q);
-    var largura = Math.max(6, Math.round((o.s / maiorScore) * 100));
-    return '<div class="ob-offer-item">' +
-      '<div class="ob-offer-thumb" data-shot="' + esc(o.sh || '') + '" data-domain="' + esc(o.d) + '"></div>' +
-      '<div class="ob-offer-info">' +
-      '<strong>' + esc(o.t) + '</strong>' +
-      '<div class="ob-offer-meta">' +
-      '<span class="ob-offer-tier" data-tier="' + esc(o.p) + '">Tier ' + esc(o.p) + '</span>' +
-      '<span>Score ' + esc(String(o.s)) + '</span>' +
-      '<span>' + esc(marca(sig.gw) || marca(sig.tr) || 'Sinal ativo') + '</span>' +
-      '<span>' + esc(nichoNome(o.n)) + '</span>' +
-      '</div>' +
-      '<span class="ob-offer-score" data-score="' + largura + '"><i></i></span>' +
-      '</div>' +
-      '<button class="btn hot ob-start-model" type="button" data-offer-domain="' + esc(o.d) + '">Raio-X</button>' +
-      '</div>';
-  }).join('');
-
-  /* Captura entrando em foco: o radar focou. Stagger de 90ms entre as
-     três, e sem desfoque nenhum quando o movimento está reduzido. */
-  container.querySelectorAll('.ob-offer-thumb').forEach(function (box, i) {
-    var src = box.getAttribute('data-shot');
-    if (!src) return;
-    var img = document.createElement('img');
-    img.alt = 'Captura da página ' + box.getAttribute('data-domain');
-    img.loading = 'lazy';
-    img.referrerPolicy = 'no-referrer';
-    img.addEventListener('error', function () { img.remove(); });
-    img.addEventListener('load', function () {
-      if (obMovimentoReduzido()) { img.classList.add('is-focused'); return; }
-      obAgendar(function () { img.classList.add('is-focused'); }, 90 * i);
-    });
-    img.src = src;
-    box.appendChild(img);
-  });
-
-  container.querySelectorAll('.ob-offer-score').forEach(function (regua, i) {
-    var largura = regua.getAttribute('data-score') + '%';
-    var barra = regua.querySelector('i');
-    if (!barra) return;
-    if (obMovimentoReduzido()) { barra.style.width = largura; return; }
-    obAgendar(function () { barra.style.width = largura; }, 90 * i);
-  });
-
-  container.querySelectorAll('.ob-start-model').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var dom = this.dataset.offerDomain;
-      var achada = pool.filter(function (x) { return x.d === dom; })[0];
-      concluirOnboarding();
-      if (achada) abrirXray(achada);
-    });
-  });
+function gerarDossieOnboarding(){
+  $('obDossierTitle').textContent='Seu perfil está pronto.';
+  $('obDossierSummary').textContent=obState.niches.map(nichoNome).join(' · ')+' · '+OB_VEICULO[obState.vehicle]+' · '+OB_FORCA[obState.strength];
+  $('obTopOffers').replaceChildren();document.querySelector('.ob-dossier-tail').textContent='Importe o CSV da sua caçada para começar a inspecionar ofertas.';
+  $('obEnterHubBtn').textContent=state.mapaComDadosReais?'Abrir painel':'Ir para importação';
 }
 
 function concluirOnboarding() {
@@ -3161,7 +2506,7 @@ function concluirOnboarding() {
     calibratedAt: new Date().toISOString()
   });
   fecharRadarOnboarding(true);
-  toast('Radar calibrado com sucesso');
+  atualizarPainel();toast('Perfil configurado');
 }
 
 /* Cartões carregam role="button" e tabindex="0", então precisam
@@ -3246,7 +2591,7 @@ function ligarRadarOnboarding() {
   var btnEnter = $('obEnterHubBtn');
   if (btnEnter) btnEnter.addEventListener('click', function () {
     concluirOnboarding();
-    irPara('painel');
+    irPara(state.mapaComDadosReais?'catalogo':'painel');if(state.sharedPending){var shared=state.sharedPending;state.sharedPending=null;abrirXray(mapearOfertaCloud(shared));}
   });
 
   var fAggr = $('fAggr');
@@ -3258,32 +2603,162 @@ function ligarRadarOnboarding() {
   }
 }
 
+function bloquearFundo(active) {
+  var modalOpen = active || $('xray').classList.contains('on') || $('onboardingModal').classList.contains('on');
+  document.querySelectorAll('main,.hub-top,.hub-footer').forEach(function (el) { el.inert = modalOpen; });
+  document.body.style.overflow = modalOpen ? 'hidden' : '';
+}
+function atualizarPainel() {
+  var loaded = !!state.radarProfile && state.mapaComDadosReais && !state.cloud.accessStatus;
+  var personal = state.onlyFavorites && !!state.cloud.user;
+  $('panelOnboarding').hidden = false;
+  $('importSection').hidden = false;
+  $('catalogoSec').hidden = !loaded && !personal;
+  $('baseLabel').textContent = personal ? 'Favoritas da sua conta' : state.baseName || (state.cloud.user ? 'Workspace da sua conta' : 'CSV desta sessão');
+  if(state.cloud.user && loaded)$('footStamp').textContent=(state.cloud.workspaces.find(function(w){return w.workspaceId===state.cloud.workspaceId;})||{}).name+' · '+state.ofertas.length+' ofertas carregadas';
+  else if(!state.mapaComDadosReais)$('footStamp').textContent='Nenhum CSV importado nesta sessão.';
+  document.body.dataset.panelState = loaded ? 'loaded' : 'empty';
+}
+function statusImport(message, busy) {
+  if (message != null) $('importStatus').textContent = message;
+  $('drop').disabled = !!busy;
+  $('drop').setAttribute('aria-busy', String(!!busy));
+  document.querySelector('[data-import-topbar]').disabled = !!busy;
+}
+function atualizarCapsula() {
+  var nav=document.querySelector('.hub-tabs'), selected=nav.querySelector('.tab.on'), indicator=nav.querySelector('.hub-tab-indicator');
+  if(!selected)return;
+  var a=selected.getBoundingClientRect(),b=nav.getBoundingClientRect();
+  indicator.style.width='100px';indicator.style.height=a.height+'px';indicator.style.top=(a.top-b.top-nav.clientTop)+'px';
+  indicator.style.transform='translateX('+(a.left-b.left-nav.clientLeft)+'px) scaleX('+(a.width/100)+')';nav.classList.add('has-indicator');
+}
+function sincronizarFavoritosUI() {
+  var o=state.aberta, btn=$('xrSave');if(!o)return;
+  btn.setAttribute('aria-pressed',String(favorita(o)));btn.setAttribute('aria-label',favorita(o)?'Remover das favoritas':'Favoritar oferta');btn.classList.toggle('on',favorita(o));
+}
+async function carregarFavoritas() {
+  var cloud=state.cloud, user=cloud.user, epoch=cloud.authEpoch, request=state.favoriteRequest=(state.favoriteRequest||0)+1;
+  if(!user || !cloud.client || !cloud.client.listFavorites || cloud.accessStatus)return;
+  state.favoritesLoading=true;
+  try {
+    var items=[],cursor=null;
+    do { var page=await cloud.client.listFavorites({cursor:cursor,workspaceId:cloud.workspaceId});if(epoch!==cloud.authEpoch || request!==state.favoriteRequest)return;items.push.apply(items,page.items||[]);cursor=page.nextCursor; } while(cursor);
+    state.favoriteRows=items;state.favorites=new Map(items.map(function(f){return[f.offer_fingerprint,f];}));aplicar();sincronizarFavoritosUI();
+  } catch(error){if(epoch===cloud.authEpoch && request===state.favoriteRequest){toast('Não foi possível carregar suas favoritas. Tente novamente.');}}
+  finally {if(epoch===cloud.authEpoch && request===state.favoriteRequest)state.favoritesLoading=false;}
+}
+async function alternarFavorita(o, button) {
+  if(!o || button.disabled)return;
+  var cloud=state.cloud, epoch=cloud.authEpoch;
+  if(!cloud.user){abrirAuth('signin',button);return;}
+  if(cloud.accessStatus){toast('Aguarde a liberação do seu acesso.');return;}
+  button.disabled=true;button.setAttribute('aria-busy','true');
+  try {
+    if(favorita(o)){await cloud.client.removeFavorite({fingerprint:o.fingerprint});if(epoch!==cloud.authEpoch)return;state.favorites.delete(o.fingerprint);state.favoriteRows=state.favoriteRows.filter(function(f){return f.offer_fingerprint!==o.fingerprint;});toast('Oferta removida das favoritas');}
+    else {
+      var target=o.id?o:await cloud.client.findSharedOffer({fingerprint:o.fingerprint,workspaceId:cloud.workspaceId});
+      if(epoch!==cloud.authEpoch)return;
+      if(!target || !target.id){toast('Importe esta caçada na sua conta para guardar a oferta.');return;}
+      var saved=await cloud.client.favoriteOffer({offerId:target.id});if(epoch!==cloud.authEpoch)return;
+      saved.offer=target===o ? null : target;state.favorites.set(o.fingerprint,saved);toast('Favoritada na sua conta');await carregarFavoritas();
+    }
+    aplicar();sincronizarFavoritosUI();
+    if(button.isConnected)button.focus({preventScroll:true});else $('favoritesFilter').focus({preventScroll:true});
+  } catch(error){if(epoch===cloud.authEpoch)toast('Não foi possível atualizar a favorita. Tente novamente.');}
+  finally{button.disabled=false;button.removeAttribute('aria-busy');}
+}
+async function carregarHistorico(o) {
+  var cloud=state.cloud,epoch=cloud.authEpoch;
+  if(!o.id || !cloud.user || !cloud.client.listOfferObservations)return;
+  try {
+    var items=await cloud.client.listOfferObservations({offerId:o.id});
+    if(epoch!==cloud.authEpoch || state.aberta!==o)return;
+    $('xrHistory').hidden=false;
+    $('xrHistoryContent').innerHTML=items.length?items.map(function(item){return '<p><strong>'+esc(item.observed_at||item.created_at||'Coleta registrada')+'</strong> · score '+esc(item.observed_score == null ? item.score : item.observed_score)+'</p>';}).join(''):'<p>Nenhuma observação adicional disponível.</p>';
+    if(favorita(o) && items.length && items[0].observed_at) {
+      var reviewed=await cloud.client.markFavoriteReviewed({fingerprint:o.fingerprint,observedAt:items[0].observed_at});
+      if(epoch!==cloud.authEpoch || state.aberta!==o)return;
+      var f=state.favorites.get(o.fingerprint);if(f){f.last_reviewed_at=reviewed.last_reviewed_at;f.has_new_collection=false;}pintarCatalogo();
+    }
+  }catch(error){if(epoch===cloud.authEpoch && state.aberta===o){$('xrHistory').hidden=false;$('xrHistoryContent').textContent='Não foi possível consultar o histórico. Feche e inspecione novamente para tentar.';}}
+}
+function dialogCompartilhar() {
+  var dialog=$('shareDialog');if(dialog)return dialog;
+  dialog=document.createElement('dialog');dialog.id='shareDialog';dialog.className='hub-share-dialog';dialog.setAttribute('aria-labelledby','shareTitle');
+  dialog.innerHTML='<div class="hub-share-head"><h2 id="shareTitle">Compartilhar oferta</h2><button type="button" class="hub-button" data-share-close aria-label="Fechar compartilhamento">×</button></div><p id="shareDescription">O link abre o diagnóstico de quem já possui esta oferta. Sem uma base acessível, abre a página original.</p><label for="shareLink">Link da oferta</label><input id="shareLink" type="text" readonly><p id="shareStatus" role="status"></p><div class="hub-share-actions"><button type="button" class="hub-button" id="shareCopy">Copiar link</button><button type="button" class="hub-button" id="shareNative" hidden>Compartilhar</button><a class="hub-button" id="shareOrigin" target="_blank" rel="noopener noreferrer">Abrir página original</a><button type="button" class="hub-button" id="shareRetry" hidden>Tentar novamente</button></div>';
+  document.body.appendChild(dialog);dialog.querySelector('[data-share-close]').onclick=function(){dialog.close();};
+  $('shareCopy').onclick=function(){copiarTexto($('shareLink').value,'Link copiado');};
+  $('shareNative').onclick=async function(){try{await navigator.share({title:dialog.dataset.title,url:$('shareLink').value});}catch(error){if(error.name!=='AbortError')$('shareStatus').textContent='Não foi possível compartilhar. Use Copiar link.';}};
+  return dialog;
+}
+async function copiarTexto(value, success) {
+  try {await navigator.clipboard.writeText(value);toast(success);if($('shareStatus'))$('shareStatus').textContent=success;}
+  catch(error){var dialog=dialogCompartilhar();$('shareLink').value=value;$('shareStatus').textContent='Selecione e copie o texto manualmente.';if(!dialog.open)dialog.showModal();$('shareLink').focus();$('shareLink').select();}
+}
+function urlPublica(value) {
+  var safe=urlHttpSegura(value);if(!safe)return '';
+  var u=new URL(safe),host=u.hostname.toLowerCase();
+  if(host==='localhost'||host.endsWith('.localhost')||host.endsWith('.local')||host==='[::1]'||/^(127\.|10\.|192\.168\.|169\.254\.|0\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host))return '';
+  if(Array.from(u.searchParams.keys()).some(function(k){return /^(code|access_token|refresh_token|token|password|secret)$/i.test(k);}))return '';
+  return safe;
+}
+async function compartilharOferta(o, button) {
+  if(!o || button.disabled)return;
+  var cloud=state.cloud,epoch=cloud.authEpoch;
+  if(!cloud.user){abrirAuth('signin',button);return;}
+  if(cloud.accessStatus){toast('Aguarde a liberação do seu acesso.');return;}
+  button.disabled=true;
+  try {
+    var target=o.id?o:await cloud.client.findSharedOffer({fingerprint:o.fingerprint,workspaceId:cloud.workspaceId});if(epoch!==cloud.authEpoch)return;
+    if(!target || !target.id){toast('Importe esta caçada na sua conta para gerar o link do Hub.');return;}
+    var result=await cloud.client.createOfferShare({offerId:target.id});if(epoch!==cloud.authEpoch)return;
+    var original=urlPublica(result.urlFinal);if(!original)throw new Error('invalid_destination');
+    var link=new URL('/hub',location.origin);link.hash='compartilhar='+encodeURIComponent(result.token);
+    var dialog=dialogCompartilhar();dialog.dataset.title=o.t;$('shareLink').value=link.href;$('shareOrigin').href=original;$('shareStatus').textContent='';$('shareRetry').hidden=true;$('shareCopy').hidden=false;$('shareNative').hidden=typeof navigator.share!=='function';
+    if(!dialog.open)dialog.showModal();$('shareCopy').focus();
+  }catch(error){if(epoch===cloud.authEpoch)toast('Não foi possível criar o link. Tente novamente.');}
+  finally{button.disabled=false;}
+}
+async function abrirLinkCompartilhado() {
+  var match=location.hash.match(/^#compartilhar=([A-Za-z0-9_-]+)$/);if(!match || !state.cloud.client)return;
+  var epoch=state.cloud.authEpoch, resolved;
+  try {
+    resolved=await state.cloud.client.resolveOfferShare(match[1]);if(epoch!==state.cloud.authEpoch)return;
+    if(!resolved || !urlPublica(resolved.urlFinal)){toast('Este link não está disponível.');return;}
+    if(!state.cloud.user || state.cloud.accessStatus){location.assign(urlPublica(resolved.urlFinal));return;}
+    var row=await state.cloud.client.findSharedOffer({fingerprint:resolved.fingerprint,workspaceId:state.cloud.workspaceId});if(epoch!==state.cloud.authEpoch)return;
+    if(!row){location.assign(urlPublica(resolved.urlFinal));return;}
+    if(!state.radarProfile){state.sharedPending=row;return;}
+    irPara('painel');abrirXray(mapearOfertaCloud(row));
+  }catch(error){
+    if(epoch!==state.cloud.authEpoch)return;
+    var d=dialogCompartilhar();$('shareStatus').textContent='Não foi possível verificar a oferta. Tente novamente.';$('shareCopy').hidden=true;$('shareNative').hidden=true;$('shareRetry').hidden=false;$('shareRetry').onclick=function(){d.close();abrirLinkCompartilhado();};$('shareOrigin').hidden=!resolved || !urlPublica(resolved.urlFinal);if(!$('shareOrigin').hidden)$('shareOrigin').href=urlPublica(resolved.urlFinal);if(!d.open)d.showModal();
+  }
+}
+function iniciarInteracoes() {
+  var nav=document.querySelector('.hub-tabs'),ring=document.querySelector('.hub-scan-ring'),target=document.querySelector('.hub-target'),scan=null;
+  function stopScan(){if(scan)scan.cancel();scan=null;}
+  function scanOnce(){stopScan();if(obMovimentoReduzido() || document.hidden || $('panelOnboarding').hidden)return;scan=ring.animate([{opacity:0,transform:'rotate(-45deg)'},{opacity:.6,offset:.2},{opacity:0,transform:'rotate(135deg)'}],{duration:700,easing:'ease-out'});}
+  target.addEventListener('pointerenter',function(e){if(e.pointerType==='mouse')scanOnce();});target.addEventListener('focus',scanOnce);target.addEventListener('pointerleave',stopScan);target.addEventListener('blur',stopScan);
+  document.addEventListener('visibilitychange',function(){if(document.hidden)stopScan();});
+  var reduced=matchMedia('(prefers-reduced-motion: reduce)');reduced.addEventListener('change',stopScan);
+  new IntersectionObserver(function(entries){if(!entries[0].isIntersecting)stopScan();}).observe(target);
+  new ResizeObserver(atualizarCapsula).observe(nav);document.fonts.ready.then(atualizarCapsula);
+  nav.addEventListener('keydown',function(e){if(!['ArrowRight','ArrowLeft','Home','End'].includes(e.key))return;e.preventDefault();var tabs=Array.from(nav.querySelectorAll('.tab')),i=tabs.indexOf(document.activeElement);i=e.key==='Home'?0:e.key==='End'?tabs.length-1:(i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;tabs[i].click();tabs[i].focus();});
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Tab'||!$('authModal').hidden)return;
+    var modal=$('onboardingModal').classList.contains('on')?$('onboardingModal'):$('xray').classList.contains('on')?$('xray'):null;if(!modal)return;
+    var controls=Array.from(modal.querySelectorAll('button,a[href],input,select,[tabindex]')).filter(function(el){return !el.disabled && el.tabIndex>=0 && el.getClientRects().length;});
+    if(!controls.length)return;var first=controls[0],last=controls[controls.length-1];if(!modal.contains(document.activeElement)||e.shiftKey&&document.activeElement===first||!e.shiftKey&&document.activeElement===last){e.preventDefault();(e.shiftKey?last:first).focus();}
+  });
+}
+
 /* ── Partida ─────────────────────────────────────────────────── */
-function iniciar() {
-  state.demoOfertas = ofertasDaCacadaReferencia();
-  state.ofertas = state.demoOfertas.slice();
-  state.flags = carregarFlags();
-  state.radarProfile = carregarRadarProfile();
-
-  ligarEventos();
-  ligarRadarOnboarding();
-  ligarBloqueio();
-  montarMapaVivo();
-  pintarStats();
-  pintarRail();
-  atualizarHeaderRadar();
-  aplicar();
-  carregarProjetosLocais();
-  iniciarCloud().catch(function () { renderCloud(); });
-
-  var temImportacao = false;
-  try { temImportacao = localStorage.getItem('afero-hub-has-import') === '1'; } catch (_) {}
-  if (temImportacao) irPara('painel');
-
-  $('referenceHuntCount').textContent = String(state.demoOfertas.length);
-  $('referenceHuntPeriod').textContent = REFERENCE_HUNT.period + ' · amostra histórica · não faz parte do seu workspace';
-  $('footStamp').textContent = 'caçada de referência · ' + state.ofertas.length + ' ofertas reais · ' + REFERENCE_HUNT.period;
-  rodarBoot();
+function iniciar(){
+  state.demoOfertas=[];state.ofertas=[];state.flags=carregarFlags();state.radarProfile=carregarRadarProfile();
+  ligarEventos();ligarRadarOnboarding();pintarStats();pintarRail();aplicar();carregarProjetosLocais();
+  iniciarInteracoes();exigirCalibragemDaConta();
+  iniciarCloud().then(function(){exigirCalibragemDaConta();return carregarFavoritas();}).then(abrirLinkCompartilhado).catch(function(error){renderCloud();definirErroCloud(error);});
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);

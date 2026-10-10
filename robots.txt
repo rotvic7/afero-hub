@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Private data is protected by authorization, never by this file.
+# Hub uses noindex so crawlers can read that directive without indexing the app.
+Sitemap: https://aferohub.com.br/sitemap.xml

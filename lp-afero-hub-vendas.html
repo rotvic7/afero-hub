@@ -6,6 +6,20 @@
   <meta name="theme-color" content="#050805">
   <meta name="description" content="Encontre ofertas com sinais públicos de tráfego e recorrência antes de gastar sua verba em um teste no escuro com o Afero Hub.">
   <title>Afero Hub · Encontre ofertas com sinais de escala</title>
+  <link rel="canonical" href="https://aferohub.com.br/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Afero Hub">
+  <meta property="og:title" content="Afero Hub · Pesquisa e análise de ofertas digitais">
+  <meta property="og:description" content="Reúna páginas, capturas e sinais públicos. Inspecione cada oferta com contexto antes de desenvolver a sua.">
+  <meta property="og:url" content="https://aferohub.com.br/">
+  <meta property="og:image" content="https://aferohub.com.br/prints/hub-grade.webp">
+  <meta property="og:image:alt" content="Painel de análise de ofertas do Afero Hub">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Afero Hub · Pesquisa e análise de ofertas digitais">
+  <meta name="twitter:description" content="Inspecione páginas, capturas e sinais públicos de ofertas digitais em um só painel.">
+  <meta name="twitter:image" content="https://aferohub.com.br/prints/hub-grade.webp">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Afero Hub","alternateName":"Afero","url":"https://aferohub.com.br/","inLanguage":"pt-BR"}</script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F7F6F1' stroke-width='1.5'%3E%3Cpath d='M20.114 9.826A8.4 8.4 0 003.886 9.826M3.886 14.174A8.4 8.4 0 0020.114 14.174M12 3.1V0M12 21.4v1M2.6 12H1M21.4 12H23'/%3E%3Cpath d='M10.9 14.898V13.2h2.2v1.698a3.1 3.1 0 11-2.2 0z' fill='%238A9C7B' stroke='none'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,8 +49,12 @@
   <link rel="stylesheet" href="assets/afero-vendas.css">
   <script src="assets/vendor/gsap.min.js" defer></script>
   <script src="assets/afero-vendas.js" defer></script>
+  <link rel="stylesheet" href="assets/afero-consent.css">
+  <script src="assets/afero-vendas-config.js" defer></script>
+  <script src="assets/afero-vendas-tracking.js?v=2" defer></script>
+  <script src="afero-checkout.js" defer></script>
 </head>
-<body id="topo">
+<body id="topo" data-afero-sales-page>
   <header class="header">
     <div class="wrap nav">
       <a class="brand" href="#topo" aria-label="Afero Hub, início"><span class="brand__name">afero<span>hub</span></span></a>
@@ -144,7 +162,7 @@
     <section class="offer" id="acesso">
       <div class="wrap offer__box">
         <div><h2 class="section-title"><span class="section-title__base">Entre no Afero Hub com um ponto de partida.</span> <em>Saia com uma oferta sua para construir.</em></h2><p class="section-lead">Pesquise referências em diferentes nichos, compare os sinais de cada oferta e use os agentes para transformar essa pesquisa em uma proposta própria.</p><ul class="offer__list"><li>Caçador para encontrar ofertas com sinais públicos de atividade</li><li>Acervo para guardar referências e acompanhar recorrência</li><li>Agentes Copywriter, Páginas, Entregáveis e Quiz</li></ul></div>
-        <div class="offer__action"><h3>Seu acesso ao Afero Hub</h3><p>Caçador, acervo e quatro agentes para você pesquisar, escolher uma direção e desenvolver sua próxima oferta. Acesso vitalício ao Hub.</p><a class="btn" href="#acesso">Quero acessar o Afero Hub <span aria-hidden="true">→</span></a></div>
+        <div class="offer__action"><h3>Seu acesso ao Afero Hub</h3><p>Caçador, acervo e quatro agentes para você pesquisar, escolher uma direção e desenvolver sua próxima oferta. Acesso vitalício ao Hub.</p><a class="btn" href="#acesso" data-checkout>Quero acessar o Afero Hub <span aria-hidden="true">→</span></a><p data-checkout-status role="status" hidden>As vendas ainda não foram abertas. Volte em breve.</p></div>
       </div>
     </section>
 
@@ -158,6 +176,10 @@
     </section>
   </main>
 
-  <footer class="footer"><div class="wrap footer__inner"><p>© 2026 Afero Hub. Pesquisa de mercado e estruturação de ofertas digitais.</p><nav class="footer__links" aria-label="Links legais"><a href="index.html">Entrar no Hub</a><a href="privacidade.html">Privacidade</a><a href="#topo">Voltar ao início ↑</a></nav></div></footer>
+  <footer class="footer"><div class="wrap footer__inner"><p>© 2026 Afero Hub. Pesquisa de mercado e estruturação de ofertas digitais.</p><nav class="footer__links" aria-label="Links legais"><a href="index.html">Entrar no Hub</a><a href="privacidade.html">Privacidade</a><button class="privacy-choice" type="button" data-marketing-settings hidden>Preferências de cookies</button><a href="#topo">Voltar ao início ↑</a></nav></div></footer>
+  <aside class="marketing-consent" aria-label="Preferências de cookies" data-marketing-consent hidden>
+    <p>Com sua autorização, a página de vendas usa cookies da Meta para publicidade e do Google Analytics para métricas de visitas e cliques. Você pode recusar e continuar usando o site. <a href="privacidade.html">Saiba como seus dados são usados.</a></p>
+    <div class="marketing-consent__actions"><button type="button" data-marketing-reject>Recusar opcionais</button><button type="button" data-marketing-accept>Aceitar opcionais</button></div>
+  </aside>
 </body>
 </html>

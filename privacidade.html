@@ -37,13 +37,16 @@
     footer { border-top:1px solid var(--line); padding:24px 0 36px; font-size:13px; }
     .foot-inner { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
   </style>
+  <link rel="stylesheet" href="assets/afero-consent.css">
+  <script src="assets/afero-vendas-config.js" defer></script>
+  <script src="assets/afero-vendas-tracking.js?v=2" defer></script>
 </head>
 <body>
   <header class="top"><div class="top-inner"><a class="brand" href="index.html">afero <span>hub</span></a><a class="back" href="index.html">Ir ao painel</a></div></header>
   <main class="sheet">
     <p class="eyebrow">Transparência e controle</p>
     <h1>Privacidade no Afero Hub</h1>
-    <p class="intro">Este aviso explica quais dados usamos para criar sua conta, verificar seu acesso e guardar o trabalho feito no Hub. A responsável pelo produto é Optivex MKT Solutions. Última atualização: 22 de setembro de 2026.</p>
+    <p class="intro">Este aviso explica quais dados usamos para criar sua conta, verificar seu acesso e guardar o trabalho feito no Hub. A responsável pelo produto é Optivex MKT Solutions. Última atualização: 10 de outubro de 2026.</p>
 
     <h2>Dados usados e finalidade</h2>
     <ul>
@@ -63,10 +66,16 @@
     <p>Você pode pedir confirmação do tratamento, acesso, correção, portabilidade quando aplicável, informação sobre compartilhamento, revogação de consentimento quando usado e exclusão de dados tratados sem fundamento para retenção. Para proteger sua conta, poderemos confirmar sua identidade antes de atender ao pedido.</p>
 
     <h2>Cookies e ferramentas de terceiros</h2>
-    <p>O Hub usa armazenamento do navegador necessário para sessão e preferências. Este aviso não autoriza a instalação de pixels de publicidade ou analytics não essenciais; se forem adicionados, o aviso e as escolhas de privacidade deverão ser atualizados antes da ativação.</p>
+    <p>O Hub usa armazenamento do navegador necessário para sessão e preferências. Na página de vendas, o Pixel da Meta e o Google Analytics podem ser ativados somente após sua escolha de aceitar os cookies opcionais. A Meta mede visitas, visualização do produto e cliques para o checkout. Na entrada pública do Hub, a Meta mede somente a visita; o rastreamento fica bloqueado enquanto a sessão é conferida, em contas autenticadas e em URLs com parâmetros ou fragmentos. A Meta pode receber informações do navegador, endereço IP, página visitada e identificadores de cookies, conforme sua <a href="https://www.facebook.com/privacy/policy/" rel="noopener noreferrer">Política de Privacidade</a>. O Google Analytics mede visitas e cliques da página de vendas, conforme a <a href="https://policies.google.com/privacy" rel="noopener noreferrer">Política de Privacidade do Google</a>. Não enviamos o conteúdo dos CSVs ou formulários de login a essas ferramentas. Esses cookies não são necessários para comprar ou acessar o Hub.</p>
+    <p>Sua escolha é guardada no navegador por até 180 dias. Você pode recusar os cookies opcionais ou retirar sua autorização nas preferências. A retirada interrompe novos eventos da LP e da entrada do Hub e remove os cookies das ferramentas acessíveis neste domínio; não apaga dados já recebidos pelos provedores. O checkout da Eduzz possui seus próprios controles e aviso de privacidade. O Search Console fornece métricas agregadas da pesquisa do Google, como impressões e cliques, sem instalar um rastreador de visitantes no Hub.</p>
+    <button class="privacy-choice" type="button" data-marketing-settings hidden>Preferências de cookies</button>
 
     <div class="contact"><p><strong>Contato de privacidade</strong></p><p>Envie dúvidas ou pedidos sobre seus dados para <a href="mailto:optivexmktsolutions@gmail.com">optivexmktsolutions@gmail.com</a>.</p></div>
   </main>
   <footer><div class="foot-inner"><span>Optivex MKT Solutions · Afero Hub</span><a href="index.html">Voltar ao site</a></div></footer>
+  <aside class="marketing-consent" aria-label="Preferências de cookies" data-marketing-consent hidden>
+    <p>Com sua autorização, a página de vendas usa cookies da Meta para publicidade e do Google Analytics para métricas de visitas e cliques. Você pode recusar e continuar usando o site. <a href="privacidade.html">Saiba como seus dados são usados.</a></p>
+    <div class="marketing-consent__actions"><button type="button" data-marketing-reject>Recusar opcionais</button><button type="button" data-marketing-accept>Aceitar opcionais</button></div>
+  </aside>
 </body>
 </html>
