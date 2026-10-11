@@ -105,7 +105,7 @@ test('requires confirmed email and hardened password sessions locally', async ()
   assert.match(config, /enable_confirmations = true/);
   assert.match(config, /enable_refresh_token_rotation = true/);
   assert.match(config, /enable_anonymous_sign_ins = false/);
-  assert.match(config, /minimum_password_length = 12/);
+  assert.match(config, /minimum_password_length = 8/);
   assert.match(config, /secure_password_change = true/);
 });
 

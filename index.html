@@ -444,7 +444,7 @@ Caçada concluída. 127 ofertas encontradas.</pre>
               <span class="agent-live" id="agentStatCopy"></span>
             </div>
           </div>
-          <p class="agent-desc">Lê o ângulo da oferta encontrada e devolve a estrutura de resposta direta: big idea, três ganchos alternativos, corpo em PAS ou AIDA, empacotamento de bônus e o script de abordagem para chegar no dono da operação.</p>
+          <p class="agent-desc">Ajuda você a remodelar a oferta escolhida: usa sua leitura da referência, a hipótese de ângulo esquecido e o briefing da sua própria oferta para estruturar big idea, ganchos, copy, bônus e chamada para ação.</p>
           <div class="agent-specs">
             <span><i>Frameworks</i>PAS, AIDA, Rule of One, 16-Word</span>
             <span><i>Veto</i>clichê de IA e travessão como separador</span>
@@ -900,7 +900,7 @@ var TIER_NOME = { S: 'S Elite', A: 'A Top', B: 'B Alta', C: 'C Média', D: 'D Ba
 
 var ROTEIRO_XRAY = [
   { t: 'Identifique a promessa central', d: 'Abra a página original. Leia a headline e, se houver, assista ao início do vídeo. Que resultado concreto é prometido? Qual gancho prende a atenção? Registre o que está realmente visível.' },
-  { t: 'Encontre uma brecha de comunicação', d: 'Observe se a prova social é fraca, se alguma objeção fica sem resposta ou se preço, entrega e chamada para ação estão confusos. Confirme na página original: algo ausente na captura pode aparecer em outra etapa.' },
+  { t: 'Procure o ângulo esquecido', d: 'Que público, situação de uso, benefício ou objeção recebe pouca atenção nesta referência? Anote uma hipótese e o trecho que motivou sua leitura. Confira as outras etapas do funil: algo ausente na captura pode aparecer depois. Se não encontrar uma brecha, registre isso e busque outra referência.' },
   { t: 'Defina o ângulo da sua remodelação', d: 'Escolha uma diferença útil para o público que você quer atender. Decida o que pode mudar na promessa, no mecanismo ou na oferta e quais evidências você consegue apresentar. Leve esse contexto ao Copywriter e ao Páginas.' }
 ];
 
@@ -1356,7 +1356,7 @@ var MAP_AGENT_DETAILS = {
   copywriter: {
     title: 'Agente Copywriter',
     kicker: 'Órbita de mensagem · agente 01',
-    description: 'Recebe a oferta escolhida e transforma os sinais do Raio X em argumento, estrutura e copy para revisão.',
+    description: 'Recebe sua reflexão sobre a referência e o briefing da sua própria oferta para estruturar argumento e copy para revisão.',
     status: 'Fluxo disponível',
     route: 'Arsenal',
     view: 'agentes'
@@ -1564,16 +1564,44 @@ function pintarCatalogo() {
 
 /* ── Roteiro de reflexão para remodelar a oferta ─────────────── */
 function scriptDeAbordagem(o) {
-  var nome = esc(nichoNome(o.n).toLowerCase());
-  var titulo = esc(o.t || 'Oferta selecionada');
+  var signals = sinaisDaOferta(o), sig = tecnologia(o);
+  var contexto = [
+    o.t || 'Oferta selecionada',
+    'Domínio: ' + (o.d || 'Não informado'),
+    'Página original: ' + (urlHttpSegura(o.u) || 'Não informada'),
+    'Nicho da coleta: ' + (o.referenceOnly || !o.n ? 'Não informado' : nichoNome(o.n)),
+    'Score: ' + (o.s == null ? 'Sem base acessível' : o.s),
+    'Observações na coleta: ' + (o.v == null ? 'Sem base acessível' : o.v + 'x vista'),
+    'Última coleta: ' + (o.dt || 'Não informada'),
+    'Gateway indicado: ' + (marca(sig.gw) || 'Não informado'),
+    'Rastreador indicado: ' + (marca(sig.tr) || 'Não informado')
+  ].map(esc).join('\n');
+  var leitura = [];
+  if (o.referenceOnly) leitura.push('Esta favorita preserva apenas a referência original. Abra o link para fazer sua leitura; não há base acessível para avaliar score, formato ou desempenho.');
+  if (sinalAtivo(signals, 'vsl_player')) leitura.push('A coleta indica um player de vídeo. Confira se é uma VSL e registre a promessa, o mecanismo apresentado e as provas. Na sua remodelação, que argumento você consegue sustentar com a própria entrega?');
+  if (sinalAtivo(signals, 'funnel_quiz')) leitura.push('A coleta indica um quiz. Percorra as perguntas, a recomendação e a transição para a oferta. Que decisão elas ajudam o leitor a tomar? Avalie se essa sequência faz sentido para o público da sua própria oferta.');
+  if (sinalAtivo(signals, 'subscription_verified')) leitura.push('A coleta registra assinatura verificada. Confira preço, periodicidade, entrega contínua e cancelamento na página atual. Se sua oferta também for recorrente, descreva o valor que você consegue entregar a cada período.');
+  else if (sinalAtivo(signals, 'billing_tech_detected')) leitura.push('Há sinal de tecnologia de billing. Confira na página se existe assinatura e quais são os termos; esse sinal sozinho não confirma cobrança recorrente.');
+  if (!sinalAtivo(signals, 'vsl_player') && !sinalAtivo(signals, 'funnel_quiz')) leitura.push('Leia a headline, a entrega, as provas, o preço e a chamada para ação na página original. Registre o que você observou e o que ainda precisa conferir.');
+  if (sig.gw || sig.tr || sinalAtivo(signals, 'pixel_ads')) leitura.push('Gateway, rastreador ou pixel orientam a inspeção técnica. Para escolher sua remodelação, use a mensagem e a entrega que você observar na página; esses sinais não medem a qualidade da copy ou a conversão.');
   var passos = ROTEIRO_XRAY.map(function (passo, i) {
     return '<b>' + (i + 1) + '. ' + esc(passo.t) + '</b>\n' + esc(passo.d);
   }).join('\n\n');
 
-  return '<b>REFERÊNCIA EM ANÁLISE</b>\n' + titulo + ' · Nicho: ' + nome + '\n\n' +
+  return '<b>REFERÊNCIA EM ANÁLISE</b>\n' + contexto + '\n\n' +
+    '<b>COMO LER ESTA REFERÊNCIA</b>\n' + leitura.map(esc).join('\n\n') + '\n\n' +
     passos + '\n\n' +
+    '<b>BRIEFING DA SUA PRÓPRIA OFERTA</b>\n' +
+    'Preencha depois de ler a página:\n' +
+    'Promessa observada na referência: ___\n' +
+    'Hipótese de ângulo esquecido e trecho que a motivou: ___\n' +
+    'Público e situação que você quer atender: ___\n' +
+    'Promessa própria que você consegue cumprir: ___\n' +
+    'Mecanismo, entrega e condições da sua oferta: ___\n' +
+    'Provas que você realmente possui: ___\n' +
+    'O que ainda precisa validar: ___\n\n' +
     '<b>CONTEXTO PARA O COPYWRITER</b>\n' +
-    'Registre o público que você quer atender, a promessa própria que consegue cumprir, o mecanismo que pretende usar e as provas que realmente possui. Inclua a brecha observada e peça um argumento original, sem copiar alegações da referência.\n\n' +
+    'Envie este roteiro com o briefing preenchido. Peça uma copy original para a sua oferta, usando apenas promessas e provas que você consegue sustentar. Se faltar informação, o agente deve pedir a você, usuário do Afero Hub, os detalhes da proposta que está construindo.\n\n' +
     '<b>LEMBRETE</b>\n' +
     'Score, recorrência e sinais técnicos ajudam a escolher o que investigar; não comprovam vendas, faturamento ou anúncios ativos.';
 }
@@ -1588,7 +1616,7 @@ function abrirXray(o) {
   var hero = urlHttpSegura(o.sh) ? '<div class="xr-hero"><img src="' + esc(urlHttpSegura(o.sh)) + '" alt="Captura de ' + esc(o.d) + '" decoding="async" referrerpolicy="no-referrer"></div>' : '<div class="xr-hero"><div class="noshot">Sem captura disponível</div></div>';
   var facts = [['Gateway',marca(sig.gw) || 'Não detectado'], ['Rastreador',marca(sig.tr) || 'Não detectado'], ['Observações',o.v == null ? 'Sem base acessível' : o.v + 'x vista'], ['Domínio',o.d], ['Coleta',o.dt || 'Não informada']];
   var captured = [['double_signal','Gateway e rastreador'],['pixel_ads','Pixel técnico'],['vsl_player','Player de vídeo'],['funnel_quiz','Quiz'],['billing_tech_detected','Tecnologia de billing'],['subscription_verified','Assinatura verificada']].filter(function (v) { return sinalAtivo(signals,v[0]); }).map(function (v) { return '<span class="sig">' + esc(v[1]) + '</span>'; }).join('');
-  $('xrBody').innerHTML = hero + '<section class="xr-block"><h3 class="xr-lbl">' + (o.referenceOnly ? 'Página original disponível' : 'Diagnóstico da coleta') + '</h3><div class="hub-xr-diagnosis"><div><span>' + (o.id ? 'Score agregado' : 'Score da coleta') + '</span><strong class="hub-score">' + (o.s == null ? '·' : esc(o.s)) + '</strong></div><div><span>Prioridade</span><strong class="hub-xr-priority">' + esc(TIER_NOME[o.p] || 'Sem base acessível') + '</strong></div></div><dl class="hub-xr-facts">' + facts.map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl></section><section class="xr-block"><h3 class="xr-lbl">Sinais capturados</h3><div class="signals">' + (captured || '<p>Nenhum sinal adicional informado.</p>') + '</div><p class="xr-nota">Evidências técnicas da coleta. Elas não comprovam vendas, faturamento ou anúncios em veiculação.</p></section><section class="xr-block" id="xrHistory" hidden><h3 class="xr-lbl">Histórico de coletas</h3><div id="xrHistoryContent"></div></section>' + (o.referenceOnly ? '' : '<details class="xr-block"><summary>Refletir e planejar a remodelação</summary><p class="xr-nota">Analise a referência, escolha uma brecha relevante e prepare um briefing próprio. Confirme suas observações na página original.</p><div class="script-box" id="xrScript">' + scriptDeAbordagem(o) + '</div><button type="button" class="btn" id="xrCopy">Copiar roteiro</button></details>');
+  $('xrBody').innerHTML = hero + '<section class="xr-block"><h3 class="xr-lbl">' + (o.referenceOnly ? 'Página original disponível' : 'Diagnóstico da coleta') + '</h3><div class="hub-xr-diagnosis"><div><span>' + (o.id ? 'Score agregado' : 'Score da coleta') + '</span><strong class="hub-score">' + (o.s == null ? '·' : esc(o.s)) + '</strong></div><div><span>Prioridade</span><strong class="hub-xr-priority">' + esc(TIER_NOME[o.p] || 'Sem base acessível') + '</strong></div></div><dl class="hub-xr-facts">' + facts.map(function (f) { return '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl></section><section class="xr-block"><h3 class="xr-lbl">Sinais capturados</h3><div class="signals">' + (captured || '<p>Nenhum sinal adicional informado.</p>') + '</div><p class="xr-nota">Evidências técnicas da coleta. Elas não comprovam vendas, faturamento ou anúncios em veiculação.</p></section><section class="xr-block" id="xrHistory" hidden><h3 class="xr-lbl">Histórico de coletas</h3><div id="xrHistoryContent"></div></section>' + '<details class="xr-block"><summary>O que fazer com essa oferta</summary><p class="xr-nota">Use esta referência para refletir sobre a sua própria oferta. Procure uma hipótese de ângulo esquecido, confira a página original e preencha seu briefing.</p><div class="script-box" id="xrScript">' + scriptDeAbordagem(o) + '</div><button type="button" class="btn" id="xrCopy">Copiar roteiro</button></details>';
   var image = $('xrBody').querySelector('img'); if (image) image.addEventListener('error',function () { var p=document.createElement('div');p.className='noshot';p.textContent='Captura indisponível';image.replaceWith(p); },{once:true});
   var site=$('xrSite'), url=urlHttpSegura(o.u); site.hidden=!url; if(url)site.href=url;else site.removeAttribute('href');
   var ads=$('xrAds');ads.hidden=!urlHttpSegura(o.a);if(!ads.hidden)ads.href=urlHttpSegura(o.a);else ads.removeAttribute('href');
